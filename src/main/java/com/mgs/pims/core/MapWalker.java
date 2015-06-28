@@ -1,4 +1,4 @@
-package com.pims.core;
+package com.mgs.pims.core;
 
 import com.reflections.*;
 

@@ -1,13 +1,13 @@
-package com.pims.spring;
+package com.mgs.pims.spring;
 
-import com.pims.core.Pims;
-import com.pims.core.PimsFactory;
+import com.mgs.pims.core.Pims;
+import com.mgs.pims.core.PimsFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
-@ComponentScan("com.pims")
+@Import(MixersConfig.class)
 public class PimsConfig {
     @Bean
     Pims pims (){

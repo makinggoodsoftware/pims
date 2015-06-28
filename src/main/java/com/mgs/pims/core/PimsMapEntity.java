@@ -1,6 +1,6 @@
-package com.pims.core;
+package com.mgs.pims.core;
 
-import com.pims.annotations.PimsEntity;
+import com.mgs.pims.annotations.PimsEntity;
 import com.reflections.ParsedType;
 
 import java.util.Map;

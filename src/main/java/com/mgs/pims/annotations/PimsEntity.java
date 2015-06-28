@@ -1,6 +1,6 @@
-package com.pims.annotations;
+package com.mgs.pims.annotations;
 
-import com.pims.core.PimsMapEntities;
+import com.mgs.pims.core.PimsMapEntities;
 
 import java.lang.annotation.Retention;
 

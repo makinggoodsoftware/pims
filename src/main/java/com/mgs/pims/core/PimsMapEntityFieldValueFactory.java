@@ -1,4 +1,4 @@
-package com.pims.core;
+package com.mgs.pims.core;
 
 import com.reflections.Declaration;
 import com.reflections.ParsedType;
@@ -10,41 +10,41 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
-public class MapEntityFieldTransformer {
+public class PimsMapEntityFieldValueFactory {
 	private final Reflections reflections;
 	private final TypeParser typeParser;
 
-	public MapEntityFieldTransformer(Reflections reflections, TypeParser typeParser) {
+	public PimsMapEntityFieldValueFactory(Reflections reflections, TypeParser typeParser) {
 		this.reflections = reflections;
 		this.typeParser = typeParser;
 	}
 
-	public Object transform(ParsedType valueType, Object valueRepresentation, OnMapEntityProcessor onMapEntityProcessor) {
-		assertParsedTypeIsResolved(valueType);
-		assertNoOptionalFieldIsSet(valueType, valueRepresentation);
+	public Object transform(ParsedType type, Object value, OnMapEntityProcessor onComplexFieldValue) {
+		assertParsedTypeIsResolved(type);
+		assertNoOptionalFieldIsSet(type, value);
 
-		Class<?> declaredType = valueType.getActualType().get();
-		if (reflections.isSimple(declaredType)) return valueRepresentation;
+		Class<?> declaredType = type.getActualType().get();
+		if (reflections.isSimple(declaredType)) return value;
 		if (reflections.isAssignableTo(declaredType, PimsMapEntity.class)) {
-			return onMapEntityProcessor.process(valueType, valueRepresentation);
+			return onComplexFieldValue.process(type, value);
 		}
 		if (reflections.isCollection(declaredType)) {
-			List listOfValues = (List) valueRepresentation;
-			Declaration typeOfCollection = valueType.getOwnDeclaration().getParameters().values().iterator().next();
+			List listOfValues = (List) value;
+			Declaration typeOfCollection = type.getOwnDeclaration().getParameters().values().iterator().next();
 			//noinspection unchecked
 			return listOfValues.stream().
 				map((old) ->
-					transform(typeParser.parse(typeOfCollection), old, onMapEntityProcessor)
+					transform(typeParser.parse(typeOfCollection), old, onComplexFieldValue)
 				).collect(
 					toList()
 				);
 		}
 		if (reflections.isAssignableTo(declaredType, Optional.class)) {
-			if (valueRepresentation == null) return Optional.empty();
-			Declaration typeOfOptional = valueType.getOwnDeclaration().getParameters().values().iterator().next();
-			return Optional.of(transform(typeParser.parse(typeOfOptional), valueRepresentation, onMapEntityProcessor));
+			if (value == null) return Optional.empty();
+			Declaration typeOfOptional = type.getOwnDeclaration().getParameters().values().iterator().next();
+			return Optional.of(transform(typeParser.parse(typeOfOptional), value, onComplexFieldValue));
 		}
-		throw new IllegalStateException("Invalid data in the map: " + valueRepresentation);
+		throw new IllegalStateException("Invalid data in the map: " + value);
 	}
 
 	private void assertParsedTypeIsResolved(ParsedType returnType) {

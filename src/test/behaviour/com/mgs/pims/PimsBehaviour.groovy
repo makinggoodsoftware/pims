@@ -1,8 +1,9 @@
-package com.pims
+package com.mgs.pims
 
-import com.pims.core.Pims
-import com.pims.core.PimsMapEntities
-import com.pims.spring.PimsConfig
+import com.mgs.pims.core.Pims
+import com.mgs.pims.core.PimsMapEntities
+import com.mgs.pims.core.PimsMixersProvider
+import com.mgs.pims.spring.PimsConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
@@ -12,6 +13,7 @@ import spock.lang.Specification
 class PimsBehaviour extends Specification{
     @Autowired Pims pims
     @Autowired PimsMapEntities pimsMapEntities
+    @Autowired PimsMixersProvider pimsMixersProvider
 
     def "pims is created" (){
         expect:
@@ -21,5 +23,11 @@ class PimsBehaviour extends Specification{
     def "pimsMapEntities is created" (){
         expect:
         pimsMapEntities != null
+    }
+
+    def "pimsMixersProvider is created" (){
+        expect:
+        pimsMixersProvider != null
+        pimsMixersProvider.from(PimsMapEntities).is(pimsMapEntities)
     }
 }

@@ -1,4 +1,4 @@
-package com.pims.core;
+package com.mgs.pims.core;
 
 import com.reflections.ParsedType;
 
@@ -7,11 +7,11 @@ import java.util.Map;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 public class PimsFactory {
-    private final MapEntityTransformer mapEntityTransformer;
+    private final PimsMapEntityMapTransformer pimsMapEntityMapTransformer;
     private final PimsLinker pimsLinker;
 
-    public PimsFactory(MapEntityTransformer mapEntityTransformer, PimsLinker pimsLinker) {
-        this.mapEntityTransformer = mapEntityTransformer;
+    public PimsFactory(PimsMapEntityMapTransformer pimsMapEntityMapTransformer, PimsLinker pimsLinker) {
+        this.pimsMapEntityMapTransformer = pimsMapEntityMapTransformer;
         this.pimsLinker = pimsLinker;
     }
 
@@ -38,7 +38,7 @@ public class PimsFactory {
 
     private <T extends PimsMapEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
         Class actualType = type.getActualType().get();
-        Map<String, Object> domainMap = mapEntityTransformer.transform(type, valueMap, (mapEntityParsedType, value) -> {
+        Map<String, Object> domainMap = pimsMapEntityMapTransformer.transform(type, valueMap, (mapEntityParsedType, value) -> {
             //noinspection unchecked
             Map<String, Object> castedValue = (Map<String, Object>) value;
             return fromValueMap(mapEntityParsedType, castedValue, mutable);

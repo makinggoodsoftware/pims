@@ -1,12 +1,9 @@
-package com.pims.annotations;
-
-import org.springframework.stereotype.Component;
+package com.mgs.pims.annotations;
 
 import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Component
 @Retention(RUNTIME)
 public @interface PimsMixer {
 }
