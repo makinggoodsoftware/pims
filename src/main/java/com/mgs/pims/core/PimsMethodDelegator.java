@@ -1,23 +1,34 @@
 package com.mgs.pims.core;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.List;
 
-public class PimsMethodDelegator {
-	private final Class managerType;
-	private final Method delegator;
+public class PimsMethodDelegator <T extends PimsMapEntity>{
+	private final Class<T> sourceType;
+	private final Object delegator;
+    private final Method delegatorMethod;
+    private final List<PimsMethodParameterType> pimsMethodParameterTypes;
 
-	public PimsMethodDelegator(Class managerType, Method delegator) {
-		this.managerType = managerType;
+	public PimsMethodDelegator(Class<T> sourceType, Object delegator, Method delegatorMethod, List<PimsMethodParameterType> pimsMethodParameterTypes) {
+		this.sourceType = sourceType;
 		this.delegator = delegator;
+        this.delegatorMethod = delegatorMethod;
+        this.pimsMethodParameterTypes = pimsMethodParameterTypes;
+    }
+
+	public Class<T> getSourceType() {
+		return sourceType;
 	}
 
-	public Object delegate(PimsMixersProvider pimsMixersProvider, Class type, Object proxy, Method method, Map<String, Object> domainMap, Map<String, Object> valueMap, boolean open, Object[] args) {
-		try {
-			return delegator.invoke(pimsMixersProvider.from(managerType), proxy, domainMap, args);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new IllegalStateException(e);
-		}
+	public Object getDelegator() {
+		return delegator;
 	}
+
+    public Method getDelegatorMethod() {
+        return delegatorMethod;
+    }
+
+    public List<PimsMethodParameterType> getPimsMethodParameterTypes() {
+        return pimsMethodParameterTypes;
+    }
 }

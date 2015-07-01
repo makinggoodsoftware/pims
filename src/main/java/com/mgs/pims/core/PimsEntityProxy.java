@@ -8,28 +8,30 @@ public class PimsEntityProxy implements InvocationHandler {
 	private final Class<? extends PimsMapEntity> type;
 	private final Map<String, Object> domainMap;
 	private final Map<String, Object> valueMap;
-	private final Map<Method, PimsMethodDelegator> methodManagers;
+	private final Map<Method, PimsMethodDelegator> methodDelegators;
 	private final boolean mutable;
+	private final PimsMethodCaller pimsMethodCaller;
 
-	public PimsEntityProxy(Class type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<Method, PimsMethodDelegator> methodManagers, boolean mutable) {
+	public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, Class type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<Method, PimsMethodDelegator> methodDelegators, boolean mutable) {
 		this.type = type;
 		this.domainMap = domainMap;
 		this.valueMap = valueMap;
-		this.methodManagers = methodManagers;
+		this.methodDelegators = methodDelegators;
 		this.mutable = mutable;
-	}
+        this.pimsMethodCaller = pimsMethodCaller;
+    }
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		return methodManagers.get(method).delegate(null, type, proxy, method, domainMap, valueMap, mutable, args);
+		return pimsMethodCaller.call (methodDelegators.get(method), proxy, args);
 	}
 
 	public Map<String, Object> getDomainMap() {
 		return domainMap;
 	}
 
-	public Map<Method, PimsMethodDelegator> getMethodManagers() {
-		return methodManagers;
+	public Map<Method, PimsMethodDelegator> getMethodDelegators() {
+		return methodDelegators;
 	}
 
 	public boolean isMutable() {

@@ -1,18 +1,27 @@
 package com.mgs.pims.core;
 
-import com.reflections.ParsedType;
+import com.mgs.maps.MapFieldValueFactory;
+import com.mgs.maps.MapWalker;
+import com.mgs.maps.OnMapFieldCallback;
+import com.mgs.reflections.ParsedType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 public class PimsFactory {
-    private final PimsMapEntityMapTransformer pimsMapEntityMapTransformer;
     private final PimsLinker pimsLinker;
+    private final MapWalker mapWalker;
+    private final MapFieldValueFactory mapFieldValueFactory;
+    private final PimsMethodCaller pimsMethodCaller;
 
-    public PimsFactory(PimsMapEntityMapTransformer pimsMapEntityMapTransformer, PimsLinker pimsLinker) {
-        this.pimsMapEntityMapTransformer = pimsMapEntityMapTransformer;
+
+    public PimsFactory(PimsLinker pimsLinker, MapWalker mapWalker, MapFieldValueFactory mapFieldValueFactory, PimsMethodCaller pimsMethodCaller) {
         this.pimsLinker = pimsLinker;
+        this.mapWalker = mapWalker;
+        this.mapFieldValueFactory = mapFieldValueFactory;
+        this.pimsMethodCaller = pimsMethodCaller;
     }
 
     public <T extends PimsMapEntity> T immutable (Class<T> type, Map<String, Object> valueMap){
@@ -38,11 +47,14 @@ public class PimsFactory {
 
     private <T extends PimsMapEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
         Class actualType = type.getActualType().get();
-        Map<String, Object> domainMap = pimsMapEntityMapTransformer.transform(type, valueMap, (mapEntityParsedType, value) -> {
+        OnMapFieldCallback onSpecialCaseProcessor = (fieldAccessor, value) -> {
             //noinspection unchecked
             Map<String, Object> castedValue = (Map<String, Object>) value;
-            return fromValueMap(mapEntityParsedType, castedValue, mutable);
-        });
+            return fromValueMap(fieldAccessor.getReturnType(), castedValue, mutable);
+        };
+        Map<String, Object> transformed = new HashMap<>();
+        mapWalker.walk(valueMap, type, new PimsMapEntityFieldCallback(onSpecialCaseProcessor, transformed, mapFieldValueFactory));
+        Map<String, Object> domainMap = transformed;
         return proxy(mutable, actualType, valueMap, domainMap);
 
     }
@@ -53,6 +65,7 @@ public class PimsFactory {
                 PimsFactory.class.getClassLoader(),
                 new Class[]{actualType},
                 new PimsEntityProxy(
+                        pimsMethodCaller,
                         actualType,
                         valueMap,
                         domainMap,
