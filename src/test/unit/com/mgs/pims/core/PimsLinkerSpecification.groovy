@@ -1,42 +1,36 @@
-package com.ms.pims.core
+package com.mgs.pims.core
 
 import com.mgs.pims.annotations.PimsEntity
 import com.mgs.pims.annotations.PimsMethod
 import com.mgs.pims.annotations.PimsMixer
-import com.mgs.pims.core.PimsEntityProxy
-import com.mgs.pims.core.PimsLinker
-import com.mgs.pims.core.PimsMapEntities
-import com.mgs.pims.core.PimsMapEntity
-import com.mgs.pims.core.PimsMethodDelegator
-import com.mgs.pims.core.PimsMethodDelegatorFactory
-import com.mgs.pims.core.PimsMixersProvider
-import com.mgs.reflections.Reflections
-import com.mgs.spring.AppConfig
 import com.mgs.text.PatternMatcher
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
+import com.mgs.text.PatternMatchingResult
 import spock.lang.Specification
 
 import java.lang.reflect.Method
 
-import static com.mgs.pims.core.PimsMethodParameterType.DOMAIN_MAP
-import static com.mgs.pims.core.PimsMethodParameterType.PROXY_OBJECT
-import static com.mgs.pims.core.PimsMethodParameterType.SOURCE_OBJECT
-import static com.mgs.pims.core.PimsMethodParameterType.VALUE_MAP
+import static com.mgs.pims.core.PimsMethodParameterType.*
 
-@ContextConfiguration(classes = [AppConfig.class])
-class PimsLinkerAndMethodCallerBehaviour extends Specification{
+class PimsLinkerSpecification extends Specification{
     PimsLinker linker
     PimsMixersProvider pimsMixersProviderMock = Mock(PimsMixersProvider)
-    @Autowired Reflections reflections;
     PimsMixerSample pimsMixerSampleMock = Mock(PimsMixerSample)
     PimsMapEntities pimsMapEntitiesMock = Mock(PimsMapEntities)
-    @Autowired PatternMatcher patternMatcher;
+    PatternMatcher patternMatcherMock = Mock(PatternMatcher)
+    PatternMatchingResult success = new PatternMatchingResult(true)
+    PatternMatchingResult failure = new PatternMatchingResult(false)
 
     def "setup" () {
-        linker = new PimsLinker(new PimsMethodDelegatorFactory(pimsMixersProviderMock, patternMatcher))
+        linker = new PimsLinker(new PimsMethodDelegatorFactory(pimsMixersProviderMock, patternMatcherMock))
         pimsMixersProviderMock.from(PimsMixerSample) >> pimsMixerSampleMock
         pimsMixersProviderMock.from(PimsMapEntities) >> pimsMapEntitiesMock
+        //noinspection GroovyAssignabilityCheck
+        patternMatcherMock.match(_, _) >> {toMatch, pattern ->
+            return (toMatch == pattern) ?
+                    success :
+                    failure
+            ;
+        }
     }
 
     def "should link entity correctly" (){
