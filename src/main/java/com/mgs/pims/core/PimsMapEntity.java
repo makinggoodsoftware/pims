@@ -18,5 +18,5 @@ public interface PimsMapEntity {
     boolean isMutable();
 
     @VirtualField
-    ParsedType getType();
+    Class<? extends PimsMapEntity> getType();
 }

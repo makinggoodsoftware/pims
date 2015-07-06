@@ -4,6 +4,7 @@ import com.mgs.pims.core.PimsFactory;
 import com.mgs.pims.core.PimsLinker;
 import com.mgs.pims.core.PimsMethodDelegatorFactory;
 import com.mgs.spring.reflection.ReflectionsConfig;
+import com.mgs.spring.text.TextConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,7 @@ public class PimsConfig {
     @Autowired
     private MixersConfig mixersConfig;
     @Autowired
-    private ReflectionsConfig reflectionsConfig;
+    private TextConfig textConfig;
 
 
     @Bean
@@ -30,6 +31,9 @@ public class PimsConfig {
 
     @Bean
     public PimsMethodDelegatorFactory pimsMethodDelegatorFactory (){
-        return new PimsMethodDelegatorFactory (mixersConfig.pimsMixersProvider());
+        return new PimsMethodDelegatorFactory (
+                mixersConfig.pimsMixersProvider(),
+                textConfig.patternMatcher()
+        );
     }
 }

@@ -42,7 +42,7 @@ public class PimsFactory {
 
     private PimsMapEntity ofMutability(PimsMapEntity pimsMapEntity, boolean mutable) {
         if (pimsMapEntity.isMutable() == mutable) return pimsMapEntity;
-        return proxy(mutable, pimsMapEntity.getType().getActualType().get(), pimsMapEntity.getValueMap(), pimsMapEntity.getDomainMap());
+        return proxy(mutable, pimsMapEntity.getType(), pimsMapEntity.getValueMap(), pimsMapEntity.getDomainMap());
     }
 
     private <T extends PimsMapEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
