@@ -1,5 +1,5 @@
 package com.mgs.pims.core;
 
 public enum PimsMethodParameterType {
-    SOURCE_OBJECT, DOMAIN_MAP, VALUE_MAP, PROXY_OBJECT
+    SOURCE_OBJECT, DOMAIN_MAP, VALUE_MAP, METHOD_PARAMETERS, PROXY_OBJECT
 }
