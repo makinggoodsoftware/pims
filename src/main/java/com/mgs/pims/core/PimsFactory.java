@@ -55,7 +55,7 @@ public class PimsFactory {
             return fromValueMap(fieldAccessor.getReturnType(), castedValue, mutable);
         };
         Map<String, Object> transformed = new HashMap<>();
-        mapWalker.walk(valueMap, type, new PimsMapEntityFieldCallback(onSpecialCaseProcessor, transformed, mapFieldValueFactory));
+        mapWalker.walk(type, valueMap, new PimsMapEntityFieldCallback(onSpecialCaseProcessor, transformed, mapFieldValueFactory));
         Map<String, Object> domainMap = transformed;
         return proxy(mutable, actualType, valueMap, domainMap);
 

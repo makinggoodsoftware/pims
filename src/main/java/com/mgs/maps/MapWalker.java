@@ -22,7 +22,7 @@ public class MapWalker {
 		this.reflections = reflections;
 	}
 
-	public void walk(Map<String, Object> map, ParsedType type, OnMapFieldCallback callback) {
+	public void walk(ParsedType type, Map<String, Object> map, OnMapFieldCallback callback) {
 		Map<String, List<FieldAccessor>> accesorsByMethodName =
 				fieldAccessorParser.parse(type).
 						filter(this::isAGetter).
