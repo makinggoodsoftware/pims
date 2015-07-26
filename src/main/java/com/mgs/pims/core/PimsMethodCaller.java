@@ -17,7 +17,7 @@ public class PimsMethodCaller {
             Object delegator = pimsMethodDelegator.getDelegator();
             Method delegatorMethod = pimsMethodDelegator.getDelegatorMethod();
             List<PimsMethodParameterType> pimsMethodParameterTypes = pimsMethodDelegator.getPimsMethodParameterTypes();
-            Object[] params = pimsParameters.parse(pimsMethodParameterTypes, pimsMethodCallParameters);
+            Object[] params = pimsParameters.apply(pimsMethodParameterTypes, pimsMethodCallParameters);
             return delegatorMethod.invoke(delegator, params);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException (e);

@@ -3,7 +3,6 @@ package com.mgs.spring.pims;
 import com.mgs.pims.core.PimsFactory;
 import com.mgs.pims.core.PimsLinker;
 import com.mgs.pims.core.PimsMethodDelegatorFactory;
-import com.mgs.spring.reflection.ReflectionsConfig;
 import com.mgs.spring.text.TextConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +32,7 @@ public class PimsConfig {
     public PimsMethodDelegatorFactory pimsMethodDelegatorFactory (){
         return new PimsMethodDelegatorFactory (
                 mixersConfig.pimsMixersProvider(),
-                textConfig.patternMatcher()
-        );
+                textConfig.patternMatcher(),
+                mixersConfig.pimsParameters ());
     }
 }

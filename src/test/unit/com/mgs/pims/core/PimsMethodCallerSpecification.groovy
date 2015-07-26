@@ -19,12 +19,12 @@ class PimsMethodCallerSpecification extends Specification {
     def "should call delegated method with the proper parameters" (){
         given:
         Object[] actualParams = [pimsEntitySampleMock] as Object[]
-        pimsParametersMock.parse([PimsMethodParameterType.SOURCE_OBJECT], callParameters) >> actualParams
+        pimsParametersMock.apply([PimsMethodParameterType.PROXY_OBJECT], callParameters) >> actualParams
         PimsMethodDelegator delegator = new PimsMethodDelegator(
                 PimsEntitySample,
                 pimsMixerSampleMock,
                 PimsMixerSample.getMethod("onDoSomething", PimsEntitySample),
-                [PimsMethodParameterType.SOURCE_OBJECT]
+                [PimsMethodParameterType.PROXY_OBJECT]
         )
 
 
