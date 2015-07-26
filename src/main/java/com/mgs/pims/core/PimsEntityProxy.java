@@ -11,19 +11,21 @@ public class PimsEntityProxy implements InvocationHandler {
 	private final Map<Method, PimsMethodDelegator> methodDelegators;
 	private final boolean mutable;
 	private final PimsMethodCaller pimsMethodCaller;
+	private final PimsParameters pimsParameters;
 
-	public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, Class type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<Method, PimsMethodDelegator> methodDelegators, boolean mutable) {
+	public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, Class type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<Method, PimsMethodDelegator> methodDelegators, boolean mutable, PimsParameters pimsParameters) {
 		this.type = type;
 		this.domainMap = domainMap;
 		this.valueMap = valueMap;
 		this.methodDelegators = methodDelegators;
 		this.mutable = mutable;
         this.pimsMethodCaller = pimsMethodCaller;
-    }
+		this.pimsParameters = pimsParameters;
+	}
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		return pimsMethodCaller.delegate(methodDelegators.get(method), new PimsMethodCallParameters(proxy, args));
+		return pimsMethodCaller.delegate(methodDelegators.get(method), pimsParameters.from(proxy, args));
 	}
 
 	public Map<String, Object> getDomainMap() {

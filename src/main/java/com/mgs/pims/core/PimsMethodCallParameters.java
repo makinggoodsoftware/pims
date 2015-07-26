@@ -14,4 +14,8 @@ public class PimsMethodCallParameters {
     public Object get(PimsMethodParameterType pimsMethodParameterType) {
         return parameters.get(pimsMethodParameterType);
     }
+
+    public Map<PimsMethodParameterType, Object> getParameters() {
+        return parameters;
+    }
 }

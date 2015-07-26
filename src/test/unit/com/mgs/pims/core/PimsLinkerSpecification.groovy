@@ -17,8 +17,8 @@ class PimsLinkerSpecification extends Specification{
     PimsMixerSample pimsMixerSampleMock = Mock(PimsMixerSample)
     PimsMapEntities pimsMapEntitiesMock = Mock(PimsMapEntities)
     PatternMatcher patternMatcherMock = Mock(PatternMatcher)
-    PatternMatchingResult success = new PatternMatchingResult(true)
-    PatternMatchingResult failure = new PatternMatchingResult(false)
+    PatternMatchingResult success = new PatternMatchingResult(true, placeholders)
+    PatternMatchingResult failure = new PatternMatchingResult(false, placeholders)
 
     def "setup" () {
         linker = new PimsLinker(new PimsMethodDelegatorFactory(pimsMixersProviderMock, patternMatcherMock))

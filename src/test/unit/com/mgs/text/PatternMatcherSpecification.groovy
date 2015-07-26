@@ -12,12 +12,16 @@ class PatternMatcherSpecification extends Specification {
         PatternMatchingResult result = testObj.match(toMatch, pattern)
 
         then:
-        result.isMatch() == expectedResult
+        result.isMatch() == expectedMatch
+        result.placeholders == expectedPlaceholders
 
         where:
-        toMatch         | pattern             | expectedResult
-        "getSomething"  | "get{fieldName}"    | true
-        "badName"       | "get{fieldName}"    | false
-        "literal"       | "literal"           | true
+        toMatch         | pattern             | expectedPlaceholders        |  expectedMatch
+        "getSomething"  | "get{fieldName}"    | [fieldName:'Something']     |  true
+        "badName"       | "get{fieldName}"    | null                        |  false
+        "literal"       | "literal"           | [:]                         |  true
+        "getBlahById"   | "get{fieldName}ById"| [fieldName:'Blah']          |  true
+        "getByByById"   | "get{fieldName}ById"| [fieldName:'ByBy']          |  true
+        "getByByById"   | "get{a}By{b}"       | [a:'ByBy', b:'Id']          |  true
     }
 }

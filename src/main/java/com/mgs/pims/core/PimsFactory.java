@@ -11,13 +11,15 @@ import java.util.Map;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 public class PimsFactory {
+    private final PimsParameters pimsParameters;
     private final PimsLinker pimsLinker;
     private final MapWalker mapWalker;
     private final MapFieldValueFactory mapFieldValueFactory;
     private final PimsMethodCaller pimsMethodCaller;
 
 
-    public PimsFactory(PimsLinker pimsLinker, MapWalker mapWalker, MapFieldValueFactory mapFieldValueFactory, PimsMethodCaller pimsMethodCaller) {
+    public PimsFactory(PimsParameters pimsParameters, PimsLinker pimsLinker, MapWalker mapWalker, MapFieldValueFactory mapFieldValueFactory, PimsMethodCaller pimsMethodCaller) {
+        this.pimsParameters = pimsParameters;
         this.pimsLinker = pimsLinker;
         this.mapWalker = mapWalker;
         this.mapFieldValueFactory = mapFieldValueFactory;
@@ -70,8 +72,8 @@ public class PimsFactory {
                         valueMap,
                         domainMap,
                         pimsLinker.link(actualType),
-                        mutable
-                )
+                        mutable,
+                        pimsParameters)
         );
     }
 }

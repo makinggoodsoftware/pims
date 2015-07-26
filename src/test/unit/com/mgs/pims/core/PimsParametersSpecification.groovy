@@ -15,10 +15,10 @@ class PimsParametersSpecification extends Specification{
         when:
         Object[] result = testObj.parse(
             [SOURCE_OBJECT, METHOD_PARAMETERS],
-            new PimsMethodCallParameters(
-                sourceObjectMock,
-                [parameter1Mock, parameter2Mock] as Object []
-            )
+            [
+                (SOURCE_OBJECT) : sourceObjectMock,
+                (METHOD_PARAMETERS) : [parameter1Mock, parameter2Mock] as Object []
+            ]
         )
 
         then:
