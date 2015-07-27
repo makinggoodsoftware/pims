@@ -8,31 +8,37 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class PimsMethodDelegatorFactory {
-    private final PimsMixersProvider pimsMixersProvider;
     private final PatternMatcher patternMatcher;
     private final PimsParameters pimsParameters;
 
 
-    public PimsMethodDelegatorFactory(PimsMixersProvider pimsMixersProvider, PatternMatcher patternMatcher, PimsParameters pimsParameters) {
-        this.pimsMixersProvider = pimsMixersProvider;
+    public PimsMethodDelegatorFactory(PatternMatcher patternMatcher, PimsParameters pimsParameters) {
         this.patternMatcher = patternMatcher;
         this.pimsParameters = pimsParameters;
     }
 
     public <T extends PimsMapEntity> PimsMethodDelegator<T> link(Class<T> entityType, Method sourceMethod) {
-        Class declaredEntityType = sourceMethod.getDeclaringClass();
-        PimsEntity annotation = (PimsEntity) declaredEntityType.getAnnotation(PimsEntity.class);
-        if (annotation == null) throw new IllegalStateException("Can't link " + declaredEntityType + ". Is not annotated with PimsEntity");
-        Class mixerType = annotation.managedBy();
-        Object mixer = pimsMixersProvider.from(mixerType);
-        Method mixerMethod = mixerMethod(sourceMethod, mixerType);
-        if (mixerMethod == null) throw new IllegalStateException("Can't map the method: " + sourceMethod +  " in " + mixerType);
+        Class rootEntityType = sourceMethod.getDeclaringClass();
+        Method mixerMethod = findMixerMethodFrom(sourceMethod, rootEntityType);
         List<PimsMethodParameterType> parameterTypes = pimsParameters.parse (mixerMethod);
-        return new PimsMethodDelegator<>(entityType, mixer, mixerMethod, parameterTypes);
+        return new PimsMethodDelegator<>(entityType, mixerMethod.getDeclaringClass(), mixerMethod, parameterTypes);
     }
 
-    private Method mixerMethod(Method sourceMethod, Class declaredEntityType) {
-        for (Method declaredMethod : declaredEntityType.getDeclaredMethods()) {
+    private Method findMixerMethodFrom(Method sourceMethod, Class rootEntityType) {
+        Method mixerMethod;
+        Class thisEntityType = rootEntityType;
+        while (true){
+            Class mixerType = managedBy(thisEntityType);
+            mixerMethod = mixerMethod(mixerType, sourceMethod);
+            if (mixerMethod != null) return mixerMethod;
+            Class[] parentInterfaces = thisEntityType.getInterfaces();
+            if (parentInterfaces == null || parentInterfaces.length < 1) throw new IllegalStateException("Can't link the method!");
+            thisEntityType = parentInterfaces[0];
+        }
+    }
+
+    private Method mixerMethod(Class mixerType, Method sourceMethod) {
+        for (Method declaredMethod : mixerType.getDeclaredMethods()) {
             PimsMethod pimsMethod = declaredMethod.getAnnotation(PimsMethod.class);
             if (pimsMethod != null){
                 String pattern = pimsMethod.pattern();
@@ -41,7 +47,13 @@ public class PimsMethodDelegatorFactory {
                 }
             }
         }
-        throw new IllegalStateException("Can't link " + sourceMethod + ", in: " + declaredEntityType);
+        return null;
+    }
+
+    private Class managedBy(Class declaredEntityType) {
+        PimsEntity annotation = (PimsEntity) declaredEntityType.getAnnotation(PimsEntity.class);
+        if (annotation == null) throw new IllegalStateException("Can't link " + declaredEntityType + ". Is not annotated with PimsEntity");
+        return annotation.managedBy();
     }
 
 }

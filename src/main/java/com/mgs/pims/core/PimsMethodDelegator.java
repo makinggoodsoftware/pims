@@ -5,13 +5,13 @@ import java.util.List;
 
 public class PimsMethodDelegator <T extends PimsMapEntity>{
 	private final Class<T> pimsEntityType;
-	private final Object delegator;
+	private final Class targetType;
     private final Method delegatorMethod;
     private final List<PimsMethodParameterType> pimsMethodParameterTypes;
 
-	public PimsMethodDelegator(Class<T> pimsEntityType, Object delegator, Method delegatorMethod, List<PimsMethodParameterType> pimsMethodParameterTypes) {
+	public PimsMethodDelegator(Class<T> pimsEntityType, Class targetType, Method delegatorMethod, List<PimsMethodParameterType> pimsMethodParameterTypes) {
 		this.pimsEntityType = pimsEntityType;
-		this.delegator = delegator;
+		this.targetType = targetType;
         this.delegatorMethod = delegatorMethod;
         this.pimsMethodParameterTypes = pimsMethodParameterTypes;
     }
@@ -20,8 +20,8 @@ public class PimsMethodDelegator <T extends PimsMapEntity>{
 		return pimsEntityType;
 	}
 
-	public Object getDelegator() {
-		return delegator;
+	public Object getTargetType() {
+		return targetType;
 	}
 
     public Method getDelegatorMethod() {

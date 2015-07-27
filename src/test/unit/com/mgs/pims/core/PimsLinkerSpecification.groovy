@@ -9,8 +9,6 @@ import spock.lang.Specification
 
 import java.lang.reflect.Method
 
-import static com.mgs.pims.core.PimsMethodParameterType.*
-
 class PimsLinkerSpecification extends Specification{
     PimsLinker linker
     PimsMixersProvider pimsMixersProviderMock = Mock(PimsMixersProvider)
@@ -27,7 +25,7 @@ class PimsLinkerSpecification extends Specification{
     List onGetTypeParamsMock = Mock (List)
 
     def "setup" () {
-        linker = new PimsLinker(new PimsMethodDelegatorFactory(pimsMixersProviderMock, patternMatcherMock, pimsParametersMock))
+        linker = new PimsLinker(new PimsMethodDelegatorFactory(patternMatcherMock, pimsParametersMock))
         pimsMixersProviderMock.from(PimsMixerSample) >> pimsMixerSampleMock
         pimsMixersProviderMock.from(PimsMapEntities) >> pimsMapEntitiesMock
         //noinspection GroovyAssignabilityCheck
@@ -56,7 +54,7 @@ class PimsLinkerSpecification extends Specification{
         PimsMethodDelegator<PimsEntitySample> doSomethingDelegator = result[PimsEntitySample.getMethod("doSomething")]
 
         then:
-        doSomethingDelegator.delegator == pimsMixerSampleMock
+        doSomethingDelegator.targetType == pimsMixerSampleMock
         doSomethingDelegator.delegatorMethod == PimsMixerSample.getMethod("onDoSomething", PimsEntitySample)
         doSomethingDelegator.pimsMethodParameterTypes == onDoSomethingParamsMock
 
@@ -64,7 +62,7 @@ class PimsLinkerSpecification extends Specification{
         PimsMethodDelegator<PimsEntitySample> getDomainMapDelegator = result[PimsEntitySample.getMethod("getDomainMap")]
 
         then:
-        getDomainMapDelegator.delegator == pimsMapEntitiesMock
+        getDomainMapDelegator.targetType == pimsMapEntitiesMock
         getDomainMapDelegator.delegatorMethod == PimsMapEntities.getMethod("onGetDomainMap", Map)
         getDomainMapDelegator.pimsMethodParameterTypes == onGetDomainMapParamsMock
 
@@ -72,7 +70,7 @@ class PimsLinkerSpecification extends Specification{
         PimsMethodDelegator<PimsEntitySample> getValueMapDelegator = result[PimsEntitySample.getMethod("getValueMap")]
 
         then:
-        getValueMapDelegator.delegator == pimsMapEntitiesMock
+        getValueMapDelegator.targetType == pimsMapEntitiesMock
         getValueMapDelegator.delegatorMethod == PimsMapEntities.getMethod("onGetValueMap", Map)
         getValueMapDelegator.pimsMethodParameterTypes == onGetValueMapParamsMock
 
@@ -80,7 +78,7 @@ class PimsLinkerSpecification extends Specification{
         PimsMethodDelegator<PimsEntitySample> isMutableDelegator = result[PimsEntitySample.getMethod("isMutable")]
 
         then:
-        isMutableDelegator.delegator == pimsMapEntitiesMock
+        isMutableDelegator.targetType == pimsMapEntitiesMock
         isMutableDelegator.delegatorMethod == PimsMapEntities.getMethod("onIsMutable", PimsEntityProxy)
         isMutableDelegator.pimsMethodParameterTypes == onIsMutableParamsMock
 
@@ -88,7 +86,7 @@ class PimsLinkerSpecification extends Specification{
         PimsMethodDelegator<PimsEntitySample> getTypeDelegator = result[PimsEntitySample.getMethod("getType")]
 
         then:
-        getTypeDelegator.delegator == pimsMapEntitiesMock
+        getTypeDelegator.targetType == pimsMapEntitiesMock
         getTypeDelegator.delegatorMethod == PimsMapEntities.getMethod("onGetType", PimsEntityProxy)
         getTypeDelegator.pimsMethodParameterTypes == onGetTypeParamsMock
     }

@@ -14,7 +14,7 @@ public class PimsMethodCaller {
 
     public Object delegate(PimsMethodDelegator pimsMethodDelegator, Map<PimsMethodParameterType, Object> pimsMethodCallParameters) {
         try {
-            Object delegator = pimsMethodDelegator.getDelegator();
+            Object delegator = pimsMethodDelegator.getTargetType();
             Method delegatorMethod = pimsMethodDelegator.getDelegatorMethod();
             List<PimsMethodParameterType> pimsMethodParameterTypes = pimsMethodDelegator.getPimsMethodParameterTypes();
             Object[] params = pimsParameters.apply(pimsMethodParameterTypes, pimsMethodCallParameters);

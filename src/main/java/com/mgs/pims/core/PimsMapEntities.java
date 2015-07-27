@@ -7,9 +7,7 @@ import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
 
-import static com.mgs.pims.core.PimsMethodParameterType.DOMAIN_MAP;
-import static com.mgs.pims.core.PimsMethodParameterType.PROXY_OBJECT;
-import static com.mgs.pims.core.PimsMethodParameterType.VALUE_MAP;
+import static com.mgs.pims.core.PimsMethodParameterType.*;
 
 @PimsMixer
 public class PimsMapEntities {
@@ -39,6 +37,14 @@ public class PimsMapEntities {
             @PimsParameter(type = PROXY_OBJECT) PimsEntityProxy pimsEntityProxy
     ) {
         return pimsEntityProxy.isMutable();
+    }
+
+    @PimsMethod(pattern = "get{fieldName}")
+    public Object onGetter(
+            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
+            @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName
+    ) {
+        return domainMap.get(fieldName);
     }
 
 }

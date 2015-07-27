@@ -4,6 +4,7 @@ import com.mgs.pims.core.PimsFactory;
 import com.mgs.pims.core.PimsLinker;
 import com.mgs.pims.core.PimsMethodDelegatorFactory;
 import com.mgs.spring.maps.MapsConfig;
+import com.mgs.spring.reflection.ReflectionsConfig;
 import com.mgs.spring.text.TextConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({MixersConfig.class, MapsConfig.class})
+@Import({
+        MixersConfig.class,
+        MapsConfig.class,
+        ReflectionsConfig.class
+})
 public class PimsConfig {
     @Autowired
     private MixersConfig mixersConfig;
@@ -19,6 +24,8 @@ public class PimsConfig {
     private TextConfig textConfig;
     @Autowired
     private MapsConfig mapsConfig;
+    @Autowired
+    private ReflectionsConfig reflectionsConfig;
 
 
     @Bean
@@ -28,7 +35,8 @@ public class PimsConfig {
                 pimsLinker(),
                 mapsConfig.mapWalker(),
                 mapsConfig.mapFieldValueFactory(),
-                mixersConfig.pimsMethodCaller()
+                mixersConfig.pimsMethodCaller(),
+                reflectionsConfig.typeParser()
         );
     }
 
@@ -40,7 +48,6 @@ public class PimsConfig {
     @Bean
     public PimsMethodDelegatorFactory pimsMethodDelegatorFactory (){
         return new PimsMethodDelegatorFactory (
-                mixersConfig.pimsMixersProvider(),
                 textConfig.patternMatcher(),
                 mixersConfig.pimsParameters ());
     }

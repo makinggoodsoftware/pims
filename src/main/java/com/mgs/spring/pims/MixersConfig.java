@@ -1,9 +1,6 @@
 package com.mgs.spring.pims;
 
-import com.mgs.pims.core.PimsMapEntities;
-import com.mgs.pims.core.PimsMethodCaller;
-import com.mgs.pims.core.PimsMixersProvider;
-import com.mgs.pims.core.PimsParameters;
+import com.mgs.pims.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +14,11 @@ public class MixersConfig {
     @Bean
     public PimsMixersProvider pimsMixersProvider (){
         return new PimsMixersProvider();
+    }
+
+    @Bean
+    public NullMixer nullMixer (){
+        return new NullMixer();
     }
 
     @Bean

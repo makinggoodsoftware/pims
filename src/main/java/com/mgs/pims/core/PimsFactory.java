@@ -4,6 +4,7 @@ import com.mgs.maps.MapFieldValueFactory;
 import com.mgs.maps.MapWalker;
 import com.mgs.maps.OnMapFieldCallback;
 import com.mgs.reflections.ParsedType;
+import com.mgs.reflections.TypeParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,18 +17,19 @@ public class PimsFactory {
     private final MapWalker mapWalker;
     private final MapFieldValueFactory mapFieldValueFactory;
     private final PimsMethodCaller pimsMethodCaller;
+    private final TypeParser typeParser;
 
-
-    public PimsFactory(PimsParameters pimsParameters, PimsLinker pimsLinker, MapWalker mapWalker, MapFieldValueFactory mapFieldValueFactory, PimsMethodCaller pimsMethodCaller) {
+    public PimsFactory(PimsParameters pimsParameters, PimsLinker pimsLinker, MapWalker mapWalker, MapFieldValueFactory mapFieldValueFactory, PimsMethodCaller pimsMethodCaller, TypeParser typeParser) {
         this.pimsParameters = pimsParameters;
         this.pimsLinker = pimsLinker;
         this.mapWalker = mapWalker;
         this.mapFieldValueFactory = mapFieldValueFactory;
         this.pimsMethodCaller = pimsMethodCaller;
+        this.typeParser = typeParser;
     }
 
     public <T extends PimsMapEntity> T immutable (Class<T> type, Map<String, Object> valueMap){
-        return null;
+        return immutable(typeParser.parse(type), valueMap);
     }
 
     public <T extends PimsMapEntity> T immutable(ParsedType type, Map<String, Object> valueMap) {
