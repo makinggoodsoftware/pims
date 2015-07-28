@@ -18,18 +18,36 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
     def "setup" (){
         pimsMixersProviderMock.from(NullMixer) >> nullMixerMock
         testObj = new PimsMethodDelegatorFactory(patternMatcherMock, pimsParametersMock)
-        patternMatcherMock.match("getName", "getDomainMap") >> failure
-        patternMatcherMock.match("getName", "getValueMap") >> failure
-        patternMatcherMock.match("getName", "getType") >> failure
-        patternMatcherMock.match("getName", "isMutable") >> failure
-        patternMatcherMock.match("getName", "get{fieldName}") >> success
+        pimsParametersMock.parse (_) >> parameterTypesMock
+    }
 
-        pimsParametersMock.parse (
-                new LinkedMethod(PimsMapEntities.getMethod("onGetter", Map, String), [fieldName:'Name'])
-        ) >> parameterTypesMock
+    def "full matches should take precedence" (){
+        given:
+        patternMatcherMock.match("getDomainMap", "getDomainMap") >> success
+        patternMatcherMock.match("getDomainMap", "getValueMap") >> failure
+        patternMatcherMock.match("getDomainMap", "getHasPlaceholders") >> failure
+        patternMatcherMock.match("getDomainMap", "isMutable") >> failure
+        patternMatcherMock.match("getDomainMap", "get{fieldName}") >> success
+
+
+        when:
+        PimsMethodDelegator delegator = testObj.link(PimsEntitySample, PimsEntitySample.getMethod("getDomainMap"))
+
+        then:
+        delegator.targetType == PimsMapEntities
+        delegator.delegatorMethod == PimsMapEntities.getMethod("onGetDomainMap", Map)
+        delegator.pimsEntityType == PimsEntitySample
+        delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 
     def "should delegate method to parent if not present" (){
+        given:
+        patternMatcherMock.match("getName", "getDomainMap") >> failure
+        patternMatcherMock.match("getName", "getValueMap") >> failure
+        patternMatcherMock.match("getName", "getHasPlaceholders") >> failure
+        patternMatcherMock.match("getName", "isMutable") >> failure
+        patternMatcherMock.match("getName", "get{fieldName}") >> success
+
         when:
         PimsMethodDelegator delegator = testObj.link(PimsEntitySample, PimsEntitySample.getMethod("getName"))
 

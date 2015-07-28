@@ -25,7 +25,7 @@ public class PimsMapEntities {
         return valueMap;
     }
 
-    @PimsMethod(pattern = "getType")
+    @PimsMethod(pattern = "getHasPlaceholders")
     public Class<? extends PimsMapEntity> onGetType(
             @PimsParameter(type = PROXY_OBJECT) PimsEntityProxy pimsEntityProxy
     ) {

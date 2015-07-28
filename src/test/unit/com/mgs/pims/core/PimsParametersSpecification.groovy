@@ -66,7 +66,7 @@ class PimsParametersSpecification extends Specification{
     def "it should parse placeholders correctly" (){
         expect:
         testObj.parse(
-                new LinkedMethod(PimsMapEntities.getMethod("onGetter", Map, String), [fieldName:'name'])
+                new LinkedMethod(PimsMapEntities.getMethod("onGetter", Map, String), [fieldName: 'name'])
         ) == [simple(DOMAIN_MAP), placeholder('name')]
     }
 

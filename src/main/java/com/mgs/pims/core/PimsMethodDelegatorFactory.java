@@ -7,6 +7,7 @@ import com.mgs.text.PatternMatchingResult;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class PimsMethodDelegatorFactory {
     private final PatternMatcher patternMatcher;
@@ -20,7 +21,8 @@ public class PimsMethodDelegatorFactory {
 
     public <T extends PimsMapEntity> PimsMethodDelegator<T> link(Class<T> entityType, Method sourceMethod) {
         Class rootEntityType = sourceMethod.getDeclaringClass();
-        LinkedMethod mixerMethod = findMixerMethodFrom(sourceMethod, rootEntityType);
+        PriorityQueue<LinkedMethod> mixerMethods = findMixerMethodCandidatesFrom(sourceMethod, rootEntityType);
+        LinkedMethod mixerMethod = mixerMethods.poll();
         List<ParameterResolution> parameterTypes = pimsParameters.parse (mixerMethod);
         Method declaredMethod = mixerMethod.getDeclaredMethod();
         return new PimsMethodDelegator<>(
@@ -31,17 +33,35 @@ public class PimsMethodDelegatorFactory {
         );
     }
 
-    private LinkedMethod findMixerMethodFrom(Method sourceMethod, Class rootEntityType) {
-        LinkedMethod mixerMethod;
+    private PriorityQueue<LinkedMethod> findMixerMethodCandidatesFrom(Method sourceMethod, Class rootEntityType) {
+        PriorityQueue<LinkedMethod> possibleCandidates = new PriorityQueue<>(
+                (left, right) -> {
+                    int leftFirst = -1;
+                    int rightFirst = 1;
+                    int dontCare = 0;
+
+                    return hasPlaceholders(right) ? leftFirst :
+                           hasPlaceholders(left) ? rightFirst :
+                               dontCare;
+                }
+        );
         Class thisEntityType = rootEntityType;
-        while (true){
+        while (thisEntityType != null){
             Class mixerType = managedBy(thisEntityType);
-            mixerMethod = mixerMethod(mixerType, sourceMethod);
-            if (mixerMethod != null) return mixerMethod;
+            LinkedMethod mixerMethod = mixerMethod(mixerType, sourceMethod);
+            if (mixerMethod != null) possibleCandidates.add(mixerMethod);
             Class[] parentInterfaces = thisEntityType.getInterfaces();
-            if (parentInterfaces == null || parentInterfaces.length < 1) throw new IllegalStateException("Can't link the method!");
-            thisEntityType = parentInterfaces[0];
+            if (parentInterfaces == null || parentInterfaces.length < 1) {
+                thisEntityType = null;
+            } else {
+                thisEntityType = parentInterfaces[0];
+            }
         }
+        return possibleCandidates;
+    }
+
+    private boolean hasPlaceholders(LinkedMethod linkedMethod) {
+        return linkedMethod.getPlaceholders() != null && linkedMethod.getPlaceholders().size() > 0;
     }
 
     private LinkedMethod mixerMethod(Class mixerType, Method sourceMethod) {
