@@ -7,16 +7,19 @@ import java.util.Map;
 
 public class PimsMethodCaller {
     private final PimsParameters pimsParameters;
+    private final PimsMixersProvider pimsMixersProvider;
 
-    public PimsMethodCaller(PimsParameters pimsParameters) {
+    public PimsMethodCaller(PimsParameters pimsParameters, PimsMixersProvider pimsMixersProvider) {
         this.pimsParameters = pimsParameters;
+        this.pimsMixersProvider = pimsMixersProvider;
     }
 
     public Object delegate(PimsMethodDelegator pimsMethodDelegator, Map<PimsMethodParameterType, Object> pimsMethodCallParameters) {
         try {
-            Object delegator = pimsMethodDelegator.getTargetType();
+            Class delegatorType = pimsMethodDelegator.getTargetType();
+            Object delegator = pimsMixersProvider.from(delegatorType);
             Method delegatorMethod = pimsMethodDelegator.getDelegatorMethod();
-            List<PimsMethodParameterType> pimsMethodParameterTypes = pimsMethodDelegator.getPimsMethodParameterTypes();
+            List<ParameterResolution> pimsMethodParameterTypes = pimsMethodDelegator.getPimsMethodParameterTypes();
             Object[] params = pimsParameters.apply(pimsMethodParameterTypes, pimsMethodCallParameters);
             return delegatorMethod.invoke(delegator, params);
         } catch (IllegalAccessException | InvocationTargetException e) {

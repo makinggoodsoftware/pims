@@ -5,6 +5,8 @@ import com.mgs.pims.annotations.PimsMethod
 import com.mgs.pims.annotations.PimsMixer
 import spock.lang.Specification
 
+import static com.mgs.pims.core.ParameterResolution.placeholder
+import static com.mgs.pims.core.ParameterResolution.simple
 import static com.mgs.pims.core.PimsMethodParameterType.*
 import static com.mgs.pims.core.PimsMethodParameterType.METHOD_PARAMETERS
 
@@ -19,7 +21,7 @@ class PimsParametersSpecification extends Specification{
     def "should return the correct type of arguments" (){
         when:
         Object[] result = testObj.apply(
-            [PROXY_OBJECT, METHOD_PARAMETERS],
+            [simple(PROXY_OBJECT), placeholder('fieldName'), simple(METHOD_PARAMETERS)],
             [
                 (PROXY_OBJECT) : sourceObjectMock,
                 (METHOD_PARAMETERS) : [parameter1Mock, parameter2Mock] as Object []
@@ -27,7 +29,7 @@ class PimsParametersSpecification extends Specification{
         )
 
         then:
-        result == [sourceObjectMock, parameter1Mock, parameter2Mock] as Object[]
+        result == [sourceObjectMock, 'fieldName', parameter1Mock, parameter2Mock] as Object[]
     }
 
     def "when it creates a map of params, should have a value for each param" (){
@@ -40,7 +42,7 @@ class PimsParametersSpecification extends Specification{
         )
 
         then:
-        params.size() == PimsMethodParameterType.values().length
+        params.size() == 4
         params[PROXY_OBJECT] == sourceObjectMock
         params[METHOD_PARAMETERS] == [parameter1Mock, parameter2Mock]
         params[DOMAIN_MAP] == domainMapMock
@@ -49,14 +51,25 @@ class PimsParametersSpecification extends Specification{
 
     def "if there is only one non annotated parameter, its assumed to be the proxy" (){
         expect:
-        testObj.parse(PimsMixerSample.getMethod("onDoSomething", PimsEntitySample)) == [PROXY_OBJECT]
+        testObj.parse(
+                new LinkedMethod(PimsMixerSample.getMethod("onDoSomething", PimsEntitySample), [:])
+        ) == [simple(PROXY_OBJECT)]
     }
 
     def "if there is only one annotated parameter, it must return that type" (){
         expect:
-        testObj.parse(PimsMapEntities.getMethod("onGetDomainMap", Map)) == [DOMAIN_MAP]
-
+        testObj.parse(
+                new LinkedMethod(PimsMapEntities.getMethod("onGetDomainMap", Map), [:])
+        ) == [simple(DOMAIN_MAP)]
     }
+
+    def "it should parse placeholders correctly" (){
+        expect:
+        testObj.parse(
+                new LinkedMethod(PimsMapEntities.getMethod("onGetter", Map, String), [fieldName:'name'])
+        ) == [simple(DOMAIN_MAP), placeholder('name')]
+    }
+
 
     @PimsEntity (managedBy = PimsMixerSample)
     public interface PimsEntitySample extends PimsMapEntity{

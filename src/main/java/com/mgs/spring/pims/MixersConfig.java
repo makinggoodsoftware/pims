@@ -28,6 +28,6 @@ public class MixersConfig {
 
     @Bean
     public PimsMethodCaller pimsMethodCaller() {
-        return new PimsMethodCaller(pimsParameters());
+        return new PimsMethodCaller(pimsParameters(), pimsMixersProvider());
     }
 }

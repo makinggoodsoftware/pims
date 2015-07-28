@@ -5,9 +5,6 @@ import com.mgs.text.PatternMatcher
 import com.mgs.text.PatternMatchingResult
 import spock.lang.Specification
 
-import static com.mgs.pims.core.PimsMethodParameterType.DOMAIN_MAP
-import static com.mgs.pims.core.PimsMethodParameterType.PLACEHOLDER
-
 class PimsMethodDelegatorFactorySpecification extends Specification {
     PimsMethodDelegatorFactory testObj
     PimsMixersProvider pimsMixersProviderMock = Mock (PimsMixersProvider)
@@ -27,7 +24,9 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("getName", "isMutable") >> failure
         patternMatcherMock.match("getName", "get{fieldName}") >> success
 
-        pimsParametersMock.parse (PimsMapEntities.getMethod("onGetter", Map, String)) >> parameterTypesMock
+        pimsParametersMock.parse (
+                new LinkedMethod(PimsMapEntities.getMethod("onGetter", Map, String), [fieldName:'Name'])
+        ) >> parameterTypesMock
     }
 
     def "should delegate method to parent if not present" (){

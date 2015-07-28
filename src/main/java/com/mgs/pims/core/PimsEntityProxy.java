@@ -25,7 +25,15 @@ public class PimsEntityProxy implements InvocationHandler {
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		return pimsMethodCaller.delegate(methodDelegators.get(method), pimsParameters.from(proxy, args, domainMap, valueMap));
+		return pimsMethodCaller.delegate(
+			methodDelegators.get(method),
+			pimsParameters.from(
+				proxy,
+				args,
+				domainMap,
+				valueMap
+			)
+		);
 	}
 
 	public Map<String, Object> getDomainMap() {

@@ -3,6 +3,7 @@ package com.mgs.pims.core;
 import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.text.PatternMatcher;
+import com.mgs.text.PatternMatchingResult;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -19,13 +20,19 @@ public class PimsMethodDelegatorFactory {
 
     public <T extends PimsMapEntity> PimsMethodDelegator<T> link(Class<T> entityType, Method sourceMethod) {
         Class rootEntityType = sourceMethod.getDeclaringClass();
-        Method mixerMethod = findMixerMethodFrom(sourceMethod, rootEntityType);
-        List<PimsMethodParameterType> parameterTypes = pimsParameters.parse (mixerMethod);
-        return new PimsMethodDelegator<>(entityType, mixerMethod.getDeclaringClass(), mixerMethod, parameterTypes);
+        LinkedMethod mixerMethod = findMixerMethodFrom(sourceMethod, rootEntityType);
+        List<ParameterResolution> parameterTypes = pimsParameters.parse (mixerMethod);
+        Method declaredMethod = mixerMethod.getDeclaredMethod();
+        return new PimsMethodDelegator<>(
+                entityType,
+                declaredMethod.getDeclaringClass(),
+                declaredMethod,
+                parameterTypes
+        );
     }
 
-    private Method findMixerMethodFrom(Method sourceMethod, Class rootEntityType) {
-        Method mixerMethod;
+    private LinkedMethod findMixerMethodFrom(Method sourceMethod, Class rootEntityType) {
+        LinkedMethod mixerMethod;
         Class thisEntityType = rootEntityType;
         while (true){
             Class mixerType = managedBy(thisEntityType);
@@ -37,13 +44,14 @@ public class PimsMethodDelegatorFactory {
         }
     }
 
-    private Method mixerMethod(Class mixerType, Method sourceMethod) {
+    private LinkedMethod mixerMethod(Class mixerType, Method sourceMethod) {
         for (Method declaredMethod : mixerType.getDeclaredMethods()) {
             PimsMethod pimsMethod = declaredMethod.getAnnotation(PimsMethod.class);
             if (pimsMethod != null){
                 String pattern = pimsMethod.pattern();
-                if (patternMatcher.match(sourceMethod.getName(), pattern).isMatch()){
-                    return declaredMethod;
+                PatternMatchingResult match = patternMatcher.match(sourceMethod.getName(), pattern);
+                if (match.isMatch()){
+                    return new LinkedMethod(declaredMethod, match.getPlaceholders());
                 }
             }
         }

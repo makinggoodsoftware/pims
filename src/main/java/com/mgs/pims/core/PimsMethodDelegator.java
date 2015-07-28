@@ -7,9 +7,9 @@ public class PimsMethodDelegator <T extends PimsMapEntity>{
 	private final Class<T> pimsEntityType;
 	private final Class targetType;
     private final Method delegatorMethod;
-    private final List<PimsMethodParameterType> pimsMethodParameterTypes;
+    private final List<ParameterResolution> pimsMethodParameterTypes;
 
-	public PimsMethodDelegator(Class<T> pimsEntityType, Class targetType, Method delegatorMethod, List<PimsMethodParameterType> pimsMethodParameterTypes) {
+	public PimsMethodDelegator(Class<T> pimsEntityType, Class targetType, Method delegatorMethod, List<ParameterResolution> pimsMethodParameterTypes) {
 		this.pimsEntityType = pimsEntityType;
 		this.targetType = targetType;
         this.delegatorMethod = delegatorMethod;
@@ -20,7 +20,7 @@ public class PimsMethodDelegator <T extends PimsMapEntity>{
 		return pimsEntityType;
 	}
 
-	public Object getTargetType() {
+	public Class getTargetType() {
 		return targetType;
 	}
 
@@ -28,7 +28,7 @@ public class PimsMethodDelegator <T extends PimsMapEntity>{
         return delegatorMethod;
     }
 
-    public List<PimsMethodParameterType> getPimsMethodParameterTypes() {
+    public List<ParameterResolution> getPimsMethodParameterTypes() {
         return pimsMethodParameterTypes;
     }
 }
