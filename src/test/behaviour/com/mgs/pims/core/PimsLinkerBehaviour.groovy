@@ -35,7 +35,7 @@ class PimsLinkerBehaviour extends Specification{
         when:
         String name = caller.delegate(
                 linkedMethods.get(MyEntity.getMethod("getName")),
-                pimsParameters.from(null, null, [Name:'Alberto'], null)
+                pimsParameters.from(null, null, [name:'Alberto'], null)
         )
 
         then:

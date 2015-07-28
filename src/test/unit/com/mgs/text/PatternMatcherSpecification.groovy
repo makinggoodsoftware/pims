@@ -17,11 +17,11 @@ class PatternMatcherSpecification extends Specification {
 
         where:
         toMatch         | pattern             | expectedPlaceholders        |  expectedMatch
-        "getSomething"  | "get{fieldName}"    | [fieldName:'Something']     |  true
+        "getSomething"  | "get{fieldName}"    | [fieldName:'something']     |  true
         "badName"       | "get{fieldName}"    | null                        |  false
         "literal"       | "literal"           | [:]                         |  true
-        "getBlahById"   | "get{fieldName}ById"| [fieldName:'Blah']          |  true
-        "getByByById"   | "get{fieldName}ById"| [fieldName:'ByBy']          |  true
-        "getByByById"   | "get{a}By{b}"       | [a:'ByBy', b:'Id']          |  true
+        "getBlahById"   | "get{fieldName}ById"| [fieldName:'blah']          |  true
+        "getByByById"   | "get{fieldName}ById"| [fieldName:'byBy']          |  true
+        "getByByById"   | "get{a}By{b}"       | [a:'byBy', b:'id']          |  true
     }
 }

@@ -18,7 +18,7 @@ public class PatternMatcher {
                 if (openCondition != null){
                     int placeholderEndIndex = latestIndex (remainingToMatch, thisConditionPattern);
                     String placeholderValue = remainingToMatch.substring(0, placeholderEndIndex);
-                    placeholders.put(openCondition.getPattern(), placeholderValue);
+                    placeholders.put(openCondition.getPattern(), firstLetterLowerCase(placeholderValue));
                     remainingToMatch = remainingToMatch.substring(placeholderEndIndex, remainingToMatch.length());
                     openCondition = null;
                 }
@@ -31,10 +31,16 @@ public class PatternMatcher {
 
         if (openCondition != null){
             if (remainingToMatch.length() < 0) throw new IllegalStateException();
-            placeholders.put(openCondition.getPattern(), remainingToMatch);
+            placeholders.put(openCondition.getPattern(), firstLetterLowerCase(remainingToMatch));
         }
 
         return new PatternMatchingResult(true, placeholders);
+    }
+
+    private String firstLetterLowerCase(String from) {
+        String firstLetter = from.substring(0, 1);
+        String remainder = from.substring(1, from.length());
+        return firstLetter.toLowerCase() + remainder;
     }
 
     private int latestIndex(String toMatch, String pattern) {
