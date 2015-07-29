@@ -1,7 +1,10 @@
-package com.mgs.pims.core;
+package com.mgs.pims.core.linker.method;
 
 import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.annotations.PimsMethod;
+import com.mgs.pims.core.entity.PimsMapEntity;
+import com.mgs.pims.core.linker.parameters.ParameterResolution;
+import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.text.PatternMatcher;
 import com.mgs.text.PatternMatchingResult;
 

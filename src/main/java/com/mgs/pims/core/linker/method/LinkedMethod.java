@@ -1,4 +1,4 @@
-package com.mgs.pims.core;
+package com.mgs.pims.core.linker.method;
 
 import com.google.common.base.Objects;
 

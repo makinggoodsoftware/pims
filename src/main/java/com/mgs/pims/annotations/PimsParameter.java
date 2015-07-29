@@ -1,6 +1,6 @@
 package com.mgs.pims.annotations;
 
-import com.mgs.pims.core.PimsMethodParameterType;
+import com.mgs.pims.core.linker.parameters.PimsMethodParameterType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

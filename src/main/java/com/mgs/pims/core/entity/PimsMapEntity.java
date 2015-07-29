@@ -1,8 +1,7 @@
-package com.mgs.pims.core;
+package com.mgs.pims.core.entity;
 
 import com.mgs.maps.VirtualField;
 import com.mgs.pims.annotations.PimsEntity;
-import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
 

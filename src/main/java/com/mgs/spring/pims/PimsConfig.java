@@ -1,8 +1,11 @@
 package com.mgs.spring.pims;
 
-import com.mgs.pims.core.PimsFactory;
-import com.mgs.pims.core.PimsLinker;
-import com.mgs.pims.core.PimsMethodDelegatorFactory;
+import com.mgs.pims.core.entity.PimsFactory;
+import com.mgs.pims.core.linker.PimsLinker;
+import com.mgs.pims.core.linker.method.PimsMethodCaller;
+import com.mgs.pims.core.linker.method.PimsMethodDelegatorFactory;
+import com.mgs.pims.core.linker.mixer.PimsMixersProvider;
+import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.spring.maps.MapsConfig;
 import com.mgs.spring.reflection.ReflectionsConfig;
 import com.mgs.spring.text.TextConfig;
@@ -19,8 +22,6 @@ import org.springframework.context.annotation.Import;
 })
 public class PimsConfig {
     @Autowired
-    private MixersConfig mixersConfig;
-    @Autowired
     private TextConfig textConfig;
     @Autowired
     private MapsConfig mapsConfig;
@@ -31,11 +32,11 @@ public class PimsConfig {
     @Bean
     public PimsFactory pimsFactory (){
         return new PimsFactory(
-                mixersConfig.pimsParameters(),
+                pimsParameters(),
                 pimsLinker(),
                 mapsConfig.mapWalker(),
                 mapsConfig.mapFieldValueFactory(),
-                mixersConfig.pimsMethodCaller(),
+                pimsMethodCaller(),
                 reflectionsConfig.typeParser()
         );
     }
@@ -49,6 +50,21 @@ public class PimsConfig {
     public PimsMethodDelegatorFactory pimsMethodDelegatorFactory (){
         return new PimsMethodDelegatorFactory (
                 textConfig.patternMatcher(),
-                mixersConfig.pimsParameters ());
+                pimsParameters ());
+    }
+
+    @Bean
+    public PimsMixersProvider pimsMixersProvider (){
+        return new PimsMixersProvider();
+    }
+
+    @Bean
+    public PimsParameters pimsParameters() {
+        return new PimsParameters();
+    }
+
+    @Bean
+    public PimsMethodCaller pimsMethodCaller() {
+        return new PimsMethodCaller(pimsParameters(), pimsMixersProvider());
     }
 }

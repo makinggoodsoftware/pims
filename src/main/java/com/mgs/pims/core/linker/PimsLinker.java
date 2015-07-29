@@ -1,4 +1,8 @@
-package com.mgs.pims.core;
+package com.mgs.pims.core.linker;
+
+import com.mgs.pims.core.entity.PimsMapEntity;
+import com.mgs.pims.core.linker.method.PimsMethodDelegator;
+import com.mgs.pims.core.linker.method.PimsMethodDelegatorFactory;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

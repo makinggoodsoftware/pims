@@ -1,4 +1,8 @@
-package com.mgs.pims.core;
+package com.mgs.pims.core.entity;
+
+import com.mgs.pims.core.linker.method.PimsMethodCaller;
+import com.mgs.pims.core.linker.method.PimsMethodDelegator;
+import com.mgs.pims.core.linker.parameters.PimsParameters;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -13,7 +17,7 @@ public class PimsEntityProxy implements InvocationHandler {
 	private final PimsMethodCaller pimsMethodCaller;
 	private final PimsParameters pimsParameters;
 
-	public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, Class type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<Method, PimsMethodDelegator> methodDelegators, boolean mutable, PimsParameters pimsParameters) {
+	public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, Class<? extends PimsMapEntity> type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<Method, PimsMethodDelegator> methodDelegators, boolean mutable, PimsParameters pimsParameters) {
 		this.type = type;
 		this.domainMap = domainMap;
 		this.valueMap = valueMap;

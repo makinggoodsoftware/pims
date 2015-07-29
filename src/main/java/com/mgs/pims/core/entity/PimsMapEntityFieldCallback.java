@@ -1,7 +1,8 @@
-package com.mgs.pims.core;
+package com.mgs.pims.core.entity;
 
 import com.mgs.maps.MapFieldValueFactory;
 import com.mgs.maps.OnMapFieldCallback;
+import com.mgs.pims.core.entity.PimsMapEntity;
 import com.mgs.reflections.FieldAccessor;
 
 import java.util.Map;
