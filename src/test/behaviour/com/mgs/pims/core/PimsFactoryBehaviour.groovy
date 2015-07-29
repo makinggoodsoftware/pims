@@ -17,7 +17,7 @@ class PimsFactoryBehaviour extends Specification {
         MyPimsEntity alberto = pimsFactory.immutable(MyPimsEntity, [name: 'Alberto'])
 
         then:
-Rea        alberto.name == 'Alberto'
+        alberto.name == 'Alberto'
     }
 
     @PimsEntity
