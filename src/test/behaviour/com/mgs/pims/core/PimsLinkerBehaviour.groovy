@@ -1,6 +1,7 @@
 package com.mgs.pims.core
 
 import com.mgs.pims.annotations.PimsEntity
+import com.mgs.pims.linker.method.LinkedMethod
 import com.mgs.pims.types.entity.PimsMapEntity
 import com.mgs.pims.linker.PimsLinker
 import com.mgs.pims.linker.method.PimsMethodCaller
@@ -20,13 +21,18 @@ class PimsLinkerBehaviour extends Specification{
     @Resource PimsParameters pimsParameters
 
     def "should call PimsMapEntities.onGetValueMap for getValueMap" (){
-        given:
+        when:
         Map<Method, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity)
+        PimsMethodDelegator getValueMap = linkedMethods.get(PimsMapEntity.getMethod("getValueMap"))
+
+        then:
+        getValueMap.delegatorMethod.getName() == "onGetValueMap"
+
 
         when:
         Map<String, String> valueMap = caller.delegate(
-                linkedMethods.get(PimsMapEntity.getMethod("getValueMap")),
-                pimsParameters.from(null, null, null, [value:'map'])
+                getValueMap,
+                pimsParameters.from(new Object(), null, [:], [value:'map'])
         )
 
         then:
@@ -40,7 +46,7 @@ class PimsLinkerBehaviour extends Specification{
         when:
         String name = caller.delegate(
                 linkedMethods.get(MyEntity.getMethod("getName")),
-                pimsParameters.from(null, null, [name:'Alberto'], null)
+                pimsParameters.from(new Object(), null, [name:'Alberto'], [:])
         )
 
         then:

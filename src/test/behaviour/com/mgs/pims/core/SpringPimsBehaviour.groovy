@@ -1,12 +1,13 @@
 package com.mgs.pims.core
 
-import com.mgs.pims.types.entity.PimsMapEntities
 import com.mgs.pims.linker.PimsLinker
 import com.mgs.pims.linker.mixer.PimsMixersProvider
+import com.mgs.pims.types.entity.PimsMapEntities
 import com.mgs.spring.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+
 
 @ContextConfiguration(classes = [AppConfig.class])
 class SpringPimsBehaviour extends Specification{

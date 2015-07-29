@@ -38,6 +38,10 @@ public class PimsParameters {
             Map<String, Object> domainMap,
             Map<String, Object> valueMap
     ) {
+        if (proxy == null) throw new IllegalStateException("Can't create parameters, proxy ,must be NOT null");
+        if (domainMap == null) throw new IllegalStateException("Can't create parameters, domain map ,must be NOT null");
+        if (valueMap == null) throw new IllegalStateException("Can't create parameters, value map ,must be NOT null");
+
         Map<PimsMethodParameterType, Object> parameters = new HashMap<>();
         parameters.put(PimsMethodParameterType.PROXY_OBJECT, proxy);
         parameters.put(METHOD_PARAMETERS, args);

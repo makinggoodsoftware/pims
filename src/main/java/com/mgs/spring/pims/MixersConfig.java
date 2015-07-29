@@ -6,9 +6,13 @@ import com.mgs.pims.linker.mixer.NullMixer;
 import com.mgs.pims.types.resource.PimsResources;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import javax.annotation.Resource;
 
+@Import({
+  PimsConfig.class
+})
 @Configuration
 public class MixersConfig {
     @Resource

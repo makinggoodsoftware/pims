@@ -9,8 +9,7 @@ import com.mgs.text.PatternMatcher;
 import com.mgs.text.PatternMatchingResult;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class PimsMethodDelegatorFactory {
     private final PatternMatcher patternMatcher;
@@ -24,8 +23,8 @@ public class PimsMethodDelegatorFactory {
 
     public <T extends PimsMapEntity> PimsMethodDelegator<T> link(Class<T> entityType, Method sourceMethod) {
         Class rootEntityType = sourceMethod.getDeclaringClass();
-        PriorityQueue<LinkedMethod> mixerMethods = findMixerMethodCandidatesFrom(sourceMethod, rootEntityType);
-        LinkedMethod mixerMethod = mixerMethods.poll();
+        SortedSet<LinkedMethod> mixerMethods = findMixerMethodCandidatesFrom(sourceMethod, rootEntityType);
+        LinkedMethod mixerMethod = mixerMethods.first();
         List<ParameterResolution> parameterTypes = pimsParameters.parse (mixerMethod);
         Method declaredMethod = mixerMethod.getDeclaredMethod();
         return new PimsMethodDelegator<>(
@@ -36,23 +35,14 @@ public class PimsMethodDelegatorFactory {
         );
     }
 
-    private PriorityQueue<LinkedMethod> findMixerMethodCandidatesFrom(Method sourceMethod, Class rootEntityType) {
-        PriorityQueue<LinkedMethod> possibleCandidates = new PriorityQueue<>(
-                (left, right) -> {
-                    int leftFirst = -1;
-                    int rightFirst = 1;
-                    int dontCare = 0;
+    private SortedSet<LinkedMethod> findMixerMethodCandidatesFrom(Method sourceMethod, Class rootEntityType) {
+        SortedSet<LinkedMethod> possibleCandidates = newLinkedMethodsSetWithPlaceholdersLast();
 
-                    return hasPlaceholders(right) ? leftFirst :
-                           hasPlaceholders(left) ? rightFirst :
-                               dontCare;
-                }
-        );
         Class thisEntityType = rootEntityType;
         while (thisEntityType != null){
             Class mixerType = managedBy(thisEntityType);
-            LinkedMethod mixerMethod = mixerMethod(mixerType, sourceMethod);
-            if (mixerMethod != null) possibleCandidates.add(mixerMethod);
+            SortedSet<LinkedMethod> mixerMethods = mixerMethods(mixerType, sourceMethod);
+            if (mixerMethods != null) possibleCandidates.addAll(mixerMethods);
             Class[] parentInterfaces = thisEntityType.getInterfaces();
             if (parentInterfaces == null || parentInterfaces.length < 1) {
                 thisEntityType = null;
@@ -63,22 +53,37 @@ public class PimsMethodDelegatorFactory {
         return possibleCandidates;
     }
 
+    private TreeSet<LinkedMethod> newLinkedMethodsSetWithPlaceholdersLast() {
+        return new TreeSet<>((Comparator<LinkedMethod>) (left, right) -> {
+            int leftFirst = -1;
+            int rightFirst = 1;
+            int dontCare = 0;
+
+            return
+                    hasPlaceholders(right) ? leftFirst :
+                    hasPlaceholders(left) ? rightFirst :
+                            dontCare;
+        });
+    }
+
     private boolean hasPlaceholders(LinkedMethod linkedMethod) {
         return linkedMethod.getPlaceholders() != null && linkedMethod.getPlaceholders().size() > 0;
     }
 
-    private LinkedMethod mixerMethod(Class mixerType, Method sourceMethod) {
+    private SortedSet<LinkedMethod> mixerMethods(Class mixerType, Method sourceMethod) {
+        SortedSet<LinkedMethod> possibleCandidates = newLinkedMethodsSetWithPlaceholdersLast();
+
         for (Method declaredMethod : mixerType.getDeclaredMethods()) {
             PimsMethod pimsMethod = declaredMethod.getAnnotation(PimsMethod.class);
             if (pimsMethod != null){
                 String pattern = pimsMethod.pattern();
                 PatternMatchingResult match = patternMatcher.match(sourceMethod.getName(), pattern);
                 if (match.isMatch()){
-                    return new LinkedMethod(declaredMethod, match.getPlaceholders());
+                    possibleCandidates.add(new LinkedMethod(declaredMethod, match.getPlaceholders()));
                 }
             }
         }
-        return null;
+        return possibleCandidates;
     }
 
     private Class managedBy(Class declaredEntityType) {
