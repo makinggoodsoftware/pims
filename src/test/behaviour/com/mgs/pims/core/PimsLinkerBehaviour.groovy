@@ -1,11 +1,11 @@
 package com.mgs.pims.core
 
 import com.mgs.pims.annotations.PimsEntity
-import com.mgs.pims.core.entity.PimsMapEntity
-import com.mgs.pims.core.linker.PimsLinker
-import com.mgs.pims.core.linker.method.PimsMethodCaller
-import com.mgs.pims.core.linker.method.PimsMethodDelegator
-import com.mgs.pims.core.linker.parameters.PimsParameters
+import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.pims.linker.PimsLinker
+import com.mgs.pims.linker.method.PimsMethodCaller
+import com.mgs.pims.linker.method.PimsMethodDelegator
+import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification

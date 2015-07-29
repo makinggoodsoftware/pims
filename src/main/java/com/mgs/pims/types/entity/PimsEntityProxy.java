@@ -1,8 +1,8 @@
-package com.mgs.pims.core.entity;
+package com.mgs.pims.types.entity;
 
-import com.mgs.pims.core.linker.method.PimsMethodCaller;
-import com.mgs.pims.core.linker.method.PimsMethodDelegator;
-import com.mgs.pims.core.linker.parameters.PimsParameters;
+import com.mgs.pims.linker.method.PimsMethodCaller;
+import com.mgs.pims.linker.method.PimsMethodDelegator;
+import com.mgs.pims.linker.parameters.PimsParameters;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

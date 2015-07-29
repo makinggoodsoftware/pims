@@ -1,9 +1,9 @@
-package com.mgs.pims.core.linker.method;
+package com.mgs.pims.linker.method;
 
-import com.mgs.pims.core.linker.mixer.PimsMixersProvider;
-import com.mgs.pims.core.linker.parameters.ParameterResolution;
-import com.mgs.pims.core.linker.parameters.PimsMethodParameterType;
-import com.mgs.pims.core.linker.parameters.PimsParameters;
+import com.mgs.pims.linker.mixer.PimsMixersProvider;
+import com.mgs.pims.linker.parameters.ParameterResolution;
+import com.mgs.pims.linker.parameters.PimsMethodParameterType;
+import com.mgs.pims.linker.parameters.PimsParameters;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

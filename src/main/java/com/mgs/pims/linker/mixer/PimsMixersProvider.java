@@ -1,4 +1,4 @@
-package com.mgs.pims.core.linker.mixer;
+package com.mgs.pims.linker.mixer;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

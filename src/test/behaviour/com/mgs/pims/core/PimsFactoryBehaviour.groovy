@@ -1,8 +1,8 @@
 package com.mgs.pims.core
 
 import com.mgs.pims.annotations.PimsEntity
-import com.mgs.pims.core.entity.PimsFactory
-import com.mgs.pims.core.entity.PimsMapEntity
+import com.mgs.pims.types.entity.PimsFactory
+import com.mgs.pims.types.entity.PimsMapEntity
 import com.mgs.spring.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -17,7 +17,7 @@ class PimsFactoryBehaviour extends Specification {
         MyPimsEntity alberto = pimsFactory.immutable(MyPimsEntity, [name: 'Alberto'])
 
         then:
-        alberto.name == 'Alberto'
+Rea        alberto.name == 'Alberto'
     }
 
     @PimsEntity

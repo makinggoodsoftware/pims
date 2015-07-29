@@ -1,15 +1,15 @@
-package com.mgs.pims.core.linker.parameters;
+package com.mgs.pims.linker.parameters;
 
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.core.linker.method.LinkedMethod;
+import com.mgs.pims.linker.method.LinkedMethod;
 
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-import static com.mgs.pims.core.linker.parameters.ParameterResolution.simple;
-import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.METHOD_PARAMETERS;
-import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.PLACEHOLDER;
-import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.PROXY_OBJECT;
+import static com.mgs.pims.linker.parameters.ParameterResolution.simple;
+import static com.mgs.pims.linker.parameters.PimsMethodParameterType.METHOD_PARAMETERS;
+import static com.mgs.pims.linker.parameters.PimsMethodParameterType.PLACEHOLDER;
+import static com.mgs.pims.linker.parameters.PimsMethodParameterType.PROXY_OBJECT;
 import static java.util.Collections.singletonList;
 
 public class PimsParameters {

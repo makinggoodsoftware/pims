@@ -3,15 +3,15 @@ package com.mgs.pims.core
 import com.mgs.pims.annotations.PimsEntity
 import com.mgs.pims.annotations.PimsMethod
 import com.mgs.pims.annotations.PimsMixer
-import com.mgs.pims.core.entity.PimsMapEntity
-import com.mgs.pims.core.linker.method.PimsMethodCaller
-import com.mgs.pims.core.linker.method.PimsMethodDelegator
-import com.mgs.pims.core.linker.parameters.PimsMethodParameterType
-import com.mgs.pims.core.linker.mixer.PimsMixersProvider
-import com.mgs.pims.core.linker.parameters.PimsParameters
+import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.pims.linker.method.PimsMethodCaller
+import com.mgs.pims.linker.method.PimsMethodDelegator
+import com.mgs.pims.linker.parameters.PimsMethodParameterType
+import com.mgs.pims.linker.mixer.PimsMixersProvider
+import com.mgs.pims.linker.parameters.PimsParameters
 import spock.lang.Specification
 
-import static com.mgs.pims.core.linker.parameters.ParameterResolution.simple
+import static com.mgs.pims.linker.parameters.ParameterResolution.simple
 import static PimsMethodParameterType.PROXY_OBJECT
 
 class PimsMethodCallerSpecification extends Specification {

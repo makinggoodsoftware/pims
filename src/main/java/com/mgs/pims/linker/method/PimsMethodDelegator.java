@@ -1,7 +1,7 @@
-package com.mgs.pims.core.linker.method;
+package com.mgs.pims.linker.method;
 
-import com.mgs.pims.core.entity.PimsMapEntity;
-import com.mgs.pims.core.linker.parameters.ParameterResolution;
+import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.linker.parameters.ParameterResolution;
 
 import java.lang.reflect.Method;
 import java.util.List;

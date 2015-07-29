@@ -1,11 +1,11 @@
-package com.mgs.pims.core.entity;
+package com.mgs.pims.types.entity;
 
 import com.mgs.maps.MapFieldValueFactory;
 import com.mgs.maps.MapWalker;
 import com.mgs.maps.OnMapFieldCallback;
-import com.mgs.pims.core.linker.PimsLinker;
-import com.mgs.pims.core.linker.method.PimsMethodCaller;
-import com.mgs.pims.core.linker.parameters.PimsParameters;
+import com.mgs.pims.linker.PimsLinker;
+import com.mgs.pims.linker.method.PimsMethodCaller;
+import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 

@@ -1,4 +1,4 @@
-package com.mgs.pims.core.entity;
+package com.mgs.pims.types.entity;
 
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
@@ -6,7 +6,7 @@ import com.mgs.pims.annotations.PimsParameter;
 
 import java.util.Map;
 
-import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
+import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
 
 @PimsMixer
 public class PimsMapEntities {

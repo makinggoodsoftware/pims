@@ -1,8 +1,8 @@
 package com.mgs.pims.core
 
-import com.mgs.pims.core.entity.PimsMapEntities
-import com.mgs.pims.core.linker.PimsLinker
-import com.mgs.pims.core.linker.mixer.PimsMixersProvider
+import com.mgs.pims.types.entity.PimsMapEntities
+import com.mgs.pims.linker.PimsLinker
+import com.mgs.pims.linker.mixer.PimsMixersProvider
 import com.mgs.spring.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration

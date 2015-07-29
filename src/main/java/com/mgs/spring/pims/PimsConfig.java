@@ -1,11 +1,11 @@
 package com.mgs.spring.pims;
 
-import com.mgs.pims.core.entity.PimsFactory;
-import com.mgs.pims.core.linker.PimsLinker;
-import com.mgs.pims.core.linker.method.PimsMethodCaller;
-import com.mgs.pims.core.linker.method.PimsMethodDelegatorFactory;
-import com.mgs.pims.core.linker.mixer.PimsMixersProvider;
-import com.mgs.pims.core.linker.parameters.PimsParameters;
+import com.mgs.pims.types.entity.PimsFactory;
+import com.mgs.pims.linker.PimsLinker;
+import com.mgs.pims.linker.method.PimsMethodCaller;
+import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
+import com.mgs.pims.linker.mixer.PimsMixersProvider;
+import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.spring.maps.MapsConfig;
 import com.mgs.spring.reflection.ReflectionsConfig;
 import com.mgs.spring.text.TextConfig;

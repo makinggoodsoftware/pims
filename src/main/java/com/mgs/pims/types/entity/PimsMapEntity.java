@@ -1,4 +1,4 @@
-package com.mgs.pims.core.entity;
+package com.mgs.pims.types.entity;
 
 import com.mgs.maps.VirtualField;
 import com.mgs.pims.annotations.PimsEntity;
