@@ -19,7 +19,8 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
     PimsParameters pimsParametersMock = Mock (PimsParameters)
     NullMixer nullMixerMock = Mock (NullMixer)
     PatternMatchingResult failure = new PatternMatchingResult(false, null)
-    PatternMatchingResult success = new PatternMatchingResult(true, [fieldName:'Name'])
+    PatternMatchingResult success = new PatternMatchingResult(true, [:])
+    PatternMatchingResult successWithPlaceholders = new PatternMatchingResult(true, [fieldName:'Name'])
     List parameterTypesMock = Mock(List)
 
     def "setup" (){
@@ -34,7 +35,7 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("getDomainMap", "getValueMap") >> failure
         patternMatcherMock.match("getDomainMap", "getType") >> failure
         patternMatcherMock.match("getDomainMap", "isMutable") >> failure
-        patternMatcherMock.match("getDomainMap", "get{fieldName}") >> success
+        patternMatcherMock.match("getDomainMap", "get{fieldName}") >> successWithPlaceholders
 
 
         when:

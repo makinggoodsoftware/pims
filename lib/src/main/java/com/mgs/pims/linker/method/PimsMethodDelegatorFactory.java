@@ -45,7 +45,7 @@ public class PimsMethodDelegatorFactory {
         while (thisEntityType != null){
             Class mixerType = managedBy(thisEntityType);
             SortedSet<LinkedMethod> mixerMethods = mixerMethods(mixerType, sourceMethod);
-            if (mixerMethods != null) possibleCandidates.addAll(mixerMethods);
+            possibleCandidates.addAll(mixerMethods);
             Class[] parentInterfaces = thisEntityType.getInterfaces();
             if (parentInterfaces == null || parentInterfaces.length < 1) {
                 thisEntityType = null;
@@ -54,23 +54,6 @@ public class PimsMethodDelegatorFactory {
             }
         }
         return possibleCandidates;
-    }
-
-    private TreeSet<LinkedMethod> newLinkedMethodsSetWithPlaceholdersLast() {
-        return new TreeSet<>((Comparator<LinkedMethod>) (left, right) -> {
-            int leftFirst = -1;
-            int rightFirst = 1;
-            int dontCare = 0;
-
-            return
-                    hasPlaceholders(right) ? leftFirst :
-                    hasPlaceholders(left) ? rightFirst :
-                            dontCare;
-        });
-    }
-
-    private boolean hasPlaceholders(LinkedMethod linkedMethod) {
-        return linkedMethod.getPlaceholders() != null && linkedMethod.getPlaceholders().size() > 0;
     }
 
     private SortedSet<LinkedMethod> mixerMethods(Class mixerType, Method sourceMethod) {
@@ -87,6 +70,26 @@ public class PimsMethodDelegatorFactory {
             }
         }
         return possibleCandidates;
+    }
+
+    private TreeSet<LinkedMethod> newLinkedMethodsSetWithPlaceholdersLast() {
+        return new TreeSet<>((Comparator<LinkedMethod>) (left, right) -> {
+            int leftFirst = -1;
+            int rightFirst = 1;
+            int keepCurrentOrder = -1;
+
+            boolean rightHasPlaceholders = hasPlaceholders(right);
+            boolean leftHasPlaceholders = hasPlaceholders(left);
+            return
+                    rightHasPlaceholders == leftHasPlaceholders ? keepCurrentOrder :
+                    rightHasPlaceholders  ? leftFirst :
+                    leftHasPlaceholders ? rightFirst :
+                            keepCurrentOrder;
+        });
+    }
+
+    private boolean hasPlaceholders(LinkedMethod linkedMethod) {
+        return linkedMethod.getPlaceholders() != null && linkedMethod.getPlaceholders().size() > 0;
     }
 
     private Class managedBy(Class declaredEntityType) {
