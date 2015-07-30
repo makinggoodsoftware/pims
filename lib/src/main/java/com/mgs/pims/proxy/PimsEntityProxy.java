@@ -1,8 +1,9 @@
-package com.mgs.pims.types.entity;
+package com.mgs.pims.proxy;
 
 import com.mgs.pims.linker.method.PimsMethodCaller;
 import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.parameters.PimsParameters;
+import com.mgs.pims.types.entity.PimsMapEntity;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
