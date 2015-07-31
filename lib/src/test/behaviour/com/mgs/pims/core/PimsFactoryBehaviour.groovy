@@ -46,6 +46,19 @@ class PimsFactoryBehaviour extends Specification {
         complex.type.ownDeclaration.parameters.size() == 0
     }
 
+    def "should create parameterized pims entity" (){
+        when:
+        WithParameter withParameter = pimsFactory.immutable(WithParameter, [parameter: 'Alberto'])
+
+        then:
+        withParameter.valueMap == [parameter: 'Alberto']
+        withParameter.parameter == 'Alberto'
+        ! withParameter.mutable
+        withParameter.type.actualType.get() == WithParameter
+        withParameter.type.ownDeclaration.parameters.size() == 1
+        withParameter.type.ownDeclaration.parameters.get("T").actualType.get() == String
+    }
+
     @PimsEntity
     private static interface MyPimsEntity extends PimsMapEntity{
         String getName()
@@ -54,5 +67,14 @@ class PimsFactoryBehaviour extends Specification {
     @PimsEntity
     private static interface ComplexPimsEntity extends PimsMapEntity{
         MyPimsEntity getChild()
+    }
+
+    @PimsEntity
+    private static interface WithParameterBase<T> extends PimsMapEntity{
+        T getParameter()
+    }
+
+    @PimsEntity
+    private static interface WithParameter extends WithParameterBase<String>{
     }
 }
