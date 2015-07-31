@@ -1,7 +1,8 @@
-package com.mgs.pims.types.entity;
+package com.mgs.pims.types;
 
 import com.mgs.maps.MapTransformer;
 import com.mgs.pims.proxy.PimsEntityProxyFactory;
+import com.mgs.pims.types.entity.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 
@@ -24,6 +25,15 @@ public class PimsFactory {
 
     public <T extends PimsMapEntity> T immutable(ParsedType type, Map<String, Object> valueMap) {
         return fromValueMap(type, valueMap, false);
+    }
+
+    public <T extends PimsMapEntity> T immutable(Class<T> type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
+        return pimsEntityProxyFactory.proxy(
+                false,
+                type,
+                valueMap,
+                domainMap
+        );
     }
 
     private <T extends PimsMapEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {

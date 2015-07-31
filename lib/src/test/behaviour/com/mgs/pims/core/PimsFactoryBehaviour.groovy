@@ -1,7 +1,7 @@
 package com.mgs.pims.core
 
 import com.mgs.pims.annotations.PimsEntity
-import com.mgs.pims.types.entity.PimsFactory
+import com.mgs.pims.types.PimsFactory
 import com.mgs.pims.types.entity.PimsMapEntity
 import com.mgs.spring.AppConfig
 import org.springframework.beans.factory.annotation.Autowired

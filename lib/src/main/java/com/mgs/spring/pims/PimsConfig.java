@@ -6,7 +6,7 @@ import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
 import com.mgs.pims.linker.mixer.PimsMixersProvider;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.proxy.PimsEntityProxyFactory;
-import com.mgs.pims.types.entity.PimsFactory;
+import com.mgs.pims.types.PimsFactory;
 import com.mgs.spring.maps.MapsConfig;
 import com.mgs.spring.reflection.ReflectionsConfig;
 import com.mgs.spring.text.TextConfig;

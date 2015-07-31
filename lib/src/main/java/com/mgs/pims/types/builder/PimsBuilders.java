@@ -3,7 +3,8 @@ package com.mgs.pims.types.builder;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.types.entity.PimsFactory;
+import com.mgs.pims.types.PimsFactory;
+import com.mgs.pims.types.entity.PimsMapEntity;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
 
@@ -21,20 +22,30 @@ public class PimsBuilders {
 
     @PimsMethod(pattern = "with{fieldName}")
     public Object onWith(
+            @PimsParameter(type = PROXY_OBJECT) Object proxy,
             @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
+            @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap,
             @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName,
             @PimsParameter(type = METHOD_PARAMETERS) Object value
     ) {
-        return domainMap.put(fieldName, value);
+        if (PimsMapEntity.class.isAssignableFrom(value.getClass())){
+            PimsMapEntity castedValue = (PimsMapEntity) value;
+            valueMap.put(fieldName, castedValue.getValueMap());
+        } else {
+            valueMap.put(fieldName, value);
+        }
+        domainMap.put(fieldName, value);
+        return proxy;
     }
 
     @PimsMethod(pattern = "build")
     public Object onBuild(
             @PimsParameter(type = SOURCE_TYPE) ParsedType sourceType,
-            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap
+            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
+            @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap
     ) {
         Declaration pimsMapTypeDeclaration = sourceType.getOwnDeclaration().getParameters().get("T");
-        return pimsFactory.immutable(pimsMapTypeDeclaration.getActualType().get(), domainMap);
+        return pimsFactory.immutable(pimsMapTypeDeclaration.getActualType().get(), valueMap, domainMap);
     }
 
 }
