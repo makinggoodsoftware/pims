@@ -32,9 +32,8 @@ public class PimsConfig {
     @Bean
     public PimsFactory pimsFactory (){
         return new PimsFactory(
+                mapsConfig.mapTransformer(),
                 pimsEntityProxyFactory(),
-                mapsConfig.mapWalker(),
-                mapsConfig.mapFieldValueFactory(),
                 reflectionsConfig.typeParser()
         );
     }

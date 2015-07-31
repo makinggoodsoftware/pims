@@ -1,6 +1,6 @@
 package com.mgs.spring.maps;
 
-import com.mgs.maps.MapFieldValueFactory;
+import com.mgs.maps.MapTransformer;
 import com.mgs.maps.MapWalker;
 import com.mgs.spring.reflection.ReflectionsConfig;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +23,9 @@ public class MapsConfig {
         );
     }
 
-    @Bean
-    public MapFieldValueFactory mapFieldValueFactory() {
-        return new MapFieldValueFactory(
+    public MapTransformer mapTransformer() {
+        return new MapTransformer(
+                mapWalker(),
                 reflectionsConfig.reflections(),
                 reflectionsConfig.typeParser()
         );
