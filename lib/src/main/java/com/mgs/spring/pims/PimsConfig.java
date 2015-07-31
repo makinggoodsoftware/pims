@@ -1,5 +1,6 @@
 package com.mgs.spring.pims;
 
+import com.mgs.pims.Pims;
 import com.mgs.pims.linker.PimsLinker;
 import com.mgs.pims.linker.method.PimsMethodCaller;
 import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
@@ -28,6 +29,11 @@ public class PimsConfig {
     @Autowired
     private ReflectionsConfig reflectionsConfig;
 
+
+    @Bean
+    public Pims pims(){
+        return new Pims(pimsFactory());
+    }
 
     @Bean
     public PimsFactory pimsFactory (){

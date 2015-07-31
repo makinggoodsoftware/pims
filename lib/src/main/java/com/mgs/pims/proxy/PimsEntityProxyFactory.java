@@ -28,8 +28,8 @@ public class PimsEntityProxyFactory {
                 new PimsEntityProxy(
                         pimsMethodCaller,
                         actualType,
-                        valueMap,
                         domainMap,
+                        valueMap,
                         pimsLinker.link(actualType),
                         mutable,
                         pimsParameters)

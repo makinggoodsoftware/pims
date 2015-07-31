@@ -12,16 +12,37 @@ import spock.lang.Specification
 class PimsFactoryBehaviour extends Specification {
     @Autowired PimsFactory pimsFactory
 
-    def "should create pims entity" (){
+    def "should create siple pims entity" (){
         when:
-        MyPimsEntity alberto = pimsFactory.immutable(MyPimsEntity, [name: 'Alberto'])
+        MyPimsEntity alberto = pimsFactory.immutable(
+                MyPimsEntity,
+                [name: 'Alberto']
+        )
 
         then:
         alberto.name == 'Alberto'
     }
 
+    def "should create complex pims entity" (){
+        when:
+        ComplexPimsEntity complex = pimsFactory.immutable(
+                ComplexPimsEntity,
+                [
+                    child: [name: 'Alberto']
+                ]
+        )
+
+        then:
+        complex.child.name == 'Alberto'
+    }
+
     @PimsEntity
     private static interface MyPimsEntity extends PimsMapEntity{
         String getName()
+    }
+
+    @PimsEntity
+    private static interface ComplexPimsEntity extends PimsMapEntity{
+        MyPimsEntity getChild()
     }
 }
