@@ -20,7 +20,11 @@ class PimsFactoryBehaviour extends Specification {
         )
 
         then:
+        alberto.valueMap == [name: 'Alberto']
         alberto.name == 'Alberto'
+        ! alberto.mutable
+        alberto.type.actualType.get() == MyPimsEntity
+        alberto.type.ownDeclaration.parameters.size() == 0
     }
 
     def "should create complex pims entity" (){
@@ -33,7 +37,13 @@ class PimsFactoryBehaviour extends Specification {
         )
 
         then:
+        complex.valueMap == [
+                child: [name: 'Alberto']
+        ]
         complex.child.name == 'Alberto'
+        ! complex.mutable
+        complex.type.actualType.get() == ComplexPimsEntity
+        complex.type.ownDeclaration.parameters.size() == 0
     }
 
     @PimsEntity

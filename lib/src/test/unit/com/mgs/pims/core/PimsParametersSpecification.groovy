@@ -6,6 +6,7 @@ import com.mgs.pims.annotations.PimsMixer
 import com.mgs.pims.linker.method.LinkedMethod
 import com.mgs.pims.linker.parameters.PimsMethodParameterType
 import com.mgs.pims.linker.parameters.PimsParameters
+import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.entity.PimsMapEntities
 import com.mgs.pims.types.entity.PimsMapEntity
 import spock.lang.Specification
@@ -17,38 +18,42 @@ import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*
 
 class PimsParametersSpecification extends Specification{
     PimsParameters testObj = new PimsParameters()
-    Object sourceObjectMock = Mock(Object)
     Object parameter1Mock = Mock(Object)
     Object parameter2Mock = Mock(Object)
     Map domainMapMock = Mock (Map)
     Map valueMapMock = Mock (Map)
+
+    PimsMapEntity pimsMapEntityMock = Mock (PimsMapEntity)
+    PimsEntityProxy pimsEntityProxyMock = Mock (PimsEntityProxy)
 
     def "should return the correct type of arguments" (){
         when:
         Object[] result = testObj.apply(
             [simple(PROXY_OBJECT), placeholder('fieldName'), simple(METHOD_PARAMETERS)],
             [
-                (PROXY_OBJECT) : sourceObjectMock,
+                (PROXY_OBJECT) : pimsEntityProxyMock,
                 (METHOD_PARAMETERS) : [parameter1Mock, parameter2Mock] as Object []
             ]
         )
 
         then:
-        result == [sourceObjectMock, 'fieldName', parameter1Mock, parameter2Mock] as Object[]
+        result == [pimsEntityProxyMock, 'fieldName', parameter1Mock, parameter2Mock] as Object[]
     }
 
     def "when it creates a map of params, should have a value for each param" (){
         when:
         Map<PimsMethodParameterType, Object> params = testObj.from(
-                sourceObjectMock,
+                pimsMapEntityMock,
+                pimsEntityProxyMock,
                 [parameter1Mock, parameter2Mock] as Object [],
                 domainMapMock,
                 valueMapMock
         )
 
         then:
-        params.size() == 4
-        params[PROXY_OBJECT] == sourceObjectMock
+        params.size() == 5
+        params[SOURCE_OBJECT] == pimsMapEntityMock
+        params[PROXY_OBJECT] == pimsEntityProxyMock
         params[METHOD_PARAMETERS] == [parameter1Mock, parameter2Mock]
         params[DOMAIN_MAP] == domainMapMock
         params[VALUE_MAP] == valueMapMock

@@ -4,6 +4,7 @@ import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.proxy.PimsEntityProxy;
+import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class PimsMapEntities {
     }
 
     @PimsMethod(pattern = "getType")
-    public Class<? extends PimsMapEntity> onGetType(
+    public ParsedType onGetType(
             @PimsParameter(type = PROXY_OBJECT) PimsEntityProxy pimsEntityProxy
     ) {
         return pimsEntityProxy.getType();

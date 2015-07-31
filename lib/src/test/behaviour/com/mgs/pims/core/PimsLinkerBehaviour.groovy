@@ -5,6 +5,7 @@ import com.mgs.pims.linker.PimsLinker
 import com.mgs.pims.linker.method.PimsMethodCaller
 import com.mgs.pims.linker.method.PimsMethodDelegator
 import com.mgs.pims.linker.parameters.PimsParameters
+import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.entity.PimsMapEntity
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
@@ -19,6 +20,9 @@ class PimsLinkerBehaviour extends Specification{
     @Resource PimsMethodCaller caller
     @Resource PimsParameters pimsParameters
 
+    PimsMapEntity pimsMapEntityMock = Mock (PimsMapEntity)
+    PimsEntityProxy pimsEntityProxyMock = Mock (PimsEntityProxy)
+
     def "should call PimsMapEntities.onGetValueMap for getValueMap" (){
         when:
         Map<Method, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity)
@@ -31,7 +35,7 @@ class PimsLinkerBehaviour extends Specification{
         when:
         Map<String, String> valueMap = caller.delegate(
                 getValueMap,
-                pimsParameters.from(new Object(), null, [:], [value:'map'])
+                pimsParameters.from(pimsMapEntityMock, pimsEntityProxyMock, null, [:], [value:'map'])
         )
 
         then:
@@ -45,7 +49,7 @@ class PimsLinkerBehaviour extends Specification{
         when:
         String name = caller.delegate(
                 linkedMethods.get(MyEntity.getMethod("getName")),
-                pimsParameters.from(new Object(), null, [name:'Alberto'], [:])
+                pimsParameters.from(pimsMapEntityMock, pimsEntityProxyMock, null, [name:'Alberto'], [:])
         )
 
         then:

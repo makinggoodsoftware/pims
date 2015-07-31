@@ -22,7 +22,7 @@ public class PimsBuilders {
 
     @PimsMethod(pattern = "with{fieldName}")
     public Object onWith(
-            @PimsParameter(type = PROXY_OBJECT) Object proxy,
+            @PimsParameter(type = SOURCE_OBJECT) PimsMapEntity entity,
             @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
             @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap,
             @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName,
@@ -35,7 +35,7 @@ public class PimsBuilders {
             valueMap.put(fieldName, value);
         }
         domainMap.put(fieldName, value);
-        return proxy;
+        return entity;
     }
 
     @PimsMethod(pattern = "build")

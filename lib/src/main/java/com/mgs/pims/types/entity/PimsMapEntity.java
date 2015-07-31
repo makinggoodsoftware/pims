@@ -2,6 +2,7 @@ package com.mgs.pims.types.entity;
 
 import com.mgs.maps.VirtualField;
 import com.mgs.pims.annotations.PimsEntity;
+import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
 
@@ -17,5 +18,5 @@ public interface PimsMapEntity {
     boolean isMutable();
 
     @VirtualField
-    Class<? extends PimsMapEntity> getType();
+    ParsedType getType();
 }

@@ -2,6 +2,8 @@ package com.mgs.pims.linker.parameters;
 
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.linker.method.LinkedMethod;
+import com.mgs.pims.proxy.PimsEntityProxy;
+import com.mgs.pims.types.entity.PimsMapEntity;
 
 import java.lang.reflect.Parameter;
 import java.util.*;
@@ -31,20 +33,22 @@ public class PimsParameters {
     }
 
     public Map<PimsMethodParameterType, Object> from(
-            Object proxy,
+            PimsMapEntity entity,
+            PimsEntityProxy proxy,
             Object[] args,
             Map<String, Object> domainMap,
             Map<String, Object> valueMap
     ) {
-        if (proxy == null) throw new IllegalStateException("Can't create parameters, proxy ,must be NOT null");
+        if (entity == null) throw new IllegalStateException("Can't create parameters, proxy ,must be NOT null");
         if (domainMap == null) throw new IllegalStateException("Can't create parameters, domain map ,must be NOT null");
         if (valueMap == null) throw new IllegalStateException("Can't create parameters, value map ,must be NOT null");
 
         Map<PimsMethodParameterType, Object> parameters = new HashMap<>();
-        parameters.put(PimsMethodParameterType.PROXY_OBJECT, proxy);
+        parameters.put(PROXY_OBJECT, proxy);
+        parameters.put(SOURCE_OBJECT, entity);
         parameters.put(METHOD_PARAMETERS, args);
-        parameters.put(PimsMethodParameterType.DOMAIN_MAP, domainMap);
-        parameters.put(PimsMethodParameterType.VALUE_MAP, valueMap);
+        parameters.put(DOMAIN_MAP, domainMap);
+        parameters.put(VALUE_MAP, valueMap);
         return parameters;
     }
 
