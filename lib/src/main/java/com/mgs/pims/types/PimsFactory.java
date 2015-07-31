@@ -27,25 +27,29 @@ public class PimsFactory {
         return fromValueMap(type, valueMap, false);
     }
 
+    public <T extends PimsMapEntity> T mutable(Class<T> type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
+        return withMutability(type, valueMap, domainMap, true);
+    }
+
     public <T extends PimsMapEntity> T immutable(Class<T> type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
+        return withMutability(type, valueMap, domainMap, false);
+    }
+
+    private <T extends PimsMapEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
+        Map<String, Object> domainMap = mapTransformer.objectify(
+                type,
+                valueMap,
+                (childType, childMap) -> fromValueMap(childType, childMap, mutable));
+        //noinspection unchecked
+        return (T) withMutability(type.getActualType().get(), valueMap, domainMap, mutable);
+    }
+
+    private <T extends PimsMapEntity> T withMutability(Class<T> type, Map<String, Object> valueMap, Map<String, Object> domainMap, boolean mutable) {
         return pimsEntityProxyFactory.proxy(
-                false,
+                mutable,
                 type,
                 valueMap,
                 domainMap
         );
-    }
-
-    private <T extends PimsMapEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
-        return pimsEntityProxyFactory.proxy(
-                mutable,
-                type.getActualType().get(),
-                valueMap,
-                mapTransformer.objectify(
-                        type,
-                        valueMap,
-                        (childType, childMap) -> fromValueMap(childType, childMap, mutable))
-                );
-
     }
 }
