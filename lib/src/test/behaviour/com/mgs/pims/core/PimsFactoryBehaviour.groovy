@@ -55,8 +55,8 @@ class PimsFactoryBehaviour extends Specification {
         withParameter.parameter == 'Alberto'
         ! withParameter.mutable
         withParameter.type.actualType.get() == WithParameter
-        withParameter.type.ownDeclaration.parameters.size() == 1
-        withParameter.type.ownDeclaration.parameters.get("T").actualType.get() == String
+        withParameter.type.ownDeclaration.parameters.size() == 0
+        withParameter.type.superDeclarations.get(WithParameterBase).ownDeclaration.parameters.get("T").actualType.get() == String
     }
 
     @PimsEntity
