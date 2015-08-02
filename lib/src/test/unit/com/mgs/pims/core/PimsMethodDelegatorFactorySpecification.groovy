@@ -1,6 +1,8 @@
 package com.mgs.pims.core
 
 import com.mgs.pims.annotations.PimsEntity
+import com.mgs.pims.annotations.PimsMethod
+import com.mgs.pims.annotations.PimsMixer
 import com.mgs.pims.linker.method.PimsMethodDelegator
 import com.mgs.pims.linker.method.PimsMethodDelegatorFactory
 import com.mgs.pims.linker.mixer.NullMixer
@@ -66,8 +68,61 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 
+    def "should match methods distributed in many interfaces" (){
+        given:
+        patternMatcherMock.match("getName", "getDomainMap") >> failure
+        patternMatcherMock.match("getName", "getValueMap") >> failure
+        patternMatcherMock.match("getName", "getType") >> failure
+        patternMatcherMock.match("getName", "isMutable") >> failure
+        patternMatcherMock.match("getName", "get{fieldName}") >> success
+
+        patternMatcherMock.match("getAge", "getDomainMap") >> failure
+        patternMatcherMock.match("getAge", "getValueMap") >> failure
+        patternMatcherMock.match("getAge", "getType") >> failure
+        patternMatcherMock.match("getAge", "isMutable") >> failure
+        patternMatcherMock.match("getAge", "get{fieldName}") >> success
+        patternMatcherMock.match("getAge", "getAge") >> success
+
+        when:
+        PimsMethodDelegator delegator = testObj.link(CombinedEntity, CombinedEntity.getMethod("getAge"))
+
+        then:
+        delegator.targetType == CombinedManager
+        delegator.delegatorMethod == CombinedManager.getMethod("onGetAge")
+        delegator.pimsEntityType == CombinedEntity
+        delegator.pimsMethodParameterTypes == parameterTypesMock
+
+        when:
+        delegator = testObj.link(CombinedEntity, CombinedEntity.getMethod("getName"))
+
+        then:
+        delegator.targetType == PimsMapEntities
+        delegator.delegatorMethod == PimsMapEntities.getMethod("onGetter", Map, String)
+        delegator.pimsEntityType == CombinedEntity
+        delegator.pimsMethodParameterTypes == parameterTypesMock
+    }
+
+
     @PimsEntity
     private interface PimsEntitySample extends PimsMapEntity{
         String getName()
+    }
+
+    @PimsEntity (managedBy = CombinedManager)
+    private interface PimsEntitySampleII extends PimsMapEntity{
+        Integer getAge()
+    }
+
+    @PimsEntity
+    private interface CombinedEntity extends PimsEntitySample, PimsEntitySampleII{
+        Integer getAge()
+    }
+
+    @PimsMixer
+    private class CombinedManager {
+        @PimsMethod(pattern = "getAge")
+        Integer onGetAge() {
+            return 15;
+        }
     }
 }

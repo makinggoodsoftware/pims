@@ -14,11 +14,11 @@ public class Pims {
         this.pimsFactory = pimsFactory;
     }
 
-    private <T extends PimsMapEntity> T newEntity (Class<T> type, Map<String, Object> value){
+    public <T extends PimsMapEntity> T newEntity (Class<T> type, Map<String, Object> value){
         return pimsFactory.immutable(type, value);
     }
 
-    private <Z extends PimsMapEntity, T extends PimsBuilder<Z>> T newBuilder (Class<T> type, Map<String, Object> value){
+    public <Z extends PimsMapEntity, T extends PimsBuilder<Z>> T newBuilder(Class<T> type){
         return pimsFactory.mutable(type, new HashMap<>(), new HashMap<>());
     }
 }

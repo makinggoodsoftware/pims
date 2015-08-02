@@ -41,17 +41,12 @@ public class PimsMethodDelegatorFactory {
     private SortedSet<LinkedMethod> findMixerMethodCandidatesFrom(Method sourceMethod, Class rootEntityType) {
         SortedSet<LinkedMethod> possibleCandidates = newLinkedMethodsSetWithPlaceholdersLast();
 
-        Class thisEntityType = rootEntityType;
-        while (thisEntityType != null){
-            Class mixerType = managedBy(thisEntityType);
-            SortedSet<LinkedMethod> mixerMethods = mixerMethods(mixerType, sourceMethod);
-            possibleCandidates.addAll(mixerMethods);
-            Class[] parentInterfaces = thisEntityType.getInterfaces();
-            if (parentInterfaces == null || parentInterfaces.length < 1) {
-                thisEntityType = null;
-            } else {
-                thisEntityType = parentInterfaces[0];
-            }
+        Class mixerType = managedBy(rootEntityType);
+        SortedSet<LinkedMethod> mixerMethods = mixerMethods(mixerType, sourceMethod);
+        possibleCandidates.addAll(mixerMethods);
+        Class[] parentInterfaces = rootEntityType.getInterfaces();
+        for (Class parentInterface : parentInterfaces) {
+            possibleCandidates.addAll(findMixerMethodCandidatesFrom(sourceMethod, parentInterface));
         }
         return possibleCandidates;
     }
@@ -61,10 +56,10 @@ public class PimsMethodDelegatorFactory {
 
         for (Method declaredMethod : mixerType.getDeclaredMethods()) {
             PimsMethod pimsMethod = declaredMethod.getAnnotation(PimsMethod.class);
-            if (pimsMethod != null){
+            if (pimsMethod != null) {
                 String pattern = pimsMethod.pattern();
                 PatternMatchingResult match = patternMatcher.match(sourceMethod.getName(), pattern);
-                if (match.isMatch()){
+                if (match.isMatch()) {
                     possibleCandidates.add(new LinkedMethod(declaredMethod, match.getPlaceholders()));
                 }
             }
@@ -82,9 +77,8 @@ public class PimsMethodDelegatorFactory {
             boolean leftHasPlaceholders = hasPlaceholders(left);
             return
                     rightHasPlaceholders == leftHasPlaceholders ? keepCurrentOrder :
-                    rightHasPlaceholders  ? leftFirst :
-                    leftHasPlaceholders ? rightFirst :
-                            keepCurrentOrder;
+                            rightHasPlaceholders ? leftFirst :
+                            rightFirst;
         });
     }
 
@@ -94,7 +88,8 @@ public class PimsMethodDelegatorFactory {
 
     private Class managedBy(Class declaredEntityType) {
         PimsEntity annotation = (PimsEntity) declaredEntityType.getAnnotation(PimsEntity.class);
-        if (annotation == null) throw new IllegalStateException("Can't link " + declaredEntityType + ". Is not annotated with PimsEntity");
+        if (annotation == null)
+            throw new IllegalStateException("Can't link " + declaredEntityType + ". Is not annotated with PimsEntity");
         return annotation.managedBy();
     }
 
