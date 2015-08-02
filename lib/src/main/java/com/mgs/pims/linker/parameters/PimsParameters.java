@@ -4,6 +4,7 @@ import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.linker.method.LinkedMethod;
 import com.mgs.pims.proxy.PimsEntityProxy;
 import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.reflections.ParsedType;
 
 import java.lang.reflect.Parameter;
 import java.util.*;
@@ -33,6 +34,7 @@ public class PimsParameters {
     }
 
     public Map<PimsMethodParameterType, Object> from(
+            ParsedType type,
             PimsMapEntity entity,
             PimsEntityProxy proxy,
             Object[] args,
@@ -44,6 +46,7 @@ public class PimsParameters {
         if (valueMap == null) throw new IllegalStateException("Can't create parameters, value map ,must be NOT null");
 
         Map<PimsMethodParameterType, Object> parameters = new HashMap<>();
+        parameters.put(SOURCE_TYPE, type);
         parameters.put(PROXY_OBJECT, proxy);
         parameters.put(SOURCE_OBJECT, entity);
         parameters.put(METHOD_PARAMETERS, args);

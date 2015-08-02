@@ -65,7 +65,7 @@ public class TypeParser {
 				Map<String, Declaration> parameters = superParsedType.getOwnDeclaration().getParameters();
 				returnType = parse(genericTypeResolution, parameters);
 			}else {
-				returnType = parse(genericTypeResolution, new HashMap<String, Declaration>());
+				returnType = parse(genericTypeResolution, new HashMap<>());
 			}
 		}
 		return new GenericMethod(returnType, method);
@@ -77,11 +77,11 @@ public class TypeParser {
 			TypeResolution superTypeResolution = typeResolution(genericInterface);
 			if (! superTypeResolution.getParameterizedType().isPresent()) {
 				accumulateSuperParameterizedTypes(superTypeResolution.getSpecificClass().get(), new HashMap<>(), accumulator);
-				return;
+			} else {
+				ParsedType superInterface = parse(superTypeResolution, thisEffectiveParameters);
+				accumulator.put(superTypeResolution.getSpecificClass().get(), superInterface);
+				accumulateSuperParameterizedTypes(superTypeResolution.getSpecificClass().get(), thisEffectiveParameters, accumulator);
 			}
-			ParsedType superInterface = parse(superTypeResolution, thisEffectiveParameters);
-			accumulator.put(superTypeResolution.getSpecificClass().get(), superInterface);
-			accumulateSuperParameterizedTypes(superTypeResolution.getSpecificClass().get(), thisEffectiveParameters, accumulator);
 		}
 	}
 

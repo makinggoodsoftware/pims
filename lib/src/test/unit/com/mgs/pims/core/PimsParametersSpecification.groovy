@@ -9,6 +9,7 @@ import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.entity.PimsMapEntities
 import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.reflections.ParsedType
 import spock.lang.Specification
 
 import static PimsMethodParameterType.METHOD_PARAMETERS
@@ -22,6 +23,7 @@ class PimsParametersSpecification extends Specification{
     Object parameter2Mock = Mock(Object)
     Map domainMapMock = Mock (Map)
     Map valueMapMock = Mock (Map)
+    ParsedType parsedTypeMock = Mock(ParsedType)
 
     PimsMapEntity pimsMapEntityMock = Mock (PimsMapEntity)
     PimsEntityProxy pimsEntityProxyMock = Mock (PimsEntityProxy)
@@ -37,12 +39,14 @@ class PimsParametersSpecification extends Specification{
         )
 
         then:
+        //noinspection GroovyAssignabilityCheck
         result == [pimsEntityProxyMock, 'fieldName', parameter1Mock, parameter2Mock] as Object[]
     }
 
     def "when it creates a map of params, should have a value for each param" (){
         when:
         Map<PimsMethodParameterType, Object> params = testObj.from(
+                parsedTypeMock,
                 pimsMapEntityMock,
                 pimsEntityProxyMock,
                 [parameter1Mock, parameter2Mock] as Object [],
@@ -51,7 +55,8 @@ class PimsParametersSpecification extends Specification{
         )
 
         then:
-        params.size() == 5
+        params.size() == 6
+        params[SOURCE_TYPE] == parsedTypeMock
         params[SOURCE_OBJECT] == pimsMapEntityMock
         params[PROXY_OBJECT] == pimsEntityProxyMock
         params[METHOD_PARAMETERS] == [parameter1Mock, parameter2Mock]
