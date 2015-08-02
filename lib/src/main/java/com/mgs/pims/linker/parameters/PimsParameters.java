@@ -41,7 +41,9 @@ public class PimsParameters {
             Map<String, Object> domainMap,
             Map<String, Object> valueMap
     ) {
-        if (entity == null) throw new IllegalStateException("Can't create parameters, proxy ,must be NOT null");
+        if (type == null) throw new IllegalStateException("Can't create parameters, type ,must be NOT null");
+        if (entity == null) throw new IllegalStateException("Can't create parameters, entity ,must be NOT null");
+        if (proxy == null) throw new IllegalStateException("Can't create parameters, proxy ,must be NOT null");
         if (domainMap == null) throw new IllegalStateException("Can't create parameters, domain map ,must be NOT null");
         if (valueMap == null) throw new IllegalStateException("Can't create parameters, value map ,must be NOT null");
 

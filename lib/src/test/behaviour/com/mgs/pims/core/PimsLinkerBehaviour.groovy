@@ -7,6 +7,7 @@ import com.mgs.pims.linker.method.PimsMethodDelegator
 import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.reflections.ParsedType
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
@@ -23,6 +24,8 @@ class PimsLinkerBehaviour extends Specification{
     PimsMapEntity pimsMapEntityMock = Mock (PimsMapEntity)
     PimsEntityProxy pimsEntityProxyMock = Mock (PimsEntityProxy)
 
+    ParsedType parsedTypeMock = Mock (ParsedType)
+
     def "should call PimsMapEntities.onGetValueMap for getValueMap" (){
         when:
         Map<Method, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity)
@@ -35,8 +38,15 @@ class PimsLinkerBehaviour extends Specification{
         when:
         Map<String, String> valueMap = caller.delegate(
                 getValueMap,
-                pimsParameters.from(pimsMapEntityMock, pimsEntityProxyMock, null, [:], [value:'map'])
-        )
+                pimsParameters.from(
+                        parsedTypeMock,
+                        pimsMapEntityMock,
+                        pimsEntityProxyMock,
+                        null,
+                        [:],
+                        [value:'map']
+                )
+        ) as Map<String, String>
 
         then:
         valueMap == [value:'map']
@@ -49,7 +59,14 @@ class PimsLinkerBehaviour extends Specification{
         when:
         String name = caller.delegate(
                 linkedMethods.get(MyEntity.getMethod("getName")),
-                pimsParameters.from(pimsMapEntityMock, pimsEntityProxyMock, null, [name:'Alberto'], [:])
+                pimsParameters.from(
+                        parsedTypeMock,
+                        pimsMapEntityMock,
+                        pimsEntityProxyMock,
+                        null,
+                        [name:'Alberto'],
+                        [:]
+                )
         )
 
         then:
