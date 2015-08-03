@@ -14,7 +14,7 @@ import javax.annotation.Resource
 class PimsBehaviour extends Specification{
     @Resource Pims pims
 
-    def "should create a builder" (){
+    def "should create a simple builder" (){
         when:
         MyInterfaceBuilder myInterfaceBuilder = pims.newBuilder(MyInterfaceBuilder)
         myInterfaceBuilder.withName('Alberto')

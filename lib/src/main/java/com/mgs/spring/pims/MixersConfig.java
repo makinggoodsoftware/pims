@@ -3,7 +3,7 @@ package com.mgs.spring.pims;
 import com.mgs.pims.linker.mixer.NullMixer;
 import com.mgs.pims.types.builder.PimsBuilders;
 import com.mgs.pims.types.entity.PimsMapEntities;
-import com.mgs.pims.types.resource.PimsResources;
+import com.mgs.pims.types.persistable.PimsPersistables;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,8 +24,8 @@ public class MixersConfig {
     }
 
     @Bean
-    public PimsResources pimsResources (){
-        return new PimsResources();
+    public PimsPersistables pimsResources (){
+        return new PimsPersistables();
     }
 
     @Bean
