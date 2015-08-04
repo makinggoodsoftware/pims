@@ -32,7 +32,11 @@ public class PimsConfig {
 
     @Bean
     public Pims pims(){
-        return new Pims(pimsFactory());
+        return new Pims(
+                pimsFactory(),
+                pimsEntityProxyFactory(),
+                reflectionsConfig.typeParser()
+        );
     }
 
     @Bean

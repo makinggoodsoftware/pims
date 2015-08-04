@@ -4,7 +4,7 @@ import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.linker.parameters.ParameterResolution;
 import com.mgs.pims.linker.parameters.PimsParameters;
-import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.text.PatternMatcher;
 import com.mgs.text.PatternMatchingResult;
 

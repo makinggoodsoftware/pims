@@ -4,7 +4,7 @@ import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.types.PimsFactory;
-import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
 

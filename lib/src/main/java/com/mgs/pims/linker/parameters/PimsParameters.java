@@ -3,7 +3,8 @@ package com.mgs.pims.linker.parameters;
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.linker.method.LinkedMethod;
 import com.mgs.pims.proxy.PimsEntityProxy;
-import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.types.base.PimsBaseEntity;
+import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
 
 import java.lang.reflect.Parameter;
@@ -35,7 +36,7 @@ public class PimsParameters {
 
     public Map<PimsMethodParameterType, Object> from(
             ParsedType type,
-            PimsMapEntity entity,
+            PimsBaseEntity entity,
             PimsEntityProxy proxy,
             Object[] args,
             Map<String, Object> domainMap,

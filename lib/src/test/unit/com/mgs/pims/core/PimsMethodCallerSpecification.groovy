@@ -8,7 +8,7 @@ import com.mgs.pims.linker.method.PimsMethodDelegator
 import com.mgs.pims.linker.mixer.PimsMixersProvider
 import com.mgs.pims.linker.parameters.PimsMethodParameterType
 import com.mgs.pims.linker.parameters.PimsParameters
-import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.pims.types.map.PimsMapEntity
 import spock.lang.Specification
 
 import static PimsMethodParameterType.PROXY_OBJECT

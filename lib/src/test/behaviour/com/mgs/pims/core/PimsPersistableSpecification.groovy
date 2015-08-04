@@ -3,12 +3,14 @@ package com.mgs.pims.core
 import com.mgs.pims.Pims
 import com.mgs.pims.annotations.PimsEntity
 import com.mgs.pims.types.builder.PimsBuilder
-import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.pims.types.persistable.PimsPersistable
 import com.mgs.pims.types.persistable.PimsPersistableBuilder
+import com.mgs.pims.types.retriever.PimsRetriever
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+import sun.dc.pr.PRError
 
 import javax.annotation.Resource
 
@@ -24,6 +26,14 @@ class PimsPersistableSpecification extends Specification{
 
         then:
         alberto.data.name == 'Alberto'
+
+        when:
+        alberto.persist()
+        PersonRetriever personRetriever = pims.stateless(PersonRetriever)
+        List<Person> albertos = personRetriever.byName("Alberto")
+
+        then:
+        albertos == [alberto]
     }
 
     @PimsEntity
@@ -42,5 +52,10 @@ class PimsPersistableSpecification extends Specification{
     @PimsEntity
     private static interface PersonDataBuilder extends PimsBuilder<PersonData>{
         PersonDataBuilder withName(String name)
+    }
+
+    @PimsEntity
+    private static interface PersonRetriever extends PimsRetriever<PersonData, Person> {
+        List<Person> byName (String name)
     }
 }

@@ -7,8 +7,8 @@ import com.mgs.pims.linker.method.LinkedMethod
 import com.mgs.pims.linker.parameters.PimsMethodParameterType
 import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
-import com.mgs.pims.types.entity.PimsMapEntities
-import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.pims.types.map.PimsMapEntities
+import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.reflections.ParsedType
 import spock.lang.Specification
 

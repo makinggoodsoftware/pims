@@ -1,10 +1,13 @@
 package com.mgs.pims;
 
+import com.mgs.pims.proxy.PimsEntityProxyFactory;
 import com.mgs.pims.types.PimsFactory;
 import com.mgs.pims.types.builder.PimsBuilder;
-import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.pims.types.persistable.PimsPersistableBuilder;
+import com.mgs.pims.types.base.PimsBaseEntity;
+import com.mgs.reflections.TypeParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +15,13 @@ import java.util.function.Function;
 
 public class Pims {
     private final PimsFactory pimsFactory;
+    private final PimsEntityProxyFactory pimsEntityProxyFactory;
+    private final TypeParser typeParser;
 
-    public Pims(PimsFactory pimsFactory) {
+    public Pims(PimsFactory pimsFactory, PimsEntityProxyFactory pimsEntityProxyFactory, TypeParser typeParser) {
         this.pimsFactory = pimsFactory;
+        this.pimsEntityProxyFactory = pimsEntityProxyFactory;
+        this.typeParser = typeParser;
     }
 
     public <M extends PimsMapEntity> M
@@ -39,5 +46,14 @@ public class Pims {
         PB persistableBuilder = newBuilder(persistableBuilderType);
         persistableBuilder.withData(data);
         return persistableBuilder;
+    }
+
+    public <T extends PimsBaseEntity> T stateless(Class<T> statelessType) {
+        return pimsEntityProxyFactory.proxy(
+                false,
+                typeParser.parse(statelessType),
+                new HashMap<>(),
+                new HashMap<>()
+        );
     }
 }

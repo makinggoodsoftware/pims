@@ -3,7 +3,8 @@ package com.mgs.pims.proxy;
 import com.mgs.pims.linker.method.PimsMethodCaller;
 import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.parameters.PimsParameters;
-import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.types.base.PimsBaseEntity;
+import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypelessMethod;
 
@@ -43,7 +44,7 @@ public class PimsEntityProxy implements InvocationHandler {
                 pimsMethodDelegator,
                 pimsParameters.from(
                         type,
-                        (PimsMapEntity) entity,
+                        (PimsBaseEntity) entity,
                         this,
                         args,
                         domainMap,

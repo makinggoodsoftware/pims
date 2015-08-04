@@ -2,7 +2,7 @@ package com.mgs.pims.types;
 
 import com.mgs.maps.MapTransformer;
 import com.mgs.pims.proxy.PimsEntityProxyFactory;
-import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 

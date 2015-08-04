@@ -8,8 +8,8 @@ import com.mgs.pims.linker.method.PimsMethodDelegatorFactory
 import com.mgs.pims.linker.mixer.NullMixer
 import com.mgs.pims.linker.mixer.PimsMixersProvider
 import com.mgs.pims.linker.parameters.PimsParameters
-import com.mgs.pims.types.entity.PimsMapEntities
-import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.pims.types.map.PimsMapEntities
+import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.reflections.ParsedType
 import com.mgs.text.PatternMatcher
 import com.mgs.text.PatternMatchingResult

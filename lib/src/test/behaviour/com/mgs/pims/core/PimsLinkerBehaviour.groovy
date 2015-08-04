@@ -6,7 +6,7 @@ import com.mgs.pims.linker.method.PimsMethodCaller
 import com.mgs.pims.linker.method.PimsMethodDelegator
 import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
-import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.reflections.ParsedType
 import com.mgs.reflections.TypelessMethod
 import com.mgs.spring.AppConfig
@@ -14,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
 import javax.annotation.Resource
-import java.lang.reflect.Method
 
 @ContextConfiguration(classes = [AppConfig.class])
 class PimsLinkerBehaviour extends Specification{

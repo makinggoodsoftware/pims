@@ -2,7 +2,7 @@ package com.mgs.pims.linker;
 
 import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
-import com.mgs.pims.types.entity.PimsMapEntity;
+import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.TypelessMethod;
 
 import java.lang.reflect.Method;
