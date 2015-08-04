@@ -27,6 +27,12 @@ class PimsBehaviour extends Specification{
 
         then:
         alberto.name == 'Alberto'
+
+        when:
+        String toString = alberto.toString()
+
+        then:
+        toString != null
     }
 
     @PimsEntity

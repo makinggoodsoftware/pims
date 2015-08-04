@@ -33,9 +33,9 @@ public class Pims {
             P extends PimsPersistable<M>,
             PB extends PimsPersistableBuilder<M, P>
     >
-    PB newPersistedEntityBuilder(Class<PB> persistableBuilderType, Class<B> dataBuilderType, Function<B, M> builderFn) {
+    PB newPersistedEntityBuilder(Class<PB> persistableBuilderType, Class<B> dataBuilderType, Function<B, B> builderFn) {
         B dataBuilder = newBuilder(dataBuilderType);
-        M data = builderFn.apply(dataBuilder);
+        M data = builderFn.apply(dataBuilder).build();
         PB persistableBuilder = newBuilder(persistableBuilderType);
         persistableBuilder.withData(data);
         return persistableBuilder;

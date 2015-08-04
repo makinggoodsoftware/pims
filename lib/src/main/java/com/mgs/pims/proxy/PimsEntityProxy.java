@@ -5,6 +5,7 @@ import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.types.entity.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
+import com.mgs.reflections.TypelessMethod;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -14,12 +15,12 @@ public class PimsEntityProxy implements InvocationHandler {
     private final ParsedType type;
     private final Map<String, Object> domainMap;
     private final Map<String, Object> valueMap;
-    private final Map<Method, PimsMethodDelegator> methodDelegators;
+    private final Map<TypelessMethod, PimsMethodDelegator> methodDelegators;
     private final boolean mutable;
     private final PimsMethodCaller pimsMethodCaller;
     private final PimsParameters pimsParameters;
 
-    public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, ParsedType type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<Method, PimsMethodDelegator> methodDelegators, boolean mutable, PimsParameters pimsParameters) {
+    public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, ParsedType type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<TypelessMethod, PimsMethodDelegator> methodDelegators, boolean mutable, PimsParameters pimsParameters) {
         this.type = type;
         this.domainMap = domainMap;
         this.valueMap = valueMap;
@@ -31,8 +32,15 @@ public class PimsEntityProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object entity, Method method, Object[] args) throws Throwable {
+        TypelessMethod key = TypelessMethod.fromMethod(method);
+        PimsMethodDelegator pimsMethodDelegator = methodDelegators.get(key);
+        if (pimsMethodDelegator == null){
+            String errMsg1 = "Can't find delegator for: " + method.getName() + "[" + method.getDeclaringClass().getName() + "]";
+            String errMsg2 = "The available delegators are: " + methodDelegators;
+            throw new IllegalStateException(errMsg1 + ". " + errMsg2);
+        }
         return pimsMethodCaller.delegate(
-                methodDelegators.get(method),
+                pimsMethodDelegator,
                 pimsParameters.from(
                         type,
                         (PimsMapEntity) entity,
@@ -48,7 +56,7 @@ public class PimsEntityProxy implements InvocationHandler {
         return domainMap;
     }
 
-    public Map<Method, PimsMethodDelegator> getMethodDelegators() {
+    public Map<TypelessMethod, PimsMethodDelegator> getMethodDelegators() {
         return methodDelegators;
     }
 

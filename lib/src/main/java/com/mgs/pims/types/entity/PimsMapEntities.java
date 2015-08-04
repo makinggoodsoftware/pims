@@ -1,5 +1,7 @@
 package com.mgs.pims.types.entity;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
@@ -47,5 +49,16 @@ public class PimsMapEntities {
     ) {
         return domainMap.get(fieldName);
     }
+
+    @PimsMethod(pattern = "toString")
+    public Object onToString(
+            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
+            @PimsParameter(type = SOURCE_TYPE) ParsedType type
+    ) {
+        return MoreObjects.toStringHelper(type.getActualType().get()).
+                add("domainMap", domainMap).
+                toString();
+    }
+
 
 }

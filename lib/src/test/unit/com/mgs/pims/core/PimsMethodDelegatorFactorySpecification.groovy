@@ -10,6 +10,7 @@ import com.mgs.pims.linker.mixer.PimsMixersProvider
 import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.types.entity.PimsMapEntities
 import com.mgs.pims.types.entity.PimsMapEntity
+import com.mgs.reflections.ParsedType
 import com.mgs.text.PatternMatcher
 import com.mgs.text.PatternMatchingResult
 import spock.lang.Specification
@@ -38,6 +39,7 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("getDomainMap", "getType") >> failure
         patternMatcherMock.match("getDomainMap", "isMutable") >> failure
         patternMatcherMock.match("getDomainMap", "get{fieldName}") >> successWithPlaceholders
+        patternMatcherMock.match("getDomainMap", "toString") >> failure
 
 
         when:
@@ -57,6 +59,7 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("getName", "getType") >> failure
         patternMatcherMock.match("getName", "isMutable") >> failure
         patternMatcherMock.match("getName", "get{fieldName}") >> success
+        patternMatcherMock.match("getName", "toString") >> failure
 
         when:
         PimsMethodDelegator delegator = testObj.link(PimsEntitySample, PimsEntitySample.getMethod("getName"))
@@ -74,14 +77,16 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("getName", "getValueMap") >> failure
         patternMatcherMock.match("getName", "getType") >> failure
         patternMatcherMock.match("getName", "isMutable") >> failure
-        patternMatcherMock.match("getName", "get{fieldName}") >> success
+        patternMatcherMock.match("getName", "get{fieldName}") >> successWithPlaceholders
+        patternMatcherMock.match("getName", "toString") >> failure
 
         patternMatcherMock.match("getAge", "getDomainMap") >> failure
         patternMatcherMock.match("getAge", "getValueMap") >> failure
         patternMatcherMock.match("getAge", "getType") >> failure
         patternMatcherMock.match("getAge", "isMutable") >> failure
-        patternMatcherMock.match("getAge", "get{fieldName}") >> success
+        patternMatcherMock.match("getAge", "get{fieldName}") >> successWithPlaceholders
         patternMatcherMock.match("getAge", "getAge") >> success
+        patternMatcherMock.match("getAge", "toString") >> failure
 
         when:
         PimsMethodDelegator delegator = testObj.link(CombinedEntity, CombinedEntity.getMethod("getAge"))
@@ -99,6 +104,25 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         delegator.targetType == PimsMapEntities
         delegator.delegatorMethod == PimsMapEntities.getMethod("onGetter", Map, String)
         delegator.pimsEntityType == CombinedEntity
+        delegator.pimsMethodParameterTypes == parameterTypesMock
+    }
+
+    def "should link method overriden from Object" (){
+        given:
+        patternMatcherMock.match("toString", "getDomainMap") >> failure
+        patternMatcherMock.match("toString", "getValueMap") >> failure
+        patternMatcherMock.match("toString", "getType") >> failure
+        patternMatcherMock.match("toString", "isMutable") >> failure
+        patternMatcherMock.match("toString", "get{fieldName}") >> failure
+        patternMatcherMock.match("toString", "toString") >> success
+
+        when:
+        PimsMethodDelegator delegator = testObj.link(PimsEntitySample, PimsEntitySample.getMethod("toString"))
+
+        then:
+        delegator.targetType == PimsMapEntities
+        delegator.delegatorMethod == PimsMapEntities.getMethod("onToString", Map, ParsedType)
+        delegator.pimsEntityType == PimsEntitySample
         delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 

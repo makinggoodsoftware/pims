@@ -19,4 +19,7 @@ public interface PimsMapEntity {
 
     @VirtualField
     ParsedType getType();
+
+    @Override
+    String toString();
 }

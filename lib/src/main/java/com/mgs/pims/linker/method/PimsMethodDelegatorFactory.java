@@ -27,6 +27,9 @@ public class PimsMethodDelegatorFactory {
     public <T extends PimsMapEntity> PimsMethodDelegator<T> link(Class<T> entityType, Method sourceMethod) {
         Class rootEntityType = sourceMethod.getDeclaringClass();
         SortedSet<LinkedMethod> mixerMethods = findMixerMethodCandidatesFrom(sourceMethod, rootEntityType);
+        if (mixerMethods == null || mixerMethods.size() == 0) {
+            throw new IllegalStateException("Can't find the method " + sourceMethod.getName() + " in: " + rootEntityType.getName() + " or its parent classes");
+        }
         LinkedMethod mixerMethod = mixerMethods.first();
         List<ParameterResolution> parameterTypes = pimsParameters.parse(mixerMethod);
         Method declaredMethod = mixerMethod.getDeclaredMethod();

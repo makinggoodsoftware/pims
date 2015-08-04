@@ -34,4 +34,14 @@ public class PimsMethodDelegator <T extends PimsMapEntity>{
     public List<ParameterResolution> getPimsMethodParameterTypes() {
         return pimsMethodParameterTypes;
     }
+
+    @Override
+    public String toString() {
+        return "PimsMethodDelegator{" +
+                "pimsEntityType=" + pimsEntityType +
+                ", targetType=" + targetType +
+                ", delegatorMethod=" + delegatorMethod +
+                ", pimsMethodParameterTypes=" + pimsMethodParameterTypes +
+                '}';
+    }
 }
