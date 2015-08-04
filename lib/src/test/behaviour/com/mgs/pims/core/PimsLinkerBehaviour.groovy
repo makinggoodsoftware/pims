@@ -8,6 +8,7 @@ import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.entity.PimsMapEntity
 import com.mgs.reflections.ParsedType
+import com.mgs.reflections.TypelessMethod
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
@@ -28,8 +29,8 @@ class PimsLinkerBehaviour extends Specification{
 
     def "should call PimsMapEntities.onGetValueMap for getValueMap" (){
         when:
-        Map<Method, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity)
-        PimsMethodDelegator getValueMap = linkedMethods.get(PimsMapEntity.getMethod("getValueMap"))
+        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity)
+        PimsMethodDelegator getValueMap = linkedMethods.get(TypelessMethod.fromMethod(PimsMapEntity.getMethod("getValueMap")))
 
         then:
         getValueMap.delegatorMethod.getName() == "onGetValueMap"
@@ -54,11 +55,11 @@ class PimsLinkerBehaviour extends Specification{
 
     def "should call PimsMapEntities.onGetter correctly for getName" (){
         given:
-        Map<Method, PimsMethodDelegator> linkedMethods = pimsLinker.link(MyEntity)
+        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(MyEntity)
 
         when:
         String name = caller.delegate(
-                linkedMethods.get(MyEntity.getMethod("getName")),
+                linkedMethods.get(TypelessMethod.fromMethod(MyEntity.getMethod("getName"))),
                 pimsParameters.from(
                         parsedTypeMock,
                         pimsMapEntityMock,
