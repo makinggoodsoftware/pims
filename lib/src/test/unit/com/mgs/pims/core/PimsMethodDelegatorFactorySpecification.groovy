@@ -8,6 +8,7 @@ import com.mgs.pims.linker.method.PimsMethodDelegatorFactory
 import com.mgs.pims.linker.mixer.NullMixer
 import com.mgs.pims.linker.mixer.PimsMixersProvider
 import com.mgs.pims.linker.parameters.PimsParameters
+import com.mgs.pims.types.base.PimsBaseEntities
 import com.mgs.pims.types.map.PimsMapEntities
 import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.reflections.ParsedType
@@ -43,12 +44,11 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
 
 
         when:
-        PimsMethodDelegator delegator = testObj.link(PimsEntitySample, PimsEntitySample.getMethod("getDomainMap"))
+        PimsMethodDelegator delegator = testObj.link(PimsEntitySample.getMethod("getDomainMap"))
 
         then:
         delegator.targetType == PimsMapEntities
         delegator.delegatorMethod == PimsMapEntities.getMethod("onGetDomainMap", Map)
-        delegator.pimsEntityType == PimsEntitySample
         delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 
@@ -62,12 +62,11 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("getName", "toString") >> failure
 
         when:
-        PimsMethodDelegator delegator = testObj.link(PimsEntitySample, PimsEntitySample.getMethod("getName"))
+        PimsMethodDelegator delegator = testObj.link(PimsEntitySample.getMethod("getName"))
 
         then:
         delegator.targetType == PimsMapEntities
         delegator.delegatorMethod == PimsMapEntities.getMethod("onGetter", Map, String)
-        delegator.pimsEntityType == PimsEntitySample
         delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 
@@ -89,21 +88,19 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("getAge", "toString") >> failure
 
         when:
-        PimsMethodDelegator delegator = testObj.link(CombinedEntity, CombinedEntity.getMethod("getAge"))
+        PimsMethodDelegator delegator = testObj.link(CombinedEntity.getMethod("getAge"))
 
         then:
         delegator.targetType == CombinedManager
         delegator.delegatorMethod == CombinedManager.getMethod("onGetAge")
-        delegator.pimsEntityType == CombinedEntity
         delegator.pimsMethodParameterTypes == parameterTypesMock
 
         when:
-        delegator = testObj.link(CombinedEntity, CombinedEntity.getMethod("getName"))
+        delegator = testObj.link(CombinedEntity.getMethod("getName"))
 
         then:
         delegator.targetType == PimsMapEntities
         delegator.delegatorMethod == PimsMapEntities.getMethod("onGetter", Map, String)
-        delegator.pimsEntityType == CombinedEntity
         delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 
@@ -117,12 +114,11 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         patternMatcherMock.match("toString", "toString") >> success
 
         when:
-        PimsMethodDelegator delegator = testObj.link(PimsEntitySample, PimsEntitySample.getMethod("toString"))
+        PimsMethodDelegator delegator = testObj.link(PimsEntitySample.getMethod("toString"))
 
         then:
-        delegator.targetType == PimsMapEntities
-        delegator.delegatorMethod == PimsMapEntities.getMethod("onToString", Map, ParsedType)
-        delegator.pimsEntityType == PimsEntitySample
+        delegator.targetType == PimsBaseEntities
+        delegator.delegatorMethod == PimsBaseEntities.getMethod("onToString", Map, ParsedType)
         delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 

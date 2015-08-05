@@ -21,7 +21,15 @@ public class PimsEntityProxy implements InvocationHandler {
     private final PimsMethodCaller pimsMethodCaller;
     private final PimsParameters pimsParameters;
 
-    public PimsEntityProxy(PimsMethodCaller pimsMethodCaller, ParsedType type, Map<String, Object> domainMap, Map<String, Object> valueMap, Map<TypelessMethod, PimsMethodDelegator> methodDelegators, boolean mutable, PimsParameters pimsParameters) {
+    public PimsEntityProxy(
+            PimsMethodCaller pimsMethodCaller,
+            ParsedType type,
+            Map<String, Object> domainMap,
+            Map<String, Object> valueMap,
+            Map<TypelessMethod, PimsMethodDelegator> methodDelegators,
+            boolean mutable,
+            PimsParameters pimsParameters
+    ) {
         this.type = type;
         this.domainMap = domainMap;
         this.valueMap = valueMap;

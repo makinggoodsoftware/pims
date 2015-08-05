@@ -2,7 +2,7 @@ package com.mgs.pims.linker;
 
 import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
-import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.reflections.TypelessMethod;
 
 import java.lang.reflect.Method;
@@ -17,13 +17,13 @@ public class PimsLinker {
         this.pimsMethodDelegatorFactory = pimsMethodDelegatorFactory;
     }
 
-    public <T extends PimsMapEntity> Map<TypelessMethod, PimsMethodDelegator<T>> link(Class<T> actualType) {
-        Map<TypelessMethod, PimsMethodDelegator<T>> linkedMethods = new HashMap<>();
+    public <T extends PimsBaseEntity> PimsLink link(Class<T> actualType) {
+        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = new HashMap<>();
         Method[] methods = actualType.getMethods();
         for (Method method : methods) {
-            linkedMethods.put(TypelessMethod.fromMethod(method), pimsMethodDelegatorFactory.link(actualType, method));
+            linkedMethods.put(TypelessMethod.fromMethod(method), pimsMethodDelegatorFactory.link(method));
         }
-        return linkedMethods;
+        return new PimsLink(linkedMethods);
     }
 
 

@@ -1,11 +1,13 @@
 package com.mgs.pims.proxy;
 
+import com.mgs.pims.linker.PimsLink;
 import com.mgs.pims.linker.PimsLinker;
 import com.mgs.pims.linker.method.PimsMethodCaller;
+import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.types.base.PimsBaseEntity;
-import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
+import com.mgs.reflections.TypelessMethod;
 
 import java.util.Map;
 
@@ -23,7 +25,9 @@ public class PimsEntityProxyFactory {
     }
 
     public <T extends PimsBaseEntity> T proxy(boolean mutable, ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
-        Class actualClass = type.getOwnDeclaration().getActualType().get();
+        //noinspection unchecked
+        Class<T> actualClass = type.getOwnDeclaration().getActualType().get();
+        PimsLink link = pimsLinker.link(actualClass);
         //noinspection unchecked
         return (T) newProxyInstance(
                 PimsEntityProxyFactory.class.getClassLoader(),
@@ -33,7 +37,7 @@ public class PimsEntityProxyFactory {
                         type,
                         domainMap,
                         valueMap,
-                        pimsLinker.link(actualClass),
+                        link.getMethods(),
                         mutable,
                         pimsParameters)
         );

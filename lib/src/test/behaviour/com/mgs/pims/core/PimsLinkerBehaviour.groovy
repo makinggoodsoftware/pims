@@ -28,7 +28,7 @@ class PimsLinkerBehaviour extends Specification{
 
     def "should call PimsMapEntities.onGetValueMap for getValueMap" (){
         when:
-        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity)
+        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity).getMethods()
         PimsMethodDelegator getValueMap = linkedMethods.get(TypelessMethod.fromMethod(PimsMapEntity.getMethod("getValueMap")))
 
         then:
@@ -54,7 +54,7 @@ class PimsLinkerBehaviour extends Specification{
 
     def "should call PimsMapEntities.onGetter correctly for getName" (){
         given:
-        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(MyEntity)
+        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(MyEntity).getMethods()
 
         when:
         String name = caller.delegate(

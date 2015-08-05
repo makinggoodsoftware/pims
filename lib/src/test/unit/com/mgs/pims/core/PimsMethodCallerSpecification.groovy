@@ -35,7 +35,6 @@ class PimsMethodCallerSpecification extends Specification {
                 callParameters
         ) >> actualParams
         PimsMethodDelegator delegator = new PimsMethodDelegator(
-                PimsEntitySample,
                 PimsMixerSample,
                 PimsMixerSample.getMethod("onDoSomething", PimsEntitySample),
                 [simple(PROXY_OBJECT)]

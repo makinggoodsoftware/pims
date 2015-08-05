@@ -4,6 +4,7 @@ import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.linker.parameters.ParameterResolution;
 import com.mgs.pims.linker.parameters.PimsParameters;
+import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.text.PatternMatcher;
 import com.mgs.text.PatternMatchingResult;
@@ -24,7 +25,7 @@ public class PimsMethodDelegatorFactory {
         this.pimsParameters = pimsParameters;
     }
 
-    public <T extends PimsMapEntity> PimsMethodDelegator<T> link(Class<T> entityType, Method sourceMethod) {
+    public PimsMethodDelegator link(Method sourceMethod) {
         Class rootEntityType = sourceMethod.getDeclaringClass();
         SortedSet<LinkedMethod> mixerMethods = findMixerMethodCandidatesFrom(sourceMethod, rootEntityType);
         if (mixerMethods == null || mixerMethods.size() == 0) {
@@ -33,8 +34,7 @@ public class PimsMethodDelegatorFactory {
         LinkedMethod mixerMethod = mixerMethods.first();
         List<ParameterResolution> parameterTypes = pimsParameters.parse(mixerMethod);
         Method declaredMethod = mixerMethod.getDeclaredMethod();
-        return new PimsMethodDelegator<>(
-                entityType,
+        return new PimsMethodDelegator(
                 declaredMethod.getDeclaringClass(),
                 declaredMethod,
                 parameterTypes
