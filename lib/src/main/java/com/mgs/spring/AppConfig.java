@@ -1,5 +1,6 @@
 package com.mgs.spring;
 
+import com.mgs.spring.mongo.MongoConfig;
 import com.mgs.spring.pims.MixersConfig;
 import com.mgs.spring.reflection.ReflectionsConfig;
 import com.mgs.spring.text.TextConfig;
@@ -10,7 +11,8 @@ import org.springframework.context.annotation.Import;
 @Import({
         ReflectionsConfig.class,
         TextConfig.class,
-        MixersConfig.class
+        MixersConfig.class,
+        MongoConfig.class
 })
 public class AppConfig {
 }
