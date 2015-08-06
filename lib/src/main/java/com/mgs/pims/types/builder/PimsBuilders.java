@@ -44,9 +44,7 @@ public class PimsBuilders {
             @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
             @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap
     ) {
-        Declaration pimsBuilderDeclaration = sourceType.getSuperDeclarations().get(PimsBuilder.class).getOwnDeclaration();
-        Declaration typeOfBuilder = pimsBuilderDeclaration.getParameters().get("T");
-        return pimsFactory.immutable(typeOfBuilder.getActualType().get(), valueMap, domainMap);
+        return pimsFactory.immutable(sourceType, valueMap, domainMap);
     }
 
 }

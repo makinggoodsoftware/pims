@@ -1,55 +1,87 @@
 package com.mgs.pims.types;
 
 import com.mgs.maps.MapTransformer;
-import com.mgs.pims.proxy.PimsEntityProxyFactory;
-import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.pims.linker.PimsLink;
+import com.mgs.pims.linker.PimsLinker;
+import com.mgs.pims.linker.method.PimsMethodCaller;
+import com.mgs.pims.linker.method.PimsMethodDelegator;
+import com.mgs.pims.linker.parameters.PimsParameters;
+import com.mgs.pims.proxy.PimsEntityProxy;
+import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.reflections.ParsedType;
-import com.mgs.reflections.TypeParser;
 
 import java.util.Map;
 
+import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
+import static java.lang.reflect.Proxy.newProxyInstance;
+
 public class PimsFactory {
     private final MapTransformer mapTransformer;
-    private final PimsEntityProxyFactory pimsEntityProxyFactory;
-    private final TypeParser typeParser;
+    private final PimsParameters pimsParameters;
+    private final PimsLinker pimsLinker;
+    private final PimsMethodCaller pimsMethodCaller;
 
-    public PimsFactory(MapTransformer mapTransformer, PimsEntityProxyFactory pimsEntityProxyFactory, TypeParser typeParser) {
+    public PimsFactory(MapTransformer mapTransformer, PimsParameters pimsParameters, PimsLinker pimsLinker, PimsMethodCaller pimsMethodCaller) {
         this.mapTransformer = mapTransformer;
-        this.pimsEntityProxyFactory = pimsEntityProxyFactory;
-        this.typeParser = typeParser;
+        this.pimsParameters = pimsParameters;
+        this.pimsLinker = pimsLinker;
+        this.pimsMethodCaller = pimsMethodCaller;
     }
 
-    public <T extends PimsMapEntity> T immutable (Class<T> type, Map<String, Object> valueMap){
-        return immutable(typeParser.parse(type), valueMap);
-    }
-
-    public <T extends PimsMapEntity> T immutable(ParsedType type, Map<String, Object> valueMap) {
+    public <T extends PimsBaseEntity> T immutable(ParsedType type, Map<String, Object> valueMap) {
         return fromValueMap(type, valueMap, false);
     }
 
-    public <T extends PimsMapEntity> T mutable(Class<T> type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
-        return withMutability(typeParser.parse(type), valueMap, domainMap, true);
+    public <T extends PimsBaseEntity> T mutable(ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
+        return withMutability(type, valueMap, domainMap, true, pimsLinker.link(type.getActualType().get()));
     }
 
-    public <T extends PimsMapEntity> T immutable(Class<T> type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
-        return withMutability(typeParser.parse(type), valueMap, domainMap, false);
+    public <T extends PimsBaseEntity> T immutable(ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
+        return withMutability(type, valueMap, domainMap, false, pimsLinker.link(type.getActualType().get()));
     }
 
-    private <T extends PimsMapEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
+    private <T extends PimsBaseEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
+        Map<String, Object> src = valueMap;
+        @SuppressWarnings("unchecked") Class<T> actualClass = type.getOwnDeclaration().getActualType().get();
+        PimsLink link = pimsLinker.link(actualClass);
+        //noinspection unchecked
+        PimsMethodDelegator inputTranslator = link.getEvents().get(INPUT_TRANSLATION);
+        if (inputTranslator != null) {
+            src = pimsMethodCaller.inputTranslation(inputTranslator, valueMap);
+        }
         Map<String, Object> domainMap = mapTransformer.objectify(
                 type,
-                valueMap,
+                src,
                 (childType, childMap) -> fromValueMap(childType, childMap, mutable));
         //noinspection unchecked
-        return (T) withMutability(type, valueMap, domainMap, mutable);
+        return (T) withMutability(type, valueMap, domainMap, mutable, link);
     }
 
-    private <T extends PimsMapEntity> T withMutability(ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap, boolean mutable) {
-        return pimsEntityProxyFactory.proxy(
+    private <T extends PimsBaseEntity> T withMutability(ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap, boolean mutable, PimsLink link) {
+        return proxy(
                 mutable,
                 type,
                 valueMap,
-                domainMap
+                domainMap,
+                link
+        );
+    }
+
+    private <T extends PimsBaseEntity> T proxy(boolean mutable, ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap, PimsLink link) {
+
+
+        //noinspection unchecked
+        return (T) newProxyInstance(
+                PimsFactory.class.getClassLoader(),
+                new Class[]{type.getActualType().get()},
+                new PimsEntityProxy(
+                        pimsMethodCaller,
+                        type,
+                        domainMap,
+                        valueMap,
+                        link.getMethods(),
+                        mutable,
+                        pimsParameters)
         );
     }
 }

@@ -6,7 +6,6 @@ import com.mgs.pims.linker.method.PimsMethodCaller;
 import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
 import com.mgs.pims.linker.mixer.PimsMixersProvider;
 import com.mgs.pims.linker.parameters.PimsParameters;
-import com.mgs.pims.proxy.PimsEntityProxyFactory;
 import com.mgs.pims.types.PimsFactory;
 import com.mgs.spring.maps.MapsConfig;
 import com.mgs.spring.reflection.ReflectionsConfig;
@@ -34,7 +33,6 @@ public class PimsConfig {
     public Pims pims(){
         return new Pims(
                 pimsFactory(),
-                pimsEntityProxyFactory(),
                 reflectionsConfig.typeParser()
         );
     }
@@ -43,18 +41,9 @@ public class PimsConfig {
     public PimsFactory pimsFactory (){
         return new PimsFactory(
                 mapsConfig.mapTransformer(),
-                pimsEntityProxyFactory(),
-                reflectionsConfig.typeParser()
-        );
-    }
-
-    @Bean
-    public PimsEntityProxyFactory pimsEntityProxyFactory() {
-        return new PimsEntityProxyFactory(
                 pimsParameters(),
                 pimsLinker(),
-                pimsMethodCaller()
-        );
+                pimsMethodCaller());
     }
 
     @Bean
