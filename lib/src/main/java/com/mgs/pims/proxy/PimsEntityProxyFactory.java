@@ -7,10 +7,10 @@ import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.reflections.ParsedType;
-import com.mgs.reflections.TypelessMethod;
 
 import java.util.Map;
 
+import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 public class PimsEntityProxyFactory {
@@ -28,6 +28,11 @@ public class PimsEntityProxyFactory {
         //noinspection unchecked
         Class<T> actualClass = type.getOwnDeclaration().getActualType().get();
         PimsLink link = pimsLinker.link(actualClass);
+        PimsMethodDelegator inputTranslator = link.getEvents().get(INPUT_TRANSLATION);
+        if (inputTranslator != null) {
+            valueMap = pimsMethodCaller.inputTranslation(inputTranslator, valueMap);
+        }
+
         //noinspection unchecked
         return (T) newProxyInstance(
                 PimsEntityProxyFactory.class.getClassLoader(),

@@ -1,11 +1,10 @@
 package com.mgs.reflections;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static java.util.Optional.empty;
 
@@ -18,35 +17,12 @@ public class Reflections {
 			Date.class
 	);
 
-	public boolean isSimpleOrAssignableTo(Class<?> type, Class<?> assignableTo) {
-		//noinspection SimplifiableIfStatement
-		if (type.equals(void.class)) return false;
-
-		return isSimple(type) || isAssignableTo(type, assignableTo);
-
-	}
-
 	public boolean isSimple(Class<?> type) {
 		return type.isPrimitive() || PRIMITIVE_WRAPPERS.contains(type);
 	}
 
 	public boolean isAssignableTo(Class<?> type, Class<?> assignableTo) {
 		return assignableTo.isAssignableFrom(type);
-	}
-
-	public List<GenericType> extractGenericClasses(Type genericReturnType) {
-		List<GenericType> empty = new ArrayList<>();
-		if (genericReturnType == null) return empty;
-		if (! (genericReturnType instanceof ParameterizedType)) return empty;
-
-		ParameterizedType parameterizedType = (ParameterizedType) genericReturnType;
-		Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-
-		if (actualTypeArguments == null || actualTypeArguments.length == 0) return empty;
-
-		return Stream.of(actualTypeArguments).
-				map(this::extractClass).
-				collect(Collectors.toList());
 	}
 
 	public <T extends Annotation> Optional<T> annotation (Annotation[] annotations, Class<T> annotationType){
@@ -58,19 +34,47 @@ public class Reflections {
 		return empty();
 	}
 
-	private GenericType extractClass(Type actualTypeArgument) {
-		String typeName = actualTypeArgument.getTypeName();
-		try {
-			Class<?> specificName = this.getClass().getClassLoader().loadClass(typeName);
-//			return new ParsedType(typeName, of(specificName), empty());
-			return null;
-		} catch (ClassNotFoundException e) {
-//			return new ParsedType(typeName, empty(), empty());
-			return null;
-		}
-	}
-
 	public boolean isCollection(Class<?> declaredType) {
 		return isAssignableTo(declaredType, Collection.class);
 	}
+
+	public <T> SortedSet<T> walkInterfaceMethods(
+			Class<?> from,
+			UnaryOperator<Class> transformer,
+			Comparator<T> comparator,
+			Function<Method, Optional<T>> filter
+	) {
+		return walkInterfaceMethods(from, Optional.of(transformer), comparator, filter);
+	}
+
+	private <T> SortedSet<T> walkInterfaceMethods(
+			Class<?> from,
+			Optional<UnaryOperator<Class>> transformer,
+			Comparator<T> comparator,
+			Function<Method, Optional<T>> filter
+	) {
+		Class startingPoint = from;
+		if (transformer.isPresent()) {
+			startingPoint = transformer.get().apply(from);
+		}
+		SortedSet<T> methods = findMethods(startingPoint, filter, comparator);
+		Class[] parentInterfaces = from.getInterfaces();
+		for (Class parentInterface : parentInterfaces) {
+			methods.addAll(walkInterfaceMethods(parentInterface, transformer, comparator, filter));
+		}
+		return methods;
+	}
+
+	private <T> SortedSet<T> findMethods(Class mixerType, Function<Method, Optional<T>> filter, Comparator<T> comparator) {
+		SortedSet<T> possibleCandidates = new TreeSet<>(comparator);
+
+		for (Method declaredMethod : mixerType.getDeclaredMethods()) {
+			Optional<T> filterResult = filter.apply(declaredMethod);
+			if (filterResult.isPresent()) {
+				possibleCandidates.add(filterResult.get());
+			}
+		}
+		return possibleCandidates;
+	}
+
 }

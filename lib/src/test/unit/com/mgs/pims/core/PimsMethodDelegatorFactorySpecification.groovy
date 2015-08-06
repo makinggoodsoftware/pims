@@ -3,18 +3,25 @@ package com.mgs.pims.core
 import com.mgs.pims.annotations.PimsEntity
 import com.mgs.pims.annotations.PimsMethod
 import com.mgs.pims.annotations.PimsMixer
+import com.mgs.pims.event.PimsEventType
 import com.mgs.pims.linker.method.PimsMethodDelegator
 import com.mgs.pims.linker.method.PimsMethodDelegatorFactory
 import com.mgs.pims.linker.mixer.NullMixer
 import com.mgs.pims.linker.mixer.PimsMixersProvider
+import com.mgs.pims.linker.parameters.ParameterResolution
 import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.types.base.PimsBaseEntities
 import com.mgs.pims.types.map.PimsMapEntities
 import com.mgs.pims.types.map.PimsMapEntity
+import com.mgs.pims.types.persistable.PimsPersistable
+import com.mgs.pims.types.persistable.PimsPersistables
 import com.mgs.reflections.ParsedType
+import com.mgs.reflections.Reflections
 import com.mgs.text.PatternMatcher
 import com.mgs.text.PatternMatchingResult
 import spock.lang.Specification
+
+import static com.mgs.pims.linker.parameters.PimsMethodParameterType.VALUE_MAP
 
 class PimsMethodDelegatorFactorySpecification extends Specification {
     PimsMethodDelegatorFactory testObj
@@ -26,10 +33,11 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
     PatternMatchingResult success = new PatternMatchingResult(true, [:])
     PatternMatchingResult successWithPlaceholders = new PatternMatchingResult(true, [fieldName:'Name'])
     List parameterTypesMock = Mock(List)
+    Reflections refectionsMock = Mock(Reflections)
 
     def "setup" (){
         pimsMixersProviderMock.from(NullMixer) >> nullMixerMock
-        testObj = new PimsMethodDelegatorFactory(patternMatcherMock, pimsParametersMock)
+        testObj = new PimsMethodDelegatorFactory(patternMatcherMock, pimsParametersMock, reflectionsMock)
         pimsParametersMock.parse (_) >> parameterTypesMock
     }
 
@@ -122,6 +130,20 @@ class PimsMethodDelegatorFactorySpecification extends Specification {
         delegator.pimsMethodParameterTypes == parameterTypesMock
     }
 
+    def "should link events"() {
+        when:
+        PimsMethodDelegator event = testObj.event(PimsEventType.INPUT_TRANSLATION, PimsEntityWithEvent)
+
+        then:
+        event.targetType == PimsPersistables
+        event.delegatorMethod == PimsPersistables.getMethod("translate", Map)
+        event.pimsMethodParameterTypes == [new ParameterResolution(VALUE_MAP, "")]
+    }
+
+
+    @PimsEntity
+    private interface PimsEntityWithEvent extends PimsPersistable<PimsEntitySample> {
+    }
 
     @PimsEntity
     private interface PimsEntitySample extends PimsMapEntity{

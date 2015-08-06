@@ -66,7 +66,9 @@ public class PimsConfig {
     public PimsMethodDelegatorFactory pimsMethodDelegatorFactory (){
         return new PimsMethodDelegatorFactory (
                 textConfig.patternMatcher(),
-                pimsParameters ());
+                pimsParameters(),
+                reflectionsConfig.reflections()
+        );
     }
 
     @Bean

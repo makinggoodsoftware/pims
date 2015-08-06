@@ -2,32 +2,42 @@ package com.mgs.pims.linker.method;
 
 import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.annotations.PimsMethod;
+import com.mgs.pims.event.PimsEventType;
 import com.mgs.pims.linker.parameters.ParameterResolution;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.types.base.PimsBaseEntity;
-import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.reflections.Reflections;
 import com.mgs.text.PatternMatcher;
 import com.mgs.text.PatternMatchingResult;
 
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class PimsMethodDelegatorFactory {
     private final PatternMatcher patternMatcher;
     private final PimsParameters pimsParameters;
+    private final Reflections reflections;
 
-
-    public PimsMethodDelegatorFactory(PatternMatcher patternMatcher, PimsParameters pimsParameters) {
+    public PimsMethodDelegatorFactory(PatternMatcher patternMatcher, PimsParameters pimsParameters, Reflections reflections) {
         this.patternMatcher = patternMatcher;
         this.pimsParameters = pimsParameters;
+        this.reflections = reflections;
     }
 
     public PimsMethodDelegator link(Method sourceMethod) {
         Class rootEntityType = sourceMethod.getDeclaringClass();
-        SortedSet<LinkedMethod> mixerMethods = findMixerMethodCandidatesFrom(sourceMethod, rootEntityType);
+        SortedSet<LinkedMethod> mixerMethods = reflections.walkInterfaceMethods(
+                rootEntityType,
+                this::managedBy,
+                comparator(),
+                thisMethod -> {
+                    return linkedMethod(sourceMethod, thisMethod);
+                }
+
+        );
         if (mixerMethods == null || mixerMethods.size() == 0) {
             throw new IllegalStateException("Can't find the method " + sourceMethod.getName() + " in: " + rootEntityType.getName() + " or its parent classes");
         }
@@ -41,37 +51,25 @@ public class PimsMethodDelegatorFactory {
         );
     }
 
-    private SortedSet<LinkedMethod> findMixerMethodCandidatesFrom(Method sourceMethod, Class rootEntityType) {
-        SortedSet<LinkedMethod> possibleCandidates = newLinkedMethodsSetWithPlaceholdersLast();
-
-        Class mixerType = managedBy(rootEntityType);
-        SortedSet<LinkedMethod> mixerMethods = mixerMethods(mixerType, sourceMethod);
-        possibleCandidates.addAll(mixerMethods);
-        Class[] parentInterfaces = rootEntityType.getInterfaces();
-        for (Class parentInterface : parentInterfaces) {
-            possibleCandidates.addAll(findMixerMethodCandidatesFrom(sourceMethod, parentInterface));
-        }
-        return possibleCandidates;
+    public <T extends PimsBaseEntity> PimsMethodDelegator event(PimsEventType pimsEventType, Class<T> actualType) {
+        return null;
     }
 
-    private SortedSet<LinkedMethod> mixerMethods(Class mixerType, Method sourceMethod) {
-        SortedSet<LinkedMethod> possibleCandidates = newLinkedMethodsSetWithPlaceholdersLast();
-
-        for (Method declaredMethod : mixerType.getDeclaredMethods()) {
-            PimsMethod pimsMethod = declaredMethod.getAnnotation(PimsMethod.class);
-            if (pimsMethod != null) {
-                String pattern = pimsMethod.pattern();
-                PatternMatchingResult match = patternMatcher.match(sourceMethod.getName(), pattern);
-                if (match.isMatch()) {
-                    possibleCandidates.add(new LinkedMethod(declaredMethod, match.getPlaceholders()));
-                }
+    private Optional<LinkedMethod> linkedMethod(Method sourceMethod, Method thisMethod) {
+        PimsMethod pimsMethod = thisMethod.getAnnotation(PimsMethod.class);
+        if (pimsMethod != null) {
+            String pattern = pimsMethod.pattern();
+            PatternMatchingResult match = patternMatcher.match(sourceMethod.getName(), pattern);
+            if (match.isMatch()) {
+                return Optional.of(new LinkedMethod(thisMethod, match.getPlaceholders()));
             }
         }
-        return possibleCandidates;
+        return Optional.empty();
     }
 
-    private TreeSet<LinkedMethod> newLinkedMethodsSetWithPlaceholdersLast() {
-        return new TreeSet<>((Comparator<LinkedMethod>) (left, right) -> {
+
+    private Comparator<LinkedMethod> comparator() {
+        return (left, right) -> {
             int leftFirst = -1;
             int rightFirst = 1;
             int keepCurrentOrder = -1;
@@ -82,7 +80,7 @@ public class PimsMethodDelegatorFactory {
                     rightHasPlaceholders == leftHasPlaceholders ? keepCurrentOrder :
                             rightHasPlaceholders ? leftFirst :
                             rightFirst;
-        });
+        };
     }
 
     private boolean hasPlaceholders(LinkedMethod linkedMethod) {
@@ -95,5 +93,4 @@ public class PimsMethodDelegatorFactory {
             throw new IllegalStateException("Can't link " + declaredEntityType + ". Is not annotated with PimsEntity");
         return annotation.managedBy();
     }
-
 }
