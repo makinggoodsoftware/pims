@@ -9,6 +9,7 @@ import com.mgs.reflections.TypelessMethod;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class PimsLinker {
     private final PimsMethodDelegatorFactory pimsMethodDelegatorFactory;
@@ -26,7 +27,8 @@ public class PimsLinker {
         }
         Map<PimsEventType, PimsMethodDelegator> events = new HashMap<>();
         for (PimsEventType pimsEventType : PimsEventType.values()) {
-            pimsMethodDelegatorFactory.event(pimsEventType, actualType);
+            Optional<PimsMethodDelegator> event = pimsMethodDelegatorFactory.event(pimsEventType, actualType);
+            if (event.isPresent()) events.put(pimsEventType, event.get());
         }
         return new PimsLink(linkedMethods, events);
     }

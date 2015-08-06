@@ -9,12 +9,14 @@ import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+import spring.TestContext
+import spring.testMixers.WithEventsManager
 
 import javax.annotation.Resource
 
 import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION
 
-@ContextConfiguration(classes = [AppConfig.class])
+@ContextConfiguration(classes = [TestContext.class])
 class PimsBehaviour extends Specification{
     @Resource Pims pims
 
@@ -47,19 +49,11 @@ class PimsBehaviour extends Specification{
         result.name == 'alberto'
     }
 
-    @PimsEntity(managedBy = WithEnventsManager)
+    @PimsEntity(managedBy = WithEventsManager)
     private static interface WithEvents extends PimsMapEntity {
         String getName ()
     }
 
-    @PimsMixer
-    private static class WithEnventsManager {
-        @PimsEvent(type = INPUT_TRANSLATION)
-        public Map<String, Object> translate (Map<String, Object> input){
-            input.put("name", ((String)input.get("name")).toLowerCase())
-            return input;
-        }
-    }
 
     @PimsEntity
     private static interface MyInterface extends PimsMapEntity {

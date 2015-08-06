@@ -1,6 +1,7 @@
 package com.mgs.pims.linker.method;
 
 import com.mgs.pims.annotations.PimsEntity;
+import com.mgs.pims.annotations.PimsEvent;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.event.PimsEventType;
 import com.mgs.pims.linker.parameters.ParameterResolution;
@@ -11,10 +12,10 @@ import com.mgs.text.PatternMatcher;
 import com.mgs.text.PatternMatchingResult;
 
 import java.lang.reflect.Method;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.SortedSet;
+import java.util.*;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public class PimsMethodDelegatorFactory {
     private final PatternMatcher patternMatcher;
@@ -41,18 +42,37 @@ public class PimsMethodDelegatorFactory {
         if (mixerMethods == null || mixerMethods.size() == 0) {
             throw new IllegalStateException("Can't find the method " + sourceMethod.getName() + " in: " + rootEntityType.getName() + " or its parent classes");
         }
-        LinkedMethod mixerMethod = mixerMethods.first();
-        List<ParameterResolution> parameterTypes = pimsParameters.parse(mixerMethod);
-        Method declaredMethod = mixerMethod.getDeclaredMethod();
+        return toDelegator(mixerMethods.first());
+    }
+
+    public <T extends PimsBaseEntity> Optional<PimsMethodDelegator> event(PimsEventType pimsEventType, Class<T> from) {
+        SortedSet<LinkedMethod> mixerMethods = reflections.walkInterfaceMethods(
+                from,
+                this::managedBy,
+                comparator(),
+                thisMethod -> {
+                    PimsEvent pimsEvent = thisMethod.getAnnotation(PimsEvent.class);
+                    if (pimsEvent != null && pimsEvent.type() == pimsEventType) {
+                        return of(new LinkedMethod(thisMethod, new HashMap<>()));
+                    }
+                    return empty();
+                }
+
+        );
+        if (mixerMethods == null || mixerMethods.size() == 0) {
+            return empty();
+        }
+        return of(toDelegator(mixerMethods.first()));
+    }
+
+    private PimsMethodDelegator toDelegator(LinkedMethod linkedMethod) {
+        List<ParameterResolution> parameterTypes = pimsParameters.parse(linkedMethod);
+        Method declaredMethod = linkedMethod.getDeclaredMethod();
         return new PimsMethodDelegator(
                 declaredMethod.getDeclaringClass(),
                 declaredMethod,
                 parameterTypes
         );
-    }
-
-    public <T extends PimsBaseEntity> PimsMethodDelegator event(PimsEventType pimsEventType, Class<T> actualType) {
-        return null;
     }
 
     private Optional<LinkedMethod> linkedMethod(Method sourceMethod, Method thisMethod) {
@@ -61,10 +81,10 @@ public class PimsMethodDelegatorFactory {
             String pattern = pimsMethod.pattern();
             PatternMatchingResult match = patternMatcher.match(sourceMethod.getName(), pattern);
             if (match.isMatch()) {
-                return Optional.of(new LinkedMethod(thisMethod, match.getPlaceholders()));
+                return of(new LinkedMethod(thisMethod, match.getPlaceholders()));
             }
         }
-        return Optional.empty();
+        return empty();
     }
 
 
