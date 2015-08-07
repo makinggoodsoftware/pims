@@ -15,7 +15,7 @@ import static com.mgs.pims.linker.parameters.PimsMethodParameterType.SOURCE_TYPE
 public class PimsRetrievers {
     @PimsMethod(pattern = "by{fieldName}")
     public <T extends PimsMapEntity> List<T> onByFieldName (
-            @PimsParameter(type = SOURCE_TYPE)ParsedType type,
+            @PimsParameter(type = SOURCE_TYPE) ParsedType type,
             @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName
     ) {
         return null;

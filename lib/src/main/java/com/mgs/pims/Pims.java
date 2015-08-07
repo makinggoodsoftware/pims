@@ -52,4 +52,12 @@ public class Pims {
         persistableBuilder.withData(data);
         return persistableBuilder;
     }
+
+    public <
+            M extends PimsMapEntity,
+            B extends PimsBuilder<M>
+            >
+    B update(Class<PimsPersistableBuilder> pimsPersistableBuilderClass, PimsPersistable source) {
+        return null;
+    }
 }

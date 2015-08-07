@@ -6,6 +6,7 @@ import com.mgs.pims.types.builder.PimsBuilders;
 import com.mgs.pims.types.map.PimsMapEntities;
 import com.mgs.pims.types.persistable.PimsPersistables;
 import com.mgs.pims.types.retriever.PimsRetrievers;
+import com.mgs.spring.mongo.MongoConfig;
 import com.mgs.spring.reflection.ReflectionsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ public class MixersConfig {
     private PimsConfig pimsConfig;
     @Resource
     ReflectionsConfig reflectionsConfig;
+    @Resource
+    MongoConfig mongoConfig;
 
     @Bean
     public PimsBuilders pimsBuilders (){
@@ -33,7 +36,10 @@ public class MixersConfig {
 
     @Bean
     public PimsPersistables pimsResources (){
-        return new PimsPersistables();
+        return new PimsPersistables(
+                pimsConfig.pims(),
+                mongoConfig.mongoDaoFactory().mongoDao("", -1, "")
+        );
     }
 
     @Bean
