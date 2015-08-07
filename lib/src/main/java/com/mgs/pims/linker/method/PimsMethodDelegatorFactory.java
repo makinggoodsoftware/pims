@@ -22,7 +22,11 @@ public class PimsMethodDelegatorFactory {
     private final PimsParameters pimsParameters;
     private final Reflections reflections;
 
-    public PimsMethodDelegatorFactory(PatternMatcher patternMatcher, PimsParameters pimsParameters, Reflections reflections) {
+    public PimsMethodDelegatorFactory(
+            PatternMatcher patternMatcher,
+            PimsParameters pimsParameters,
+            Reflections reflections
+    ) {
         this.patternMatcher = patternMatcher;
         this.pimsParameters = pimsParameters;
         this.reflections = reflections;

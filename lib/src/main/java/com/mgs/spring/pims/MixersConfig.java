@@ -6,6 +6,7 @@ import com.mgs.pims.types.builder.PimsBuilders;
 import com.mgs.pims.types.map.PimsMapEntities;
 import com.mgs.pims.types.persistable.PimsPersistables;
 import com.mgs.pims.types.retriever.PimsRetrievers;
+import com.mgs.spring.reflection.ReflectionsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,10 +20,15 @@ import javax.annotation.Resource;
 public class MixersConfig {
     @Resource
     private PimsConfig pimsConfig;
+    @Resource
+    ReflectionsConfig reflectionsConfig;
 
     @Bean
     public PimsBuilders pimsBuilders (){
-        return new PimsBuilders(pimsConfig.pimsFactory());
+        return new PimsBuilders(
+                pimsConfig.pimsFactory(),
+                reflectionsConfig.typeParser()
+        );
     }
 
     @Bean

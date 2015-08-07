@@ -7,6 +7,7 @@ import com.mgs.pims.types.PimsFactory;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
+import com.mgs.reflections.TypeParser;
 
 import java.util.Map;
 
@@ -15,9 +16,11 @@ import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
 @PimsMixer
 public class PimsBuilders {
     private final PimsFactory pimsFactory;
+    private final TypeParser typeParser;
 
-    public PimsBuilders(PimsFactory pimsFactory) {
+    public PimsBuilders(PimsFactory pimsFactory, TypeParser typeParser) {
         this.pimsFactory = pimsFactory;
+        this.typeParser = typeParser;
     }
 
     @PimsMethod(pattern = "with{fieldName}")
@@ -44,7 +47,9 @@ public class PimsBuilders {
             @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
             @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap
     ) {
-        return pimsFactory.immutable(sourceType, valueMap, domainMap);
+        Declaration pimsBuilderDeclaration = sourceType.getSuperDeclarations().get(PimsBuilder.class).getOwnDeclaration();
+        Declaration typeOfBuilder = pimsBuilderDeclaration.getParameters().get("T");
+        return pimsFactory.immutable(typeParser.parse(typeOfBuilder), valueMap, domainMap);
     }
 
 }

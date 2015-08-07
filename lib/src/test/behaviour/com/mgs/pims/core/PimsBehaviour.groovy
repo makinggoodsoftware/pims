@@ -49,6 +49,72 @@ class PimsBehaviour extends Specification{
         result.name == 'alberto'
     }
 
+    def "should create siple pims entity"() {
+        when:
+        MyPimsEntity alberto = pims.newEntity(
+                MyPimsEntity,
+                [name: 'Alberto']
+        )
+
+        then:
+        alberto.valueMap == [name: 'Alberto']
+        alberto.name == 'Alberto'
+        !alberto.mutable
+        alberto.type.actualType.get() == MyPimsEntity
+        alberto.type.ownDeclaration.parameters.size() == 0
+    }
+
+    def "should create complex pims entity"() {
+        when:
+        ComplexPimsEntity complex = pims.newEntity(
+                ComplexPimsEntity,
+                [
+                        child: [name: 'Alberto']
+                ]
+        )
+
+        then:
+        complex.valueMap == [
+                child: [name: 'Alberto']
+        ]
+        complex.child.name == 'Alberto'
+        !complex.mutable
+        complex.type.actualType.get() == ComplexPimsEntity
+        complex.type.ownDeclaration.parameters.size() == 0
+    }
+
+    def "should create parameterized pims entity"() {
+        when:
+        WithParameter withParameter = pims.newEntity(WithParameter, [parameter: 'Alberto'])
+
+        then:
+        withParameter.valueMap == [parameter: 'Alberto']
+        withParameter.parameter == 'Alberto'
+        !withParameter.mutable
+        withParameter.type.actualType.get() == WithParameter
+        withParameter.type.ownDeclaration.parameters.size() == 0
+        withParameter.type.superDeclarations.get(WithParameterBase).ownDeclaration.parameters.get("T").actualType.get() == String
+    }
+
+    @PimsEntity
+    private static interface MyPimsEntity extends PimsMapEntity {
+        String getName()
+    }
+
+    @PimsEntity
+    private static interface ComplexPimsEntity extends PimsMapEntity {
+        MyPimsEntity getChild()
+    }
+
+    @PimsEntity
+    private static interface WithParameterBase<T> extends PimsMapEntity {
+        T getParameter()
+    }
+
+    @PimsEntity
+    private static interface WithParameter extends WithParameterBase<String> {
+    }
+
     @PimsEntity(managedBy = WithEventsManager)
     private static interface WithEvents extends PimsMapEntity {
         String getName ()
