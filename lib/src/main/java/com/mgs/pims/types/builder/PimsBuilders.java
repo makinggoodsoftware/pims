@@ -10,6 +10,7 @@ import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
 
@@ -21,6 +22,23 @@ public class PimsBuilders {
     public PimsBuilders(PimsFactory pimsFactory, TypeParser typeParser) {
         this.pimsFactory = pimsFactory;
         this.typeParser = typeParser;
+    }
+
+    @PimsMethod(pattern = "update{fieldName}")
+    public Object onUpdate(
+            @PimsParameter(type = SOURCE_OBJECT) PimsMapEntity entity,
+            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
+            @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap,
+            @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName,
+            @PimsParameter(type = METHOD_PARAMETERS) UnaryOperator updater
+    ) {
+        Object currentValue = domainMap.get(fieldName);
+        //noinspection unchecked
+        Object updatedValue = updater.apply(currentValue);
+        return onWith(
+                entity, domainMap, valueMap, fieldName, updatedValue
+        );
+
     }
 
     @PimsMethod(pattern = "with{fieldName}")

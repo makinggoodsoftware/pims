@@ -13,6 +13,7 @@ import spring.TestContext
 import spring.testMixers.WithEventsManager
 
 import javax.annotation.Resource
+import java.util.function.UnaryOperator
 
 import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION
 
@@ -74,6 +75,7 @@ class PimsBehaviour extends Specification{
         )
 
         then:
+        //noinspection GrEqualsBetweenInconvertibleTypes
         complex.valueMap == [
                 child: [name: 'Alberto']
         ]
@@ -94,6 +96,21 @@ class PimsBehaviour extends Specification{
         withParameter.type.actualType.get() == WithParameter
         withParameter.type.ownDeclaration.parameters.size() == 0
         withParameter.type.superDeclarations.get(WithParameterBase).ownDeclaration.parameters.get("T").actualType.get() == String
+    }
+
+    def "should update field" (){
+        when:
+        MyInterfaceBuilder builder = pims.newBuilder(MyInterfaceBuilder)
+        builder.withName('Alberto')
+
+        then:
+        builder.name == 'Alberto'
+
+        when:
+        builder.updateName ({s -> s.toUpperCase()} as UnaryOperator<String>)
+
+        then:
+        builder.name == 'ALBERTO'
     }
 
     @PimsEntity
@@ -129,5 +146,7 @@ class PimsBehaviour extends Specification{
     @PimsEntity
     private static interface MyInterfaceBuilder extends MyInterface, PimsBuilder<MyInterface> {
         MyInterfaceBuilder withName (String name)
+
+        MyInterfaceBuilder updateName (UnaryOperator<String> updater)
     }
 }
