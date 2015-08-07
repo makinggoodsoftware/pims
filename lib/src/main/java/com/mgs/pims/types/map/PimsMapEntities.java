@@ -8,6 +8,7 @@ import com.mgs.pims.proxy.PimsEntityProxy;
 import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
 
@@ -49,5 +50,11 @@ public class PimsMapEntities {
         return domainMap.get(fieldName);
     }
 
-
+    @PimsMethod(pattern = "equals")
+    public Object onEquals(
+            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
+            @PimsParameter(type = METHOD_PARAMETERS) PimsMapEntity other
+    ) {
+        return Objects.equals(domainMap, other.getDomainMap());
+    }
 }

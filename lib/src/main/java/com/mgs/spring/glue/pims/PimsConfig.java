@@ -33,8 +33,8 @@ public class PimsConfig {
     public Pims pims(){
         return new Pims(
                 pimsFactory(),
-                reflectionsConfig.typeParser()
-        );
+                reflectionsConfig.typeParser(),
+                mapsConfig.mapUtils());
     }
 
     @Bean

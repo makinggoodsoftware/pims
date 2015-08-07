@@ -1,6 +1,7 @@
 package com.mgs.spring.glue.maps;
 
 import com.mgs.maps.MapTransformer;
+import com.mgs.maps.MapUtils;
 import com.mgs.maps.MapWalker;
 import com.mgs.spring.glue.reflection.ReflectionsConfig;
 import org.springframework.context.annotation.Bean;
@@ -23,11 +24,17 @@ public class MapsConfig {
         );
     }
 
+    @Bean
     public MapTransformer mapTransformer() {
         return new MapTransformer(
                 mapWalker(),
                 reflectionsConfig.reflections(),
                 reflectionsConfig.typeParser()
         );
+    }
+
+    @Bean
+    public MapUtils mapUtils (){
+        return new MapUtils();
     }
 }

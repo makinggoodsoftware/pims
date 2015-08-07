@@ -23,4 +23,7 @@ public interface PimsMapEntity extends PimsBaseEntity{
 
     @Override
     String toString();
+
+    @Override
+    boolean equals (Object other);
 }

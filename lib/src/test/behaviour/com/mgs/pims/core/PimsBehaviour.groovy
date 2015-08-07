@@ -113,6 +113,21 @@ class PimsBehaviour extends Specification{
         builder.name == 'ALBERTO'
     }
 
+    def "should allow update of an entity through a builder" (){
+        when:
+        MyInterface alberto1 = pims.newBuilder(MyInterfaceBuilder).withName("Alberto").build()
+        MyInterfaceBuilder alberto2 = pims.update(MyInterfaceBuilder, alberto1);
+
+        then:
+        alberto1 == alberto2
+
+        when:
+        alberto2.updateName ({s -> s.toUpperCase()} as UnaryOperator<String>)
+
+        then:
+        alberto1 != alberto2
+    }
+
     @PimsEntity
     private static interface MyPimsEntity extends PimsMapEntity {
         String getName()
