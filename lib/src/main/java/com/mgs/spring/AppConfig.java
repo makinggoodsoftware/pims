@@ -1,18 +1,14 @@
 package com.mgs.spring;
 
-import com.mgs.spring.mongo.MongoConfig;
-import com.mgs.spring.pims.MixersConfig;
-import com.mgs.spring.reflection.ReflectionsConfig;
-import com.mgs.spring.text.TextConfig;
+import com.mgs.spring.custom.CustomConfig;
+import com.mgs.spring.glue.GlueConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        ReflectionsConfig.class,
-        TextConfig.class,
-        MixersConfig.class,
-        MongoConfig.class
+        GlueConfig.class,
+        CustomConfig.class,
 })
 public class AppConfig {
 }

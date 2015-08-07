@@ -1,4 +1,4 @@
-package com.mgs.spring.reflection;
+package com.mgs.spring.glue.reflection;
 
 import com.mgs.reflections.BeanNamingExpert;
 import com.mgs.reflections.FieldAccessorParser;

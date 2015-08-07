@@ -6,11 +6,11 @@ import com.mgs.pims.annotations.PimsEvent;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.types.builder.PimsBuilder;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
 import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
@@ -40,9 +40,13 @@ public class PimsPersistables {
             @PimsParameter(type = SOURCE_OBJECT) PimsPersistable source
     ) {
         PimsPersistableBuilder updater = pims.update(PimsPersistableBuilder.class, source);
-        PimsMapEntity withUpdatedVersion = updater.updateVersion(version -> version + 1).build();
+        PimsMapEntity withUpdatedVersion = updater.updateVersion(incrementby1()).build();
         String collectionName = parsedType.getActualType().get().getName();
         mongoDao.persist(collectionName, withUpdatedVersion.getValueMap());
         return withUpdatedVersion;
+    }
+
+    private UnaryOperator<Integer> incrementby1() {
+        return integer -> integer + 1;
     }
 }

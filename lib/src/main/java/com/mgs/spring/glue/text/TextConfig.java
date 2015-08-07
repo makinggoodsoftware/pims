@@ -1,4 +1,4 @@
-package com.mgs.spring.text;
+package com.mgs.spring.glue.text;
 
 import com.mgs.text.PatternMatcher;
 import org.springframework.context.annotation.Bean;

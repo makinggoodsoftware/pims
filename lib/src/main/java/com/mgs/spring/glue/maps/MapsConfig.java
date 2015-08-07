@@ -1,8 +1,8 @@
-package com.mgs.spring.maps;
+package com.mgs.spring.glue.maps;
 
 import com.mgs.maps.MapTransformer;
 import com.mgs.maps.MapWalker;
-import com.mgs.spring.reflection.ReflectionsConfig;
+import com.mgs.spring.glue.reflection.ReflectionsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

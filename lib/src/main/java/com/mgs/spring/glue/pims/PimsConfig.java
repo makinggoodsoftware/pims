@@ -1,4 +1,4 @@
-package com.mgs.spring.pims;
+package com.mgs.spring.glue.pims;
 
 import com.mgs.pims.Pims;
 import com.mgs.pims.linker.PimsLinker;
@@ -7,9 +7,9 @@ import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
 import com.mgs.pims.linker.mixer.PimsMixersProvider;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.types.PimsFactory;
-import com.mgs.spring.maps.MapsConfig;
-import com.mgs.spring.reflection.ReflectionsConfig;
-import com.mgs.spring.text.TextConfig;
+import com.mgs.spring.glue.maps.MapsConfig;
+import com.mgs.spring.glue.reflection.ReflectionsConfig;
+import com.mgs.spring.glue.text.TextConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
