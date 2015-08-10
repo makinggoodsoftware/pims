@@ -7,6 +7,7 @@ import com.mgs.pims.types.builder.PimsBuilder;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.pims.types.persistable.PimsPersistableBuilder;
+import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 
 import java.util.HashMap;
@@ -37,7 +38,6 @@ public class Pims {
     public <T extends PimsBaseEntity> T stateless(Class<T> statelessType) {
         return pimsFactory.immutable(
                 typeParser.parse(statelessType),
-                new HashMap<>(),
                 new HashMap<>()
         );
     }
@@ -61,11 +61,22 @@ public class Pims {
             B extends PimsBuilder<M>
             >
     B update(Class<B> builder, M source) {
+        return update(
+                typeParser.parse(builder),
+                source
+        );
+    }
+
+    public <
+            M extends PimsMapEntity,
+            B extends PimsBuilder<M>
+            >
+    B update(ParsedType type, M source) {
         Map valueMapCopy = mapUtils.copy(source.getValueMap());
         Map domainMapCopy = mapUtils.copy(source.getDomainMap());
         //noinspection unchecked
         return (B) pimsFactory.mutable(
-                typeParser.parse(builder),
+                type,
                 valueMapCopy,
                 domainMapCopy
         );

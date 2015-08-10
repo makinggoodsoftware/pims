@@ -15,7 +15,7 @@ public class TypeParser {
         return parse(type, new HashMap<>());
     }
 
-    private ParsedType parse(Type type, Map<String, Declaration> effectiveParameters) {
+    public ParsedType parse(Type type, Map<String, Declaration> effectiveParameters) {
         TypeResolution typeResolution = typeResolution(type);
         return parse(typeResolution, effectiveParameters);
     }
@@ -101,10 +101,6 @@ public class TypeParser {
     }
 
     private Declaration buildDeclaration(TypeResolution typeResolution, Map<String, Declaration> effectiveParameters) {
-        if (!typeResolution.getParameterizedType().isPresent()) {
-            return new Declaration(typeResolution, new HashMap<>());
-        }
-
         return new Declaration(typeResolution, effectiveParameters);
     }
 

@@ -36,10 +36,6 @@ public class PimsFactory {
         return withMutability(type, valueMap, domainMap, true, pimsLinker.link(type.getActualType().get()));
     }
 
-    public <T extends PimsBaseEntity> T immutable(ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
-        return withMutability(type, valueMap, domainMap, false, pimsLinker.link(type.getActualType().get()));
-    }
-
     private <T extends PimsBaseEntity> T fromValueMap(ParsedType type, Map<String, Object> valueMap, boolean mutable) {
         Map<String, Object> src = valueMap;
         @SuppressWarnings("unchecked") Class<T> actualClass = type.getOwnDeclaration().getActualType().get();

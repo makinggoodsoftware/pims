@@ -62,12 +62,11 @@ public class PimsBuilders {
     @PimsMethod(pattern = "build")
     public Object onBuild(
             @PimsParameter(type = SOURCE_TYPE) ParsedType sourceType,
-            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
             @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap
     ) {
         Declaration pimsBuilderDeclaration = sourceType.getSuperDeclarations().get(PimsBuilder.class).getOwnDeclaration();
         Declaration typeOfBuilder = pimsBuilderDeclaration.getParameters().get("T");
-        return pimsFactory.immutable(typeParser.parse(typeOfBuilder), valueMap, domainMap);
+        return pimsFactory.immutable(typeParser.parse(typeOfBuilder), valueMap);
     }
 
 }

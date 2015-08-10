@@ -39,8 +39,12 @@ public class MixersConfig {
     public PimsPersistables pimsResources (MongoDbDef mongoDbDef){
         return new PimsPersistables(
                 pimsConfig.pims(),
-                mongoConfig.mongoDaoFactory().mongoDao(mongoDbDef.getHost(), mongoDbDef.getPort(), mongoDbDef.getDbName())
-        );
+                mongoConfig.mongoDaoFactory().mongoDao(
+                        mongoDbDef.getHost(),
+                        mongoDbDef.getPort(),
+                        mongoDbDef.getDbName()
+                ),
+                reflectionsConfig.typeParser());
     }
 
     @Bean
