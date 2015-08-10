@@ -52,7 +52,7 @@ public class PimsPersistables {
         PimsPersistableBuilder updater = builder(persistableType, source);
 
         PimsMapEntity withUpdatedVersion = updater.updateVersion(incrementby1()).build();
-        String collectionName = persistableType.getActualType().get().getName();
+        String collectionName = persistableType.getActualType().get().getSimpleName();
         mongoDao.persist(collectionName, withUpdatedVersion.getValueMap());
         return withUpdatedVersion;
     }
