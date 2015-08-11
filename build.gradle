@@ -27,7 +27,13 @@ subprojects {
         test {
             apply plugin: 'groovy'
             groovy {
-                srcDir "test/behaviour"
+                srcDir "src/test/behaviour"
+            }
+        }
+        test {
+            apply plugin: 'groovy'
+            groovy {
+                srcDir "src/test/unit"
             }
         }
     }
