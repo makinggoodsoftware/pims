@@ -28,12 +28,12 @@ class PimsPersistableSpecification extends Specification{
         alberto.data.name == 'Alberto'
 
         when:
-        alberto.persist()
+        alberto = alberto.persist() as Person
         PersonRetriever personRetriever = pims.stateless(PersonRetriever)
         List<Person> albertos = personRetriever.byName("Alberto")
 
         then:
-        albertos == [alberto]
+        albertos.contains(alberto)
     }
 
     @PimsEntity

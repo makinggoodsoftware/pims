@@ -53,8 +53,15 @@ public class MixersConfig {
     }
 
     @Bean
-    public PimsRetrievers pimsRetrievers (){
-        return new PimsRetrievers();
+    public PimsRetrievers pimsRetrievers(MongoDbDef mongoDbDef) {
+        return new PimsRetrievers(
+                mongoConfig.mongoDaoFactory().mongoDao(
+                        mongoDbDef.getHost(),
+                        mongoDbDef.getPort(),
+                        mongoDbDef.getDbName()
+                ),
+                pimsConfig.pims()
+        );
     }
 
     @Bean
