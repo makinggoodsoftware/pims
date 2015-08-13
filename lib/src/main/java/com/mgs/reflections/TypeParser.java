@@ -52,7 +52,7 @@ public class TypeParser {
         for (Type genericInterface : superInterfaces) {
             TypeResolution superTypeResolution = typeResolution(genericInterface);
             if (superTypeResolution.getParameterizedType().isPresent()) {
-                Map<String, Declaration> superParameters = extractParameters(superTypeResolution, declaration.getTypeResolution().getParameterizedType(), thisEffectiveParameters);
+                Map<String, Declaration> superParameters = extractParameters(superTypeResolution, thisEffectiveParameters);
                 ParsedType superInterface = parse(superTypeResolution, superParameters);
                 superDeclarations.put(superTypeResolution.getSpecificClass().get(), superInterface);
             }
@@ -87,11 +87,12 @@ public class TypeParser {
         TypeResolution genericTypeResolution = typeResolution(method.getGenericReturnType());
         ParsedType returnType;
         if (method.getDeclaringClass().equals(type.getOwnDeclaration().getActualType().get())) {
-            returnType = parse(genericTypeResolution, type.getOwnDeclaration().getParameters());
+            Map<String, Declaration> parameters = extractParameters(genericTypeResolution, type.getOwnDeclaration().getParameters());
+            returnType = parse(genericTypeResolution, parameters);
         } else {
             ParsedType superParsedType = type.getSuperDeclarations().get(method.getDeclaringClass());
             if (superParsedType != null) {
-                Map<String, Declaration> parameters = superParsedType.getOwnDeclaration().getParameters();
+                Map<String, Declaration> parameters = extractParameters(genericTypeResolution, superParsedType.getOwnDeclaration().getParameters());
                 returnType = parse(genericTypeResolution, parameters);
             } else {
                 returnType = parse(genericTypeResolution, new HashMap<>());
@@ -100,41 +101,59 @@ public class TypeParser {
         return new GenericMethod(returnType, method);
     }
 
-    private Map<String, Declaration> extractParameters(TypeResolution typeResolution, Optional<ParameterizedType> parentParameterizedType, Map<String, Declaration> effectiveParameters) {
+    private Map<String, Declaration> extractParameters(TypeResolution typeResolution, Map<String, Declaration> effectiveParameters) {
         Map<String, Declaration> ownParameters = new HashMap<>();
-        ParameterizedType parameterizedType = typeResolution.getParameterizedType().get();
-        TypeVariable[] typeParameters = ((Class) parameterizedType.getRawType()).getTypeParameters();
-        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        int i = 0;
-        for (Type actualTypeArgument : actualTypeArguments) {
-            String parameterName = typeParameters[(i)].getName();
-            TypeResolution actualTypeResolution = typeResolution(actualTypeArgument);
-            Declaration declaration;
-            if (actualTypeResolution.getGenericName().isPresent()) {
-                declaration = effectiveParameters.get(actualTypeArgument.getTypeName());
-            } else if (!actualTypeResolution.getSpecificClass().isPresent()) {
-                declaration = effectiveParameters.get(actualTypeArgument.getTypeName());
-            } else {
-                declaration = new Declaration(actualTypeResolution, effectiveParameters);
-            }
-            if (declaration == null) {
-                if (parentParameterizedType.isPresent()) {
-                    Optional<Class> parentType = parse(parentParameterizedType.get().getActualTypeArguments()[i]).getActualType();
-                    if (parentType.isPresent()) {
-                        declaration = parse(parentType.get()).getOwnDeclaration();
-                    }
-                }
-            }
-            if (declaration == null) {
-                throw new IllegalStateException();
-            }
+        Optional<ParameterizedType> parameterizedTypeOptional = typeResolution.getParameterizedType();
+
+        if (typeResolution.getGenericName().isPresent()) {
+            String name = typeResolution.getGenericName().get();
             ownParameters.put(
-                    parameterName,
-                    declaration
+                    name,
+                    effectiveParameters.get(name)
             );
-            i++;
+            return ownParameters;
+        }
+
+        if (!parameterizedTypeOptional.isPresent() && !typeResolution.getGenericName().isPresent())
+            return new HashMap<>();
+
+        ParameterizedType parameterizedType = parameterizedTypeOptional.get();
+        TypeVariable[] templateTypeParameters = ((Class) parameterizedType.getRawType()).getTypeParameters();
+        Type[] actualTypes = parameterizedType.getActualTypeArguments();
+
+        int parameterLength = templateTypeParameters.length;
+        if (parameterLength != actualTypes.length) {
+            throw new IllegalStateException("");
+        }
+
+        for (int i = 0; i < parameterLength; i++) {
+            String templateParameterName = templateTypeParameters[i].getTypeName();
+            ownParameters.put(
+                    templateParameterName,
+                    assertLegalDeclaration(resolveDeclaration(
+                            actualTypes[i],
+                            actualTypes[i].getTypeName(),
+                            effectiveParameters
+                    ))
+            );
         }
         return ownParameters;
+    }
+
+    private Declaration assertLegalDeclaration(Declaration declaration) {
+        if (declaration == null) {
+            throw new IllegalStateException();
+        }
+        return declaration;
+    }
+
+    private Declaration resolveDeclaration(Type actualType, String effectiveParameterName, Map<String, Declaration> effectiveParameters) {
+        TypeResolution actualTypeResolution = typeResolution(actualType);
+        if (actualTypeResolution.getSpecificClass().isPresent()) {
+            return new Declaration(actualTypeResolution, new HashMap<>());
+        } else {
+            return effectiveParameters.get(effectiveParameterName);
+        }
     }
 
     private TypeResolution typeResolution(Type type) {

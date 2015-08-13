@@ -7,6 +7,7 @@ import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
 import com.mongodb.DBCursor;
@@ -27,11 +28,12 @@ public class PimsRetrievers {
         this.pims = pims;
     }
 
-    @PimsMethod(pattern = "by{fieldName}")
-    public <T extends PimsMapEntity> List<T> onByFieldName(
+    @PimsMethod(pattern = "byField")
+    public <Z extends PimsMapEntity, T extends PimsPersistable<Z>>
+    List<T> onByField(
             @PimsParameter(type = SOURCE_TYPE) ParsedType type,
-            @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName,
-            @PimsParameter(type = METHOD_PARAMETERS) Object fieldValue
+            @PimsParameter(type = METHOD_PARAMETERS) String fieldName,
+            Object fieldValue
     ) {
         ParsedType pimsRetriever = type.getSuperDeclarations().get(PimsRetriever.class);
         Declaration persistableTypeDeclaration = pimsRetriever.getOwnDeclaration().getParameters().get("T");
@@ -50,5 +52,17 @@ public class PimsRetrievers {
             matches.add((T) pims.newEntity(persistableType, valueMap));
         }
         return matches;
+
+
+    }
+
+    @PimsMethod(pattern = "by{fieldName}")
+    public <Z extends PimsMapEntity, T extends PimsPersistable<Z>>
+    List<T> onByFieldInterceptor(
+            @PimsParameter(type = SOURCE_OBJECT) PimsRetriever<Z, T> retriever,
+            @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName,
+            @PimsParameter(type = METHOD_PARAMETERS) Object fieldValue
+    ) {
+        return retriever.byField(fieldName, fieldValue);
     }
 }

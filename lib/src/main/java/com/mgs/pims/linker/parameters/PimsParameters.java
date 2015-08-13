@@ -68,14 +68,18 @@ public class PimsParameters {
         List<ParameterResolution> parameterTypes = new ArrayList<>();
         for (Parameter parameter : parameters) {
             PimsParameter pimsParameter = parameter.getAnnotation(PimsParameter.class);
-            if (pimsParameter == null) throw new IllegalStateException();
+
             PimsMethodParameterType parameterType = pimsParameter.type();
             if (parameterType != PLACEHOLDER) {
                 parameterTypes.add(simple(parameterType));
-            }else{
+            } else {
                 String placeholderName = pimsParameter.name();
                 if (placeholderName == null) throw new IllegalStateException();
                 parameterTypes.add(ParameterResolution.placeholder(linkedMethod.getPlaceholders().get(placeholderName)));
+            }
+
+            if (parameterType == METHOD_PARAMETERS) {
+                return parameterTypes;
             }
         }
         return parameterTypes;

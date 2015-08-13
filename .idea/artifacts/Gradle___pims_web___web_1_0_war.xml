@@ -24,6 +24,10 @@
           <element id="library" level="project" name="Gradle: aopalliance:aopalliance:1.0" />
           <element id="library" level="project" name="Gradle: org.springframework:spring-webmvc:4.1.6.RELEASE" />
           <element id="library" level="project" name="Gradle: org.springframework:spring-web:4.1.6.RELEASE" />
+          <element id="archive" name="pims-lib-1.0.jar">
+            <element id="module-output" name="lib" />
+            <element id="dir-copy" path="$PROJECT_DIR$/lib/build/resources/main" />
+          </element>
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -46,6 +46,7 @@ project(':web') {
 
     dependencies {
         compile 'org.springframework:spring-webmvc:4.1.6.RELEASE',
-                'org.springframework:spring-web:4.1.6.RELEASE'
+                'org.springframework:spring-web:4.1.6.RELEASE',
+                project(':lib')
     }
 }

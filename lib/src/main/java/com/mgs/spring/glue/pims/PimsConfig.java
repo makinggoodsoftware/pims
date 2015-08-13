@@ -18,7 +18,8 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         MapsConfig.class,
-        ReflectionsConfig.class
+        ReflectionsConfig.class,
+        TextConfig.class
 })
 public class PimsConfig {
     @Autowired
