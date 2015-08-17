@@ -25,6 +25,10 @@ class PimsPersistableSpecification extends Specification{
         }).build()
 
         then:
+        !alberto.valueMap.containsKey("id")
+        alberto.valueMap.containsKey("_id")
+        alberto.id == alberto.valueMap["_id"]
+        alberto.id.class == String
         alberto.data.name == 'Alberto'
 
         when:
@@ -34,6 +38,7 @@ class PimsPersistableSpecification extends Specification{
 
         then:
         albertos.contains(alberto)
+        albertos[0].id.class == String
     }
 
     @PimsEntity

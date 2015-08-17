@@ -22,7 +22,13 @@ public class PimsMethodCaller {
     public Object delegate(PimsMethodDelegator pimsMethodDelegator, Map<PimsMethodParameterType, Object> pimsMethodCallParameters) {
         try {
             List<ParameterResolution> pimsMethodParameterTypes = pimsMethodDelegator.getPimsMethodParameterTypes();
-            return doDelegate(pimsMethodDelegator, pimsParameters.apply(pimsMethodParameterTypes, pimsMethodCallParameters));
+            return doDelegate(
+                    pimsMethodDelegator,
+                    pimsParameters.apply(
+                            pimsMethodParameterTypes,
+                            pimsMethodCallParameters
+                    )
+            );
         } catch (Exception e) {
             throw new IllegalStateException (e);
         }

@@ -1,5 +1,6 @@
 package com.mgs.pims.types.persistable;
 
+import com.mgs.maps.Mapping;
 import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.types.map.PimsMapEntity;
 
@@ -7,7 +8,8 @@ import com.mgs.pims.types.map.PimsMapEntity;
 public interface PimsPersistable<T extends PimsMapEntity> extends PimsMapEntity {
     T getData();
 
-    Integer getId();
+    @Mapping(mapFieldName = "_id")
+    String getId();
 
     Integer getVersion();
 

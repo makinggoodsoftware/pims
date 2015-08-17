@@ -9,6 +9,7 @@ import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.map.PimsMapEntities
 import com.mgs.pims.types.map.PimsMapEntity
+import com.mgs.reflections.FieldAccessor
 import com.mgs.reflections.ParsedType
 import spock.lang.Specification
 
@@ -27,6 +28,7 @@ class PimsParametersSpecification extends Specification{
 
     PimsMapEntity pimsMapEntityMock = Mock (PimsMapEntity)
     PimsEntityProxy pimsEntityProxyMock = Mock (PimsEntityProxy)
+    Map<String, FieldAccessor> fieldAccessorMapMock = Mock(Map)
 
     def "should return the correct type of arguments" (){
         when:
@@ -49,19 +51,21 @@ class PimsParametersSpecification extends Specification{
                 parsedTypeMock,
                 pimsMapEntityMock,
                 pimsEntityProxyMock,
-                [parameter1Mock, parameter2Mock] as Object [],
+                [parameter1Mock, parameter2Mock] as Object[],
+                fieldAccessorMapMock,
                 domainMapMock,
                 valueMapMock
         )
 
         then:
-        params.size() == 6
+        params.size() == 7
         params[SOURCE_TYPE] == parsedTypeMock
         params[SOURCE_OBJECT] == pimsMapEntityMock
         params[PROXY_OBJECT] == pimsEntityProxyMock
         params[METHOD_PARAMETERS] == [parameter1Mock, parameter2Mock]
         params[DOMAIN_MAP] == domainMapMock
         params[VALUE_MAP] == valueMapMock
+        params[FIELD_ACCESSORS] == fieldAccessorMapMock
     }
 
     def "if there is only one non annotated parameter, its assumed to be the proxy" (){

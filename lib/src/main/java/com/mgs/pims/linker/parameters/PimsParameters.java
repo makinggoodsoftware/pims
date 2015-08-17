@@ -5,6 +5,7 @@ import com.mgs.pims.linker.method.LinkedMethod;
 import com.mgs.pims.proxy.PimsEntityProxy;
 import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.reflections.FieldAccessor;
 import com.mgs.reflections.ParsedType;
 
 import java.lang.reflect.Parameter;
@@ -39,12 +40,15 @@ public class PimsParameters {
             PimsBaseEntity entity,
             PimsEntityProxy proxy,
             Object[] args,
+            Map<String, FieldAccessor> fieldAccessors,
             Map<String, Object> domainMap,
             Map<String, Object> valueMap
     ) {
         if (type == null) throw new IllegalStateException("Can't create parameters, type ,must be NOT null");
         if (entity == null) throw new IllegalStateException("Can't create parameters, entity ,must be NOT null");
         if (proxy == null) throw new IllegalStateException("Can't create parameters, proxy ,must be NOT null");
+        if (fieldAccessors == null)
+            throw new IllegalStateException("Can't create parameters, field accessors ,must be NOT null");
         if (domainMap == null) throw new IllegalStateException("Can't create parameters, domain map ,must be NOT null");
         if (valueMap == null) throw new IllegalStateException("Can't create parameters, value map ,must be NOT null");
 
@@ -55,6 +59,7 @@ public class PimsParameters {
         parameters.put(METHOD_PARAMETERS, args);
         parameters.put(DOMAIN_MAP, domainMap);
         parameters.put(VALUE_MAP, valueMap);
+        parameters.put(FIELD_ACCESSORS, fieldAccessors);
         return parameters;
     }
 

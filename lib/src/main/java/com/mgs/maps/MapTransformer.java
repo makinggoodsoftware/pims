@@ -2,6 +2,7 @@ package com.mgs.maps;
 
 import com.mgs.reflections.*;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

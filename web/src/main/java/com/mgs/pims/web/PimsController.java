@@ -5,6 +5,7 @@ import com.mgs.pims.types.retriever.PimsRetriever;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 public class PimsController {
@@ -14,18 +15,18 @@ public class PimsController {
     private Pims pims;
 
     @RequestMapping(
-            value = "/{resourceName}/{resourceId}",
+            value = "/{resourceName}/{fieldName}/{fieldValue}",
             method = RequestMethod.GET,
             produces = "application/json"
     )
     @ResponseBody
-    String hello2(
+    List hello2(
             @PathVariable("resourceName") String name,
-            @PathVariable("resourceId") String attr
+            @PathVariable("fieldName") String fieldName,
+            @PathVariable("fieldValue") String fieldValue
     ) {
         PimsRetriever retriever = pimsContext.retriever(name);
-
-        return "loading resource " + name + " with id: " + attr;
+        return retriever.byField(fieldName, fieldValue);
     }
 
 }

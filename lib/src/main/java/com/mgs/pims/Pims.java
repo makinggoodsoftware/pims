@@ -7,6 +7,7 @@ import com.mgs.pims.types.builder.PimsBuilder;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.pims.types.persistable.PimsPersistableBuilder;
+import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 
@@ -32,7 +33,14 @@ public class Pims {
 
     public <M extends PimsMapEntity, B extends PimsBuilder<M>> B
     newBuilder(Class<B> type){
-        return pimsFactory.mutable(typeParser.parse(type), new HashMap<>(), new HashMap<>());
+        ParsedType builderType = typeParser.parse(type);
+        ParsedType getterType = getterType(builderType);
+        return pimsFactory.mutable(
+                getterType,
+                builderType,
+                new HashMap<>(),
+                new HashMap<>()
+        );
     }
 
     public <T extends PimsBaseEntity> T stateless(Class<T> statelessType) {
@@ -76,9 +84,16 @@ public class Pims {
         Map domainMapCopy = mapUtils.copy(source.getDomainMap());
         //noinspection unchecked
         return (B) pimsFactory.mutable(
+                getterType(type),
                 type,
                 valueMapCopy,
                 domainMapCopy
         );
+    }
+
+    private ParsedType getterType(ParsedType baseBuilderType) {
+        ParsedType builderType = baseBuilderType.getSuperDeclarations().get(PimsBuilder.class);
+        Declaration getterDeclaration = builderType.getOwnDeclaration().getParameters().get("T");
+        return typeParser.parse(getterDeclaration);
     }
 }

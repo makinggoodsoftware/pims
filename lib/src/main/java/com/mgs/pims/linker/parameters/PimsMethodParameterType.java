@@ -7,6 +7,6 @@ public enum PimsMethodParameterType {
     SOURCE_OBJECT,
     PROXY_OBJECT,
     PLACEHOLDER,
-    SOURCE_TYPE,
-    CONTEXT
+    FIELD_ACCESSORS,
+    SOURCE_TYPE
 }

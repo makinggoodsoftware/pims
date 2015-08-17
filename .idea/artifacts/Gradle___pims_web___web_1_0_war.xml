@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <component name="ArtifactManager">
   <artifact type="war" name="Gradle : pims:web : web-1.0.war">
     <output-path>$PROJECT_DIR$/classes/artifacts/web</output-path>
     <properties id="gradle-properties">
-      <options external-project-path="$PROJECT_DIR$/web" />
+      <options external-project-path="$PROJECT_DIR$" />
     </properties>
     <root id="archive" name="web-1.0.war">
       <element id="javaee-facet-resources" facet="web/web/Web Gradle : web-1.0.war" />
@@ -28,6 +27,9 @@
             <element id="module-output" name="lib" />
             <element id="dir-copy" path="$PROJECT_DIR$/lib/build/resources/main" />
           </element>
+          <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.6.1" />
+          <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.6.0" />
+          <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.6.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -44,7 +44,8 @@ public class PimsConfig {
                 mapsConfig.mapTransformer(),
                 pimsParameters(),
                 pimsLinker(),
-                pimsMethodCaller());
+                pimsMethodCaller(),
+                reflectionsConfig.fieldAccessorParser());
     }
 
     @Bean

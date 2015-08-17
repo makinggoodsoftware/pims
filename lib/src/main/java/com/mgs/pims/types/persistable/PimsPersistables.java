@@ -33,9 +33,9 @@ public class PimsPersistables {
 
     @PimsEvent(type = INPUT_TRANSLATION)
     public Map<String, Object> translate (Map<String, Object> input){
-        if (input.containsKey("id") && input.containsKey("version")) return input;
-        if (!input.containsKey("id") && !input.containsKey("version")) {
-            input.put("id", UUID.randomUUID());
+        if (input.containsKey("_id") && input.containsKey("version")) return input;
+        if (!input.containsKey("_id") && !input.containsKey("version")) {
+            input.put("_id", UUID.randomUUID().toString());
             input.put("version", 0);
             return input;
 

@@ -7,6 +7,7 @@ import com.mgs.pims.linker.method.PimsMethodDelegator
 import com.mgs.pims.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.map.PimsMapEntity
+import com.mgs.reflections.FieldAccessor
 import com.mgs.reflections.ParsedType
 import com.mgs.reflections.TypelessMethod
 import com.mgs.spring.AppConfig
@@ -23,6 +24,7 @@ class PimsLinkerBehaviour extends Specification{
 
     PimsMapEntity pimsMapEntityMock = Mock (PimsMapEntity)
     PimsEntityProxy pimsEntityProxyMock = Mock (PimsEntityProxy)
+    Map<String, FieldAccessor> fieldAccessorMapMock = Mock(Map)
 
     ParsedType parsedTypeMock = Mock (ParsedType)
 
@@ -43,8 +45,9 @@ class PimsLinkerBehaviour extends Specification{
                         pimsMapEntityMock,
                         pimsEntityProxyMock,
                         null,
+                        fieldAccessorMapMock,
                         [:],
-                        [value:'map']
+                        [value: 'map']
                 )
         ) as Map<String, String>
 
@@ -64,7 +67,8 @@ class PimsLinkerBehaviour extends Specification{
                         pimsMapEntityMock,
                         pimsEntityProxyMock,
                         null,
-                        [name:'Alberto'],
+                        fieldAccessorMapMock,
+                        [name: 'Alberto'],
                         [:]
                 )
         )

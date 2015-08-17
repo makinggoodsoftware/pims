@@ -1,5 +1,6 @@
 package com.mgs.pims.core
 
+import com.mgs.maps.Mapping
 import com.mgs.pims.Pims
 import com.mgs.pims.annotations.PimsEntity
 import com.mgs.pims.annotations.PimsEvent
@@ -50,7 +51,7 @@ class PimsBehaviour extends Specification{
         result.name == 'alberto'
     }
 
-    def "should create siple pims entity"() {
+    def "should create simple pims entity"() {
         when:
         MyPimsEntity alberto = pims.newEntity(
                 MyPimsEntity,
@@ -127,6 +128,37 @@ class PimsBehaviour extends Specification{
         then:
         alberto1 != alberto2
     }
+
+    def "should read the Mapping annotations to name the fields of the value map"() {
+        when:
+        PimsEntityWithNamedField result = pims.newEntity(PimsEntityWithNamedField, [differentName: 'a'])
+
+        then:
+        result.named == 'a'
+
+        when:
+        result = pims.newBuilder(PimsEntityWithNamedFieldBuilder).withNamed('a').build()
+
+        then:
+        result.named == 'a'
+        result.domainMap.containsKey("named")
+        !result.domainMap.containsKey("differentName")
+
+        !result.valueMap.containsKey("named")
+        result.valueMap.containsKey("differentName")
+    }
+
+    @PimsEntity
+    private static interface PimsEntityWithNamedField extends PimsMapEntity {
+        @Mapping(mapFieldName = "differentName")
+        String getNamed()
+    }
+
+    @PimsEntity
+    private static interface PimsEntityWithNamedFieldBuilder extends PimsBuilder<PimsEntityWithNamedField> {
+        PimsEntityWithNamedFieldBuilder withNamed(String name)
+    }
+
 
     @PimsEntity
     private static interface MyPimsEntity extends PimsMapEntity {
