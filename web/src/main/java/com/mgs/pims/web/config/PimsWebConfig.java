@@ -8,7 +8,6 @@ import com.mgs.pims.web.retriever.PersonRetriever;
 import com.mgs.spring.bean.MongoDbDef;
 import com.mgs.spring.glue.mongo.MongoConfig;
 import com.mgs.spring.glue.pims.MixersConfig;
-import com.mgs.spring.glue.pims.PimsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

@@ -1,18 +1,19 @@
 package com.mgs.pims.web;
 
-import com.mgs.pims.Pims;
+import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.pims.types.retriever.PimsRetriever;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class PimsController {
     @Resource
     private PimsContext pimsContext;
-    @Resource
-    private Pims pims;
 
     @RequestMapping(
             value = "/{resourceName}/{fieldName}/{fieldValue}",
@@ -20,13 +21,16 @@ public class PimsController {
             produces = "application/json"
     )
     @ResponseBody
-    List hello2(
+    <Z extends PimsMapEntity, T extends PimsPersistable<Z>>
+    List<Map<String, Object>> retrieve(
             @PathVariable("resourceName") String name,
             @PathVariable("fieldName") String fieldName,
             @PathVariable("fieldValue") String fieldValue
     ) {
-        PimsRetriever retriever = pimsContext.retriever(name);
-        return retriever.byField(fieldName, fieldValue);
+        //noinspection unchecked
+        PimsRetriever<Z, T> retriever = pimsContext.retriever(name);
+        List<T> resources = retriever.byField(fieldName, fieldValue);
+        return resources.stream().map(t -> t.getData().getDomainMap()).collect(Collectors.toList());
     }
 
 }
