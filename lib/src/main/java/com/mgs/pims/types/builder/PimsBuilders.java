@@ -4,7 +4,7 @@ import com.mgs.maps.Mapping;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.types.PimsFactory;
+import com.mgs.pims.types.ProxyFactory;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.FieldAccessor;
@@ -19,11 +19,11 @@ import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
 
 @PimsMixer
 public class PimsBuilders {
-    private final PimsFactory pimsFactory;
+    private final ProxyFactory proxyFactory;
     private final TypeParser typeParser;
 
-    public PimsBuilders(PimsFactory pimsFactory, TypeParser typeParser) {
-        this.pimsFactory = pimsFactory;
+    public PimsBuilders(ProxyFactory proxyFactory, TypeParser typeParser) {
+        this.proxyFactory = proxyFactory;
         this.typeParser = typeParser;
     }
 
@@ -88,7 +88,11 @@ public class PimsBuilders {
     ) {
         Declaration pimsBuilderDeclaration = sourceType.getSuperDeclarations().get(PimsBuilder.class).getOwnDeclaration();
         Declaration typeOfBuilder = pimsBuilderDeclaration.getParameters().get("T");
-        return pimsFactory.immutable(typeParser.parse(typeOfBuilder), valueMap);
+        return proxyFactory.immutable(
+                typeParser.parse(typeOfBuilder),
+                valueMap,
+                null
+        );
     }
 
 }

@@ -32,10 +32,10 @@ class PimsContextFactorySpecification extends Specification {
         then:
         context.get("SimpleEntity").type == simpleTypeMock
         context.get("SimpleEntity").metaData == metaDataMock
-        context.get("SimpleEntity").links == linksMock
-        context.get("SimpleEntity").builder == Optional.empty()
-        context.get("SimpleEntity").provider == Optional.empty()
-        context.get("SimpleEntity").retriever == Optional.empty()
+//        context.get("SimpleEntity").links == linksMock
+//        context.get("SimpleEntity").builder == Optional.empty()
+//        context.get("SimpleEntity").provider == Optional.empty()
+//        context.get("SimpleEntity").retriever == Optional.empty()
     }
 
     @PimsEntity

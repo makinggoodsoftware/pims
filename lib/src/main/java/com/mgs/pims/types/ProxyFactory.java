@@ -8,63 +8,66 @@ import com.mgs.pims.core.linker.method.PimsMethodDelegator;
 import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.pims.proxy.PimsEntityProxy;
 import com.mgs.pims.types.base.PimsBaseEntity;
-import com.mgs.pims.types.metaData.PimsEntityMetaDataBuilder;
-import com.mgs.reflections.FieldAccessor;
+import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.reflections.FieldAccessorParser;
-import com.mgs.reflections.FieldAccessorType;
 import com.mgs.reflections.ParsedType;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
-public class PimsFactory {
+public class ProxyFactory {
     private final MapTransformer mapTransformer;
     private final PimsParameters pimsParameters;
     private final PimsLinker pimsLinker;
     private final PimsMethodCaller pimsMethodCaller;
-    private final FieldAccessorParser fieldAccessorParser;
-    private final ParsedType metaDataGetterType;
-    private final ParsedType metaDataBuilderType;
 
-    public PimsFactory(MapTransformer mapTransformer, PimsParameters pimsParameters, PimsLinker pimsLinker, PimsMethodCaller pimsMethodCaller, FieldAccessorParser fieldAccessorParser, ParsedType metaDataGetterType, ParsedType metaDataBuilderType) {
+    public ProxyFactory(MapTransformer mapTransformer, PimsParameters pimsParameters, PimsLinker pimsLinker, PimsMethodCaller pimsMethodCaller, FieldAccessorParser fieldAccessorParser, ParsedType metaDataGetterType, ParsedType metaDataBuilderType) {
         this.mapTransformer = mapTransformer;
         this.pimsParameters = pimsParameters;
         this.pimsLinker = pimsLinker;
         this.pimsMethodCaller = pimsMethodCaller;
-        this.fieldAccessorParser = fieldAccessorParser;
-        this.metaDataGetterType = metaDataGetterType;
-        this.metaDataBuilderType = metaDataBuilderType;
     }
 
-    public <T extends PimsBaseEntity> T immutable(ParsedType type, Map<String, Object> valueMap) {
+    public <T extends PimsBaseEntity> T immutable(
+            ParsedType type,
+            Map<String, Object> valueMap,
+            PimsEntityMetaData pimsEntityMetaData
+    ) {
         return fromValueMap(
                 type,
                 type,
                 valueMap,
-                false
+                false,
+                pimsEntityMetaData
         );
     }
 
-    public <T extends PimsBaseEntity> T mutable(ParsedType getterType, ParsedType type, Map<String, Object> valueMap, Map<String, Object> domainMap) {
+    public <T extends PimsBaseEntity> T mutable(
+            ParsedType getterType,
+            ParsedType type,
+            Map<String, Object> valueMap,
+            Map<String, Object> domainMap,
+            PimsEntityMetaData pimsEntityMetaData
+    ) {
         return withMutability(
                 getterType,
                 type,
                 valueMap,
                 domainMap,
                 true,
-                pimsLinker.link(type.getActualType().get()
-                ));
+                pimsLinker.link(type.getActualType().get()),
+                pimsEntityMetaData
+        );
     }
 
     private <T extends PimsBaseEntity> T fromValueMap(
             ParsedType getterType,
             ParsedType type,
             Map<String, Object> valueMap,
-            boolean mutable
+            boolean mutable,
+            PimsEntityMetaData pimsEntityMetaData
     ) {
         Map<String, Object> src = valueMap;
         @SuppressWarnings("unchecked") Class<T> actualClass = type.getOwnDeclaration().getActualType().get();
@@ -77,7 +80,7 @@ public class PimsFactory {
         Map<String, Object> domainMap = mapTransformer.objectify(
                 type,
                 src,
-                (childType, childMap) -> fromValueMap(getterType, childType, childMap, mutable));
+                (childType, childMap) -> fromValueMap(getterType, childType, childMap, mutable, pimsEntityMetaData));
         //noinspection unchecked
         return (T) withMutability(
                 getterType,
@@ -85,7 +88,8 @@ public class PimsFactory {
                 valueMap,
                 domainMap,
                 mutable,
-                link
+                link,
+                pimsEntityMetaData
         );
     }
 
@@ -95,7 +99,8 @@ public class PimsFactory {
             Map<String, Object> valueMap,
             Map<String, Object> domainMap,
             boolean mutable,
-            PimsLink link
+            PimsLink link,
+            PimsEntityMetaData pimsEntityMetaData
     ) {
         return proxy(
                 mutable,
@@ -103,7 +108,8 @@ public class PimsFactory {
                 type,
                 valueMap,
                 domainMap,
-                link
+                link,
+                pimsEntityMetaData
         );
     }
 
@@ -113,23 +119,12 @@ public class PimsFactory {
             ParsedType type,
             Map<String, Object> valueMap,
             Map<String, Object> domainMap,
-            PimsLink link
+            PimsLink link,
+            PimsEntityMetaData pimsEntityMetaData
     ) {
-        Map<String, FieldAccessor> fieldAccessors = fieldAccessorParser.parse(getterType).
-                filter(
-                        (fieldAccessor -> fieldAccessor.getType() == FieldAccessorType.GET)
-                ).
-                collect(Collectors.toMap(
-                        FieldAccessor::getFieldName,
-                        (fieldAccessor) -> fieldAccessor
-                ));
-        PimsEntityMetaDataBuilder pimsEntityMetaDataBuilder = mutable(metaDataGetterType, metaDataBuilderType, new HashMap<>(), new HashMap<>());
-        pimsEntityMetaDataBuilder.withFields(fieldAccessors);
-        pimsEntityMetaDataBuilder.withName(metaDataGetterType.getActualType().get().getSimpleName());
-        pimsEntityMetaDataBuilder.withType(type);
         //noinspection unchecked
         return (T) newProxyInstance(
-                PimsFactory.class.getClassLoader(),
+                ProxyFactory.class.getClassLoader(),
                 new Class[]{type.getActualType().get()},
                 new PimsEntityProxy(
                         pimsMethodCaller,
@@ -139,8 +134,8 @@ public class PimsFactory {
                         link.getMethods(),
                         mutable,
                         pimsParameters,
-                        fieldAccessors,
-                        pimsEntityMetaDataBuilder.build())
+                        pimsEntityMetaData
+                )
         );
     }
 }

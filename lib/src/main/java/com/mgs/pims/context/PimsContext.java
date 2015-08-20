@@ -1,5 +1,8 @@
 package com.mgs.pims.context;
 
+import com.mgs.pims.types.base.PimsBaseEntity;
+import com.mgs.reflections.ParsedType;
+
 import java.util.Map;
 
 public class PimsContext {
@@ -9,7 +12,15 @@ public class PimsContext {
         this.descriptors = descriptors;
     }
 
-    PimsEntityDescriptor get (String name){
+    public PimsEntityDescriptor get(String name) {
         return descriptors.get(name);
+    }
+
+    public PimsEntityDescriptor get(Class<? extends PimsBaseEntity> name) {
+        return null;
+    }
+
+    public PimsEntityDescriptor get(ParsedType type) {
+        return null;
     }
 }
