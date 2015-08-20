@@ -8,6 +8,7 @@ import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.proxy.PimsEntityProxy;
 import com.mgs.pims.types.base.PimsBaseEntity;
+import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.reflections.FieldAccessor;
 import com.mgs.reflections.FieldAccessorParser;
 import com.mgs.reflections.FieldAccessorType;
@@ -118,6 +119,7 @@ public class PimsFactory {
                         (fieldAccessor) -> fieldAccessor
                 ));
         //noinspection unchecked
+        PimsEntityMetaData pimsEntityMetaData;
         return (T) newProxyInstance(
                 PimsFactory.class.getClassLoader(),
                 new Class[]{type.getActualType().get()},
@@ -129,8 +131,8 @@ public class PimsFactory {
                         link.getMethods(),
                         mutable,
                         pimsParameters,
-                        fieldAccessors
-                )
+                        fieldAccessors,
+                        pimsEntityMetaData)
         );
     }
 }

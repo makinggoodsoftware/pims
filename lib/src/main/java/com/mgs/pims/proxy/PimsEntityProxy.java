@@ -4,6 +4,7 @@ import com.mgs.pims.linker.method.PimsMethodCaller;
 import com.mgs.pims.linker.method.PimsMethodDelegator;
 import com.mgs.pims.linker.parameters.PimsParameters;
 import com.mgs.pims.types.base.PimsBaseEntity;
+import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.reflections.FieldAccessor;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypelessMethod;
@@ -21,6 +22,7 @@ public class PimsEntityProxy implements InvocationHandler {
     private final PimsMethodCaller pimsMethodCaller;
     private final PimsParameters pimsParameters;
     private final Map<String, FieldAccessor> fieldAccessors;
+    private final PimsEntityMetaData pimsEntityMetaData;
 
     public PimsEntityProxy(
             PimsMethodCaller pimsMethodCaller,
@@ -30,7 +32,8 @@ public class PimsEntityProxy implements InvocationHandler {
             Map<TypelessMethod, PimsMethodDelegator> methodDelegators,
             boolean mutable,
             PimsParameters pimsParameters,
-            Map<String, FieldAccessor> fieldAccessors) {
+            Map<String, FieldAccessor> fieldAccessors,
+            PimsEntityMetaData pimsEntityMetaData) {
         this.type = type;
         this.domainMap = domainMap;
         this.valueMap = valueMap;
@@ -39,6 +42,7 @@ public class PimsEntityProxy implements InvocationHandler {
         this.pimsMethodCaller = pimsMethodCaller;
         this.pimsParameters = pimsParameters;
         this.fieldAccessors = fieldAccessors;
+        this.pimsEntityMetaData = pimsEntityMetaData;
     }
 
     @Override
