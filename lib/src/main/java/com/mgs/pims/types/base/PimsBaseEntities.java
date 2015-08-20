@@ -9,9 +9,9 @@ import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
 
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.DOMAIN_MAP;
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.META_DATA;
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.SOURCE_TYPE;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.DOMAIN_MAP;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.META_DATA;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.SOURCE_TYPE;
 
 @PimsMixer
 public class PimsBaseEntities {

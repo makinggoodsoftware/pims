@@ -1,7 +1,7 @@
 package com.mgs.pims.types.persistable;
 
 import com.mgs.mongo.MongoDao;
-import com.mgs.pims.Pims;
+import com.mgs.pims.core.Pims;
 import com.mgs.pims.annotations.PimsEvent;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
@@ -17,7 +17,7 @@ import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
 
 @PimsMixer
 public class PimsPersistables {

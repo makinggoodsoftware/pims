@@ -15,7 +15,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
 
 @PimsMixer
 public class PimsBuilders {

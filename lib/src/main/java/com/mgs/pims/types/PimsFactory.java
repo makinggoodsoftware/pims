@@ -1,19 +1,20 @@
 package com.mgs.pims.types;
 
 import com.mgs.maps.MapTransformer;
-import com.mgs.pims.linker.PimsLink;
-import com.mgs.pims.linker.PimsLinker;
-import com.mgs.pims.linker.method.PimsMethodCaller;
-import com.mgs.pims.linker.method.PimsMethodDelegator;
-import com.mgs.pims.linker.parameters.PimsParameters;
+import com.mgs.pims.core.linker.PimsLink;
+import com.mgs.pims.core.linker.PimsLinker;
+import com.mgs.pims.core.linker.method.PimsMethodCaller;
+import com.mgs.pims.core.linker.method.PimsMethodDelegator;
+import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.pims.proxy.PimsEntityProxy;
 import com.mgs.pims.types.base.PimsBaseEntity;
-import com.mgs.pims.types.metaData.PimsEntityMetaData;
+import com.mgs.pims.types.metaData.PimsEntityMetaDataBuilder;
 import com.mgs.reflections.FieldAccessor;
 import com.mgs.reflections.FieldAccessorParser;
 import com.mgs.reflections.FieldAccessorType;
 import com.mgs.reflections.ParsedType;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,13 +27,17 @@ public class PimsFactory {
     private final PimsLinker pimsLinker;
     private final PimsMethodCaller pimsMethodCaller;
     private final FieldAccessorParser fieldAccessorParser;
+    private final ParsedType metaDataGetterType;
+    private final ParsedType metaDataBuilderType;
 
-    public PimsFactory(MapTransformer mapTransformer, PimsParameters pimsParameters, PimsLinker pimsLinker, PimsMethodCaller pimsMethodCaller, FieldAccessorParser fieldAccessorParser) {
+    public PimsFactory(MapTransformer mapTransformer, PimsParameters pimsParameters, PimsLinker pimsLinker, PimsMethodCaller pimsMethodCaller, FieldAccessorParser fieldAccessorParser, ParsedType metaDataGetterType, ParsedType metaDataBuilderType) {
         this.mapTransformer = mapTransformer;
         this.pimsParameters = pimsParameters;
         this.pimsLinker = pimsLinker;
         this.pimsMethodCaller = pimsMethodCaller;
         this.fieldAccessorParser = fieldAccessorParser;
+        this.metaDataGetterType = metaDataGetterType;
+        this.metaDataBuilderType = metaDataBuilderType;
     }
 
     public <T extends PimsBaseEntity> T immutable(ParsedType type, Map<String, Object> valueMap) {
@@ -118,8 +123,11 @@ public class PimsFactory {
                         FieldAccessor::getFieldName,
                         (fieldAccessor) -> fieldAccessor
                 ));
+        PimsEntityMetaDataBuilder pimsEntityMetaDataBuilder = mutable(metaDataGetterType, metaDataBuilderType, new HashMap<>(), new HashMap<>());
+        pimsEntityMetaDataBuilder.withFields(fieldAccessors);
+        pimsEntityMetaDataBuilder.withName(metaDataGetterType.getActualType().get().getSimpleName());
+        pimsEntityMetaDataBuilder.withType(type);
         //noinspection unchecked
-        PimsEntityMetaData pimsEntityMetaData;
         return (T) newProxyInstance(
                 PimsFactory.class.getClassLoader(),
                 new Class[]{type.getActualType().get()},
@@ -132,7 +140,7 @@ public class PimsFactory {
                         mutable,
                         pimsParameters,
                         fieldAccessors,
-                        pimsEntityMetaData)
+                        pimsEntityMetaDataBuilder.build())
         );
     }
 }

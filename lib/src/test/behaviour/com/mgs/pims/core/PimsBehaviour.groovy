@@ -1,13 +1,9 @@
 package com.mgs.pims.core
 
 import com.mgs.maps.Mapping
-import com.mgs.pims.Pims
 import com.mgs.pims.annotations.PimsEntity
-import com.mgs.pims.annotations.PimsEvent
-import com.mgs.pims.annotations.PimsMixer
 import com.mgs.pims.types.builder.PimsBuilder
 import com.mgs.pims.types.map.PimsMapEntity
-import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 import spring.TestContext
@@ -15,8 +11,6 @@ import spring.testMixers.WithEventsManager
 
 import javax.annotation.Resource
 import java.util.function.UnaryOperator
-
-import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION
 
 @ContextConfiguration(classes = [TestContext.class])
 class PimsBehaviour extends Specification{

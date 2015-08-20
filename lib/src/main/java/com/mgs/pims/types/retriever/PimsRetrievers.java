@@ -2,7 +2,7 @@ package com.mgs.pims.types.retriever;
 
 import com.google.common.collect.ImmutableMap;
 import com.mgs.mongo.MongoDao;
-import com.mgs.pims.Pims;
+import com.mgs.pims.core.Pims;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
 
 @PimsMixer
 public class PimsRetrievers {

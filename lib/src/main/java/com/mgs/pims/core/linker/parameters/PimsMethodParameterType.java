@@ -1,4 +1,4 @@
-package com.mgs.pims.linker.parameters;
+package com.mgs.pims.core.linker.parameters;
 
 public enum PimsMethodParameterType {
     DOMAIN_MAP,

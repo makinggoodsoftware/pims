@@ -1,6 +1,6 @@
 package com.mgs.spring.glue.pims;
 
-import com.mgs.pims.linker.mixer.NullMixer;
+import com.mgs.pims.core.linker.mixer.NullMixer;
 import com.mgs.pims.types.base.PimsBaseEntities;
 import com.mgs.pims.types.builder.PimsBuilders;
 import com.mgs.pims.types.map.PimsMapEntities;

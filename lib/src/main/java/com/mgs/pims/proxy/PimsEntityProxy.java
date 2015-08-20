@@ -1,8 +1,8 @@
 package com.mgs.pims.proxy;
 
-import com.mgs.pims.linker.method.PimsMethodCaller;
-import com.mgs.pims.linker.method.PimsMethodDelegator;
-import com.mgs.pims.linker.parameters.PimsParameters;
+import com.mgs.pims.core.linker.method.PimsMethodCaller;
+import com.mgs.pims.core.linker.method.PimsMethodDelegator;
+import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.reflections.FieldAccessor;

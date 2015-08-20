@@ -1,4 +1,4 @@
-package com.mgs.pims;
+package com.mgs.pims.core;
 
 import com.mgs.maps.MapUtils;
 import com.mgs.pims.types.PimsFactory;

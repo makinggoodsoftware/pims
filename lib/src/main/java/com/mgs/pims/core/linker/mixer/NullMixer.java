@@ -1,4 +1,4 @@
-package com.mgs.pims.linker.mixer;
+package com.mgs.pims.core.linker.mixer;
 
 import com.mgs.pims.annotations.PimsMixer;
 

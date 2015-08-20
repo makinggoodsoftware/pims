@@ -1,18 +1,17 @@
-package com.mgs.pims.linker.parameters;
+package com.mgs.pims.core.linker.parameters;
 
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.linker.method.LinkedMethod;
+import com.mgs.pims.core.linker.method.LinkedMethod;
 import com.mgs.pims.proxy.PimsEntityProxy;
 import com.mgs.pims.types.base.PimsBaseEntity;
-import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.FieldAccessor;
 import com.mgs.reflections.ParsedType;
 
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-import static com.mgs.pims.linker.parameters.ParameterResolution.simple;
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
+import static com.mgs.pims.core.linker.parameters.ParameterResolution.simple;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
 import static java.util.Collections.singletonList;
 
 public class PimsParameters {

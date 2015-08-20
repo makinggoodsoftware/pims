@@ -1,12 +1,14 @@
 package com.mgs.spring.glue.pims;
 
-import com.mgs.pims.Pims;
-import com.mgs.pims.linker.PimsLinker;
-import com.mgs.pims.linker.method.PimsMethodCaller;
-import com.mgs.pims.linker.method.PimsMethodDelegatorFactory;
-import com.mgs.pims.linker.mixer.PimsMixersProvider;
-import com.mgs.pims.linker.parameters.PimsParameters;
+import com.mgs.pims.core.Pims;
+import com.mgs.pims.core.linker.PimsLinker;
+import com.mgs.pims.core.linker.method.PimsMethodCaller;
+import com.mgs.pims.core.linker.method.PimsMethodDelegatorFactory;
+import com.mgs.pims.core.linker.mixer.PimsMixersProvider;
+import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.pims.types.PimsFactory;
+import com.mgs.pims.types.metaData.PimsEntityMetaData;
+import com.mgs.pims.types.metaData.PimsEntityMetaDataBuilder;
 import com.mgs.spring.glue.maps.MapsConfig;
 import com.mgs.spring.glue.reflection.ReflectionsConfig;
 import com.mgs.spring.glue.text.TextConfig;
@@ -45,7 +47,9 @@ public class PimsConfig {
                 pimsParameters(),
                 pimsLinker(),
                 pimsMethodCaller(),
-                reflectionsConfig.fieldAccessorParser());
+                reflectionsConfig.fieldAccessorParser(),
+                reflectionsConfig.typeParser().parse(PimsEntityMetaData.class),
+                reflectionsConfig.typeParser().parse(PimsEntityMetaDataBuilder.class));
     }
 
     @Bean

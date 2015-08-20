@@ -1,6 +1,5 @@
 package com.mgs.pims.types.map;
 
-import com.google.common.base.MoreObjects;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
@@ -10,7 +9,7 @@ import com.mgs.reflections.ParsedType;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*;
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
 
 @PimsMixer
 public class PimsMapEntities {

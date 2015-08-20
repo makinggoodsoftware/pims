@@ -3,9 +3,9 @@ package com.mgs.pims.core
 import com.mgs.pims.annotations.PimsEntity
 import com.mgs.pims.annotations.PimsMethod
 import com.mgs.pims.annotations.PimsMixer
-import com.mgs.pims.linker.method.LinkedMethod
-import com.mgs.pims.linker.parameters.PimsMethodParameterType
-import com.mgs.pims.linker.parameters.PimsParameters
+import com.mgs.pims.core.linker.method.LinkedMethod
+import com.mgs.pims.core.linker.parameters.PimsMethodParameterType
+import com.mgs.pims.core.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.map.PimsMapEntities
 import com.mgs.pims.types.map.PimsMapEntity
@@ -14,9 +14,9 @@ import com.mgs.reflections.ParsedType
 import spock.lang.Specification
 
 import static PimsMethodParameterType.METHOD_PARAMETERS
-import static com.mgs.pims.linker.parameters.ParameterResolution.placeholder
-import static com.mgs.pims.linker.parameters.ParameterResolution.simple
-import static com.mgs.pims.linker.parameters.PimsMethodParameterType.*
+import static com.mgs.pims.core.linker.parameters.ParameterResolution.placeholder
+import static com.mgs.pims.core.linker.parameters.ParameterResolution.simple
+import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*
 
 class PimsParametersSpecification extends Specification{
     PimsParameters testObj = new PimsParameters()

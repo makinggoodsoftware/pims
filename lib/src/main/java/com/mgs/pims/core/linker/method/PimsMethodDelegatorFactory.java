@@ -1,11 +1,11 @@
-package com.mgs.pims.linker.method;
+package com.mgs.pims.core.linker.method;
 
 import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.annotations.PimsEvent;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.event.PimsEventType;
-import com.mgs.pims.linker.parameters.ParameterResolution;
-import com.mgs.pims.linker.parameters.PimsParameters;
+import com.mgs.pims.core.linker.parameters.ParameterResolution;
+import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.reflections.Reflections;
 import com.mgs.text.PatternMatcher;

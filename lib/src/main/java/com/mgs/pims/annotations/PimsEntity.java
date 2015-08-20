@@ -1,6 +1,6 @@
 package com.mgs.pims.annotations;
 
-import com.mgs.pims.linker.mixer.NullMixer;
+import com.mgs.pims.core.linker.mixer.NullMixer;
 
 import java.lang.annotation.Retention;
 

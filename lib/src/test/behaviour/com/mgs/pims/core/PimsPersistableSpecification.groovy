@@ -1,6 +1,5 @@
 package com.mgs.pims.core
 
-import com.mgs.pims.Pims
 import com.mgs.pims.annotations.PimsEntity
 import com.mgs.pims.types.builder.PimsBuilder
 import com.mgs.pims.types.map.PimsMapEntity
@@ -10,7 +9,6 @@ import com.mgs.pims.types.retriever.PimsRetriever
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
-import sun.dc.pr.PRError
 
 import javax.annotation.Resource
 
