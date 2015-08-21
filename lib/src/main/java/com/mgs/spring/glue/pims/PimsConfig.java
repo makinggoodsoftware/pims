@@ -58,8 +58,8 @@ public class PimsConfig {
     public PimsContextFactory pimsContextFactory() {
         return new PimsContextFactory(
                 reflectionsConfig.typeParser(),
-                metaDataFactory()
-        );
+                metaDataFactory(),
+                pimsLinker());
     }
 
     @Bean

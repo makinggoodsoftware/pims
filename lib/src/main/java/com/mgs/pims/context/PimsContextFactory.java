@@ -1,5 +1,6 @@
 package com.mgs.pims.context;
 
+import com.mgs.pims.core.linker.PimsLinker;
 import com.mgs.pims.core.metaData.MetaDataFactory;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
@@ -12,12 +13,14 @@ import java.util.Map;
 public class PimsContextFactory {
     private final TypeParser typeParser;
     private final MetaDataFactory metaDataFactory;
+    private final PimsLinker pimsLinker;
 
     public PimsContextFactory(
             TypeParser typeParser,
-            MetaDataFactory metaDataFactory) {
+            MetaDataFactory metaDataFactory, PimsLinker pimsLinker) {
         this.typeParser = typeParser;
         this.metaDataFactory = metaDataFactory;
+        this.pimsLinker = pimsLinker;
     }
 
     public PimsContext create (List<Class<? extends PimsMapEntity>> entities) {
@@ -36,7 +39,7 @@ public class PimsContextFactory {
         return new PimsEntityDescriptor(
                 entityType,
                 metaDataFactory.metadata(entityType),
-                null,
+                pimsLinker.link(entityClass),
                 null,
                 null,
                 null
