@@ -1,8 +1,10 @@
 package com.mgs.maps;
 
-import com.mgs.reflections.*;
+import com.mgs.reflections.Declaration;
+import com.mgs.reflections.ParsedType;
+import com.mgs.reflections.Reflections;
+import com.mgs.reflections.TypeParser;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ public class MapTransformer {
             );
         }
 
+        //TODO FIXME!!!!
         if (Map.class.isAssignableFrom(value.getClass())) {
             //noinspection unchecked
             Map<String, Object> castedMap = (Map<String, Object>) value;

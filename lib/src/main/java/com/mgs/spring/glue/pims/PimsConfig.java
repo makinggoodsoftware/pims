@@ -9,9 +9,11 @@ import com.mgs.pims.core.linker.method.PimsMethodDelegatorFactory;
 import com.mgs.pims.core.linker.mixer.PimsMixersProvider;
 import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.pims.core.metaData.MetaDataFactory;
+import com.mgs.pims.core.metaData.MetaMetaDataFactory;
 import com.mgs.pims.types.ProxyFactory;
 import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.pims.types.metaData.PimsEntityMetaDataBuilder;
+import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 import com.mgs.spring.glue.maps.MapsConfig;
 import com.mgs.spring.glue.reflection.ReflectionsConfig;
@@ -104,11 +106,17 @@ public class PimsConfig {
     @Bean
     public MetaDataFactory metaDataFactory() {
         TypeParser typeParser = reflectionsConfig.typeParser();
+        ParsedType metaDataType = typeParser.parse(PimsEntityMetaData.class);
         return new MetaDataFactory(
                 reflectionsConfig.fieldAccessorParser(),
                 pimsFactory(),
-                typeParser.parse(PimsEntityMetaData.class),
-                typeParser.parse(PimsEntityMetaDataBuilder.class)
-        );
+                metaDataType,
+                typeParser.parse(PimsEntityMetaDataBuilder.class),
+                metaMetaDataFactory().metaMetadata(metaDataType));
+    }
+
+    @Bean
+    public MetaMetaDataFactory metaMetaDataFactory() {
+        return new MetaMetaDataFactory(reflectionsConfig.fieldAccessorParser());
     }
 }

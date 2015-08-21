@@ -1,5 +1,7 @@
 package com.mgs.reflections;
 
+import com.mgs.pims.core.metaData.MetaDataFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -111,5 +113,16 @@ public class FieldAccessorParser {
 			parameters.add(typeParser.parse(parameterType.getParameterizedType()));
 		}
 		return of(new FieldAccessor(methodName, fieldName, prefix, type, genericReturnType, parameters, annotations));
+	}
+
+	public Map<String, FieldAccessor> asMap(ParsedType entityType) {
+		return parse(entityType).
+				filter(
+						(fieldAccessor -> fieldAccessor.getType() == FieldAccessorType.GET)
+				).
+				collect(toMap(
+						FieldAccessor::getFieldName,
+						(fieldAccessor) -> fieldAccessor
+				));
 	}
 }
