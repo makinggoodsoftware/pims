@@ -7,16 +7,18 @@ import com.mgs.pims.core.linker.method.PimsMethodDelegator
 import com.mgs.pims.core.linker.parameters.PimsParameters
 import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.map.PimsMapEntity
+import com.mgs.pims.types.serializable.PimsSerializable
 import com.mgs.reflections.FieldAccessor
 import com.mgs.reflections.ParsedType
 import com.mgs.reflections.TypelessMethod
 import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+import spring.TestContext
 
 import javax.annotation.Resource
 
-@ContextConfiguration(classes = [AppConfig.class])
+@ContextConfiguration(classes = [TestContext.class])
 class PimsLinkerBehaviour extends Specification{
     @Resource PimsLinker pimsLinker
     @Resource PimsMethodCaller caller
@@ -30,8 +32,8 @@ class PimsLinkerBehaviour extends Specification{
 
     def "should call PimsMapEntities.onGetValueMap for getValueMap" (){
         when:
-        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsMapEntity).getMethods()
-        PimsMethodDelegator getValueMap = linkedMethods.get(TypelessMethod.fromMethod(PimsMapEntity.getMethod("getValueMap")))
+        Map<TypelessMethod, PimsMethodDelegator> linkedMethods = pimsLinker.link(PimsSerializable).getMethods()
+        PimsMethodDelegator getValueMap = linkedMethods.get(TypelessMethod.fromMethod(PimsSerializable.getMethod("getValueMap")))
 
         then:
         getValueMap.delegatorMethod.getName() == "onGetValueMap"

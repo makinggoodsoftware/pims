@@ -20,13 +20,6 @@ public class PimsMapEntities {
         return domainMap;
     }
 
-    @PimsMethod(pattern = "getValueMap")
-    public Map<String, Object> onGetValueMap (
-            @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap
-    ) {
-        return valueMap;
-    }
-
     @PimsMethod(pattern = "getType")
     public ParsedType onGetType(
             @PimsParameter(type = PROXY_OBJECT) PimsEntityProxy pimsEntityProxy

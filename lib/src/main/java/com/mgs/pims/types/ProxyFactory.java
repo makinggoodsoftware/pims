@@ -62,6 +62,22 @@ public class ProxyFactory {
         );
     }
 
+    public <T extends PimsBaseEntity> T domainEntity(
+            ParsedType type,
+            Map<String, Object> domainMap,
+            PimsEntityMetaData pimsEntityMetaData
+    ) {
+        return withMutability(
+                type,
+                type,
+                null,
+                domainMap,
+                true,
+                pimsLinker.link(type.getActualType().get()),
+                pimsEntityMetaData
+        );
+    }
+
     private <T extends PimsBaseEntity> T fromValueMap(
             ParsedType getterType,
             ParsedType type,

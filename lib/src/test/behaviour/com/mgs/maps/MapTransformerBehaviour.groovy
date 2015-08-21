@@ -46,12 +46,43 @@ class MapTransformerBehaviour extends Specification {
         (objectified['complexType'] as ComplexType).otherName == 'Alberto'
     }
 
+    def "should transform composed type and ignore map" (){
+        given:
+        ParsedType type = typeParser.parse(ComposedTypeWithMap)
+
+        when:
+        Map<String, Object> objectified = mapTransformer.objectify(
+                type,
+                [
+                    complexType:[
+                            otherName: 'Alberto'
+                    ],
+                    plainMap:[
+                            a: '1',
+                            b: '2'
+                    ]
+                ],
+                {valueType, mapValue -> new ComplexType(mapValue['otherName'] as String)}
+        )
+
+        then:
+        objectified['complexType'].class == ComplexType
+        (objectified['complexType'] as ComplexType).otherName == 'Alberto'
+        (objectified['plainMap'] as Map) == [a: '1', b: '2']
+    }
+
     static interface BaseType {
         String getName ()
     }
 
     static interface ComposedType {
         ComplexType getComplexType ()
+    }
+
+    static interface ComposedTypeWithMap {
+        ComplexType getComplexType ()
+
+        Map<String, String> getPlainMap ()
     }
 
     static class ComplexType {

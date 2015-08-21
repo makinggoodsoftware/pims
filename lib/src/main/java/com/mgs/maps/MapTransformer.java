@@ -35,7 +35,9 @@ public class MapTransformer {
 
     public Object transform(ParsedType type, Object value, BiFunction<ParsedType, Map<String, Object>, Object> onMapFieldCallback) {
         Class<?> declaredType = type.getActualType().get();
-        if (reflections.isSimple(declaredType)) return value;
+        boolean isValueMap = Map.class.isAssignableFrom(value.getClass());
+        boolean parsingMap = Map.class.isAssignableFrom(type.getActualType().get());
+        if (reflections.isSimple(declaredType) || (isValueMap && parsingMap)) return value;
         if (reflections.isCollection(declaredType)) {
             List listOfValues = (List) value;
             Declaration typeOfCollection = type.getOwnDeclaration().getParameters().values().iterator().next();
@@ -48,19 +50,18 @@ public class MapTransformer {
             );
         }
         if (reflections.isAssignableTo(declaredType, Optional.class)) {
-            if (value == null) return Optional.empty();
             Declaration typeOfOptional = type.getOwnDeclaration().getParameters().values().iterator().next();
             return Optional.of(
                     transform(typeParser.parse(typeOfOptional), value, onMapFieldCallback)
             );
         }
 
-        if (Map.class.isAssignableFrom(value.getClass())) {
+        if (isValueMap) {
             //noinspection unchecked
             Map<String, Object> castedMap = (Map<String, Object>) value;
             return onMapFieldCallback.apply(type, objectify(type, castedMap, onMapFieldCallback));
         }
-        throw new IllegalStateException("Invalid data in the map: " + value);
+        throw new IllegalStateException("Can't transform the following value :" + value);
     }
 
 }

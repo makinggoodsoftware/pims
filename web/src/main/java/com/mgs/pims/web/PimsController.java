@@ -4,6 +4,7 @@ import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.pims.types.provider.PimsProvider;
 import com.mgs.pims.types.retriever.PimsRetriever;
+import com.mgs.pims.types.serializable.PimsSerializable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -22,7 +23,7 @@ public class PimsController {
             produces = "application/json"
     )
     @ResponseBody
-    <Z extends PimsMapEntity, T extends PimsPersistable<Z>>
+    <Z extends PimsSerializable, T extends PimsPersistable<Z>>
     List<Map<String, Object>> retrieveBy(
             @PathVariable("resourceName") String name,
             @PathVariable("fieldName") String fieldName,

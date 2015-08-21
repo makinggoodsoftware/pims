@@ -6,6 +6,7 @@ import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.types.ProxyFactory;
 import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.pims.types.serializable.PimsSerializable;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.FieldAccessor;
 import com.mgs.reflections.ParsedType;
@@ -29,6 +30,7 @@ public class PimsBuilders {
 
     @PimsMethod(pattern = "update{fieldName}")
     public Object onUpdate(
+            @PimsParameter(type = SOURCE_TYPE) ParsedType builderType,
             @PimsParameter(type = SOURCE_OBJECT) PimsMapEntity entity,
             @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
             @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap,
@@ -40,13 +42,20 @@ public class PimsBuilders {
         //noinspection unchecked
         Object updatedValue = updater.apply(currentValue);
         return onWith(
-                entity, domainMap, valueMap, fieldAccessors, fieldName, updatedValue
+                builderType,
+                entity,
+                domainMap,
+                valueMap,
+                fieldAccessors,
+                fieldName,
+                updatedValue
         );
 
     }
 
     @PimsMethod(pattern = "with{fieldName}")
     public Object onWith(
+            @PimsParameter(type = SOURCE_TYPE) ParsedType builderType,
             @PimsParameter(type = SOURCE_OBJECT) PimsMapEntity entity,
             @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
             @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap,
@@ -55,14 +64,51 @@ public class PimsBuilders {
             @PimsParameter(type = METHOD_PARAMETERS) Object value
     ) {
         String actualFieldName = actualFieldName(fieldName, fieldAccessors);
-        if (PimsMapEntity.class.isAssignableFrom(value.getClass())){
-            PimsMapEntity castedValue = (PimsMapEntity) value;
-            valueMap.put(actualFieldName, castedValue.getValueMap());
-        } else {
-            valueMap.put(actualFieldName, value);
+        if (isSerializable (builderType)){
+            valueMap.put(actualFieldName, serializableValue(value));
         }
         domainMap.put(actualFieldName, value);
         return entity;
+    }
+
+    @PimsMethod(pattern = "build")
+    public Object onBuild(
+            @PimsParameter(type = SOURCE_TYPE) ParsedType sourceType,
+            @PimsParameter(type = DOMAIN_MAP) Map<String, Object> domainMap,
+            @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap
+    ) {
+        Declaration pimsBuilderDeclaration = sourceType.getSuperDeclarations().get(PimsBuilder.class).getOwnDeclaration();
+        Declaration toBuildType = pimsBuilderDeclaration.getParameters().get("T");
+        boolean isSerializable = PimsSerializable.class.isAssignableFrom(toBuildType.getActualType().get());
+
+        if (isSerializable){
+            return proxyFactory.immutable(
+                    typeParser.parse(toBuildType),
+                    valueMap,
+                    null
+            );
+        }else{
+            return proxyFactory.domainEntity(
+                    typeParser.parse(toBuildType),
+                    domainMap,
+                    null
+            );
+        }
+    }
+
+    private Object serializableValue(Object value) {
+        if (PimsSerializable.class.isAssignableFrom(value.getClass())){
+            PimsSerializable castedValue = (PimsSerializable) value;
+            return castedValue.getValueMap();
+        } else {
+            return value;
+        }
+    }
+
+    private boolean isSerializable(ParsedType builderType) {
+        ParsedType specificBuilderType = builderType.getSuperDeclarations().get(PimsBuilder.class);
+        Declaration toBuildType = specificBuilderType.getOwnDeclaration().getParameters().get("T");
+        return PimsSerializable.class.isAssignableFrom(toBuildType.getActualType().get());
     }
 
     private String actualFieldName(String fieldName, Map<String, FieldAccessor> fieldAccessors) {
@@ -79,20 +125,6 @@ public class PimsBuilders {
 
         }
         return fieldName;
-    }
-
-    @PimsMethod(pattern = "build")
-    public Object onBuild(
-            @PimsParameter(type = SOURCE_TYPE) ParsedType sourceType,
-            @PimsParameter(type = VALUE_MAP) Map<String, Object> valueMap
-    ) {
-        Declaration pimsBuilderDeclaration = sourceType.getSuperDeclarations().get(PimsBuilder.class).getOwnDeclaration();
-        Declaration typeOfBuilder = pimsBuilderDeclaration.getParameters().get("T");
-        return proxyFactory.immutable(
-                typeParser.parse(typeOfBuilder),
-                valueMap,
-                null
-        );
     }
 
 }

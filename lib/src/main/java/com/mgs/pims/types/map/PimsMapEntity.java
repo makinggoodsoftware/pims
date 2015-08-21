@@ -11,9 +11,6 @@ import java.util.Map;
 @PimsEntity(managedBy = PimsMapEntities.class)
 public interface PimsMapEntity extends PimsBaseEntity{
     @VirtualField
-    Map<String, Object> getValueMap();
-
-    @VirtualField
     Map<String, Object> getDomainMap();
 
     @VirtualField

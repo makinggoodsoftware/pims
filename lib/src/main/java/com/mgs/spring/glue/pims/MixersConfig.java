@@ -6,6 +6,7 @@ import com.mgs.pims.types.builder.PimsBuilders;
 import com.mgs.pims.types.map.PimsMapEntities;
 import com.mgs.pims.types.persistable.PimsPersistables;
 import com.mgs.pims.types.retriever.PimsRetrievers;
+import com.mgs.pims.types.serializable.PimsSerializables;
 import com.mgs.spring.bean.MongoDbDef;
 import com.mgs.spring.glue.mongo.MongoConfig;
 import com.mgs.spring.glue.reflection.ReflectionsConfig;
@@ -74,4 +75,8 @@ public class MixersConfig {
         return new NullMixer();
     }
 
+    @Bean
+    public PimsSerializables pimsSerializables (){
+        return new PimsSerializables();
+    }
 }

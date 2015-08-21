@@ -50,12 +50,6 @@ public class MetaMetaDataFactory {
 
         @Override
         @VirtualField
-        public Map<String, Object> getValueMap() {
-            return new HashMap<>();
-        }
-
-        @Override
-        @VirtualField
         public Map<String, Object> getDomainMap() {
             return new HashMap<>();
         }

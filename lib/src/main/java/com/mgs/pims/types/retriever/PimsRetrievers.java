@@ -8,6 +8,7 @@ import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.pims.types.persistable.PimsPersistable;
+import com.mgs.pims.types.serializable.PimsSerializable;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
 import com.mongodb.DBCursor;
@@ -29,7 +30,7 @@ public class PimsRetrievers {
     }
 
     @PimsMethod(pattern = "byField")
-    public <Z extends PimsMapEntity, T extends PimsPersistable<Z>>
+    public <Z extends PimsSerializable, T extends PimsPersistable<Z>>
     List<T> onByField(
             @PimsParameter(type = SOURCE_TYPE) ParsedType type,
             @PimsParameter(type = METHOD_PARAMETERS) String fieldName,
@@ -57,7 +58,7 @@ public class PimsRetrievers {
     }
 
     @PimsMethod(pattern = "by{fieldName}")
-    public <Z extends PimsMapEntity, T extends PimsPersistable<Z>>
+    public <Z extends PimsSerializable, T extends PimsPersistable<Z>>
     List<T> onByFieldInterceptor(
             @PimsParameter(type = SOURCE_OBJECT) PimsRetriever<Z, T> retriever,
             @PimsParameter(type = PLACEHOLDER, name = "fieldName") String fieldName,

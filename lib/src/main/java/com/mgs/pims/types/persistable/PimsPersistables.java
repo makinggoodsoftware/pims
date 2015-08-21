@@ -7,6 +7,7 @@ import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.pims.types.serializable.PimsSerializable;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
@@ -45,13 +46,13 @@ public class PimsPersistables {
 
 
     @PimsMethod(pattern = "persist")
-    public <T extends PimsMapEntity> Object onPersist(
+    public <T extends PimsSerializable> Object onPersist(
             @PimsParameter(type = SOURCE_TYPE) ParsedType persistableType,
             @PimsParameter(type = SOURCE_OBJECT) PimsPersistable source
     ) {
         PimsPersistableBuilder updater = builder(persistableType, source);
-
-        PimsMapEntity withUpdatedVersion = updater.updateVersion(incrementby1()).build();
+        //noinspection unchecked
+        T withUpdatedVersion = (T) updater.updateVersion(incrementby1()).build();
         String collectionName = persistableType.getActualType().get().getSimpleName();
         mongoDao.persist(collectionName, withUpdatedVersion.getValueMap());
         return withUpdatedVersion;

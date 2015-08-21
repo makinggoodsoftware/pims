@@ -9,6 +9,7 @@ import com.mgs.pims.types.builder.PimsBuilder;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.pims.types.persistable.PimsPersistableBuilder;
+import com.mgs.pims.types.serializable.PimsSerializable;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
@@ -30,7 +31,7 @@ public class Pims {
         this.mapUtils = mapUtils;
     }
 
-    public <M extends PimsMapEntity> M
+    public <M extends PimsSerializable> M
     newEntity(Class<M> type, Map<String, Object> valueMap) {
         PimsEntityDescriptor pimsEntityDescriptor = pimsContext.get(type);
         return proxyFactory.immutable(
@@ -64,7 +65,7 @@ public class Pims {
     }
 
     public <
-            M extends PimsMapEntity,
+            M extends PimsSerializable,
             B extends PimsBuilder<M>,
             P extends PimsPersistable<M>,
             PB extends PimsPersistableBuilder<M, P>
@@ -94,13 +95,12 @@ public class Pims {
             >
     B update(ParsedType type, M source) {
         PimsEntityDescriptor pimsEntityDescriptor = pimsContext.get(type);
-        Map valueMapCopy = mapUtils.copy(source.getValueMap());
         Map domainMapCopy = mapUtils.copy(source.getDomainMap());
         //noinspection unchecked
         return (B) proxyFactory.mutable(
                 getterType(type),
                 type,
-                valueMapCopy,
+                new HashMap<>(),
                 domainMapCopy,
                 pimsEntityDescriptor.getMetaData()
         );
