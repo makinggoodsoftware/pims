@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Optional.empty;
+
 public class PimsContextFactory {
     private final TypeParser typeParser;
     private final MetaDataFactory metaDataFactory;
@@ -23,7 +25,9 @@ public class PimsContextFactory {
         this.pimsLinker = pimsLinker;
     }
 
-    public PimsContext create (List<Class<? extends PimsMapEntity>> entities) {
+    public PimsContext create(
+            List<Class<? extends PimsMapEntity>> entities
+    ) {
         Map<String, PimsEntityDescriptor> descriptors = new HashMap<>();
         for (Class<? extends PimsMapEntity> entity : entities) {
             descriptors.put(
@@ -40,9 +44,9 @@ public class PimsContextFactory {
                 entityType,
                 metaDataFactory.metadata(entityType),
                 pimsLinker.link(entityClass),
-                null,
-                null,
-                null
+                empty(),
+                empty(),
+                empty()
         );
     }
 
