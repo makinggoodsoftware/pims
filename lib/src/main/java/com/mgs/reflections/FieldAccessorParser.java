@@ -1,8 +1,5 @@
 package com.mgs.reflections;
 
-import com.mgs.pims.core.metaData.MetaDataFactory;
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -26,10 +23,6 @@ public class FieldAccessorParser {
 		this.typeParser = typeParser;
 	}
 
-	public Map<Method, Optional<FieldAccessor>> parseAll(Class clazz) {
-		return parseAll(typeParser.parse(clazz));
-	}
-
 	public Map<Method, Optional<FieldAccessor>> parseAll(ParsedType type) {
 		GenericMethods genericMethods = typeParser.parseMethods(type);
 		Stream<Map.Entry<String, GenericMethod>> stream = genericMethods.getParsedMethodsAsMap().entrySet().stream();
@@ -45,11 +38,11 @@ public class FieldAccessorParser {
 
 	private Optional<FieldAccessor> parse(GenericMethod genericMethod) {
 		if (isGetter(genericMethod)) {
-			return parse(genericMethod, GET_PREFIX, FieldAccessorType.GET, genericMethod.getMethod().getAnnotations());
+			return parse(genericMethod, GET_PREFIX, FieldAccessorType.GET, genericMethod.getMethod());
 		}
 
 		if (isBuilder(genericMethod)) {
-			return parse(genericMethod, BUILDER_PREFIX, FieldAccessorType.BUILDER, genericMethod.getMethod().getAnnotations());
+			return parse(genericMethod, BUILDER_PREFIX, FieldAccessorType.BUILDER, genericMethod.getMethod());
 		}
 
 		return empty();
@@ -70,13 +63,14 @@ public class FieldAccessorParser {
 	public Optional<FieldAccessor> parse(Class from, String methodName, Class... parameters) {
 		try {
 			ParsedType parsedType = typeParser.parse(from);
+			//noinspection unchecked
 			GenericMethod genericMethod = typeParser.parseMethod(parsedType, from.getMethod(methodName, parameters));
 			if (isGetter(genericMethod)) {
-				return parse(genericMethod, GET_PREFIX, FieldAccessorType.GET, genericMethod.getMethod().getAnnotations());
+				return parse(genericMethod, GET_PREFIX, FieldAccessorType.GET, genericMethod.getMethod());
 			}
 
 			if (isBuilder(genericMethod)) {
-				return parse(genericMethod, BUILDER_PREFIX, FieldAccessorType.BUILDER, genericMethod.getMethod().getAnnotations());
+				return parse(genericMethod, BUILDER_PREFIX, FieldAccessorType.BUILDER, genericMethod.getMethod());
 			}
 
 			return empty();
@@ -103,7 +97,7 @@ public class FieldAccessorParser {
 						genericMethod.getMethod().getDeclaringClass().equals(genericMethod.getReturnType().getOwnDeclaration().getTypeResolution().getSpecificClass().get());
 	}
 
-	private Optional<FieldAccessor> parse(GenericMethod genericMethod, String prefix, FieldAccessorType type, Annotation[] annotations) {
+	private Optional<FieldAccessor> parse(GenericMethod genericMethod, String prefix, FieldAccessorType type, Method method) {
 		String methodName = genericMethod.getMethod().getName();
 		String fieldName = beanNamingExpert.getFieldName(methodName, prefix);
 		ParsedType genericReturnType = genericMethod.getReturnType();
@@ -112,7 +106,7 @@ public class FieldAccessorParser {
 		for (Parameter parameterType : parameterTypes) {
 			parameters.add(typeParser.parse(parameterType.getParameterizedType()));
 		}
-		return of(new FieldAccessor(methodName, fieldName, prefix, type, genericReturnType, parameters, annotations));
+		return of(new FieldAccessor(methodName, fieldName, prefix, type, genericReturnType, parameters, method));
 	}
 
 	public Map<String, FieldAccessor> asMap(ParsedType entityType) {

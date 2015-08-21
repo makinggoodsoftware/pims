@@ -1,7 +1,6 @@
 package com.mgs.reflections;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class FieldAccessor {
@@ -11,16 +10,16 @@ public class FieldAccessor {
 	private final String fieldName;
 	private final ParsedType returnType;
 	private final List<ParsedType> parameters;
-	private final Annotation[] annotations;
+	private final Method method;
 
-	public FieldAccessor(String methodName, String fieldName, String prefix, FieldAccessorType type, ParsedType returnType, List<ParsedType> parameters, Annotation[] annotations) {
+	public FieldAccessor(String methodName, String fieldName, String prefix, FieldAccessorType type, ParsedType returnType, List<ParsedType> parameters, Method method) {
 		this.methodName = methodName;
 		this.type = type;
 		this.prefix = prefix;
 		this.fieldName = fieldName;
 		this.returnType = returnType;
 		this.parameters = parameters;
-		this.annotations = annotations;
+		this.method = method;
 	}
 
 	public FieldAccessorType getType() {
@@ -38,17 +37,16 @@ public class FieldAccessor {
 	public String getMethodName() {
 		return methodName;
 	}
-
-	public Annotation[] getAnnotations() {
-		return annotations;
-	}
-
 	public ParsedType getReturnType() {
 		return returnType;
 	}
 
 	public List<ParsedType> getParameters() {
 		return parameters;
+	}
+
+	public Method getMethod() {
+		return method;
 	}
 
 	@SuppressWarnings("RedundantIfStatement")
@@ -65,7 +63,6 @@ public class FieldAccessor {
 		if (type != that.type) return false;
 		if (!returnType.equals(that.returnType)) return false;
 		if (!parameters.equals(that.parameters)) return false;
-		if (!Arrays.equals(annotations, that.annotations)) return false;
 
 		return true;
 	}
@@ -78,7 +75,6 @@ public class FieldAccessor {
 		result = 31 * result + fieldName.hashCode();
 		result = 31 * result + returnType.hashCode();
 		result = 31 * result + parameters.hashCode();
-		result = 31 * result + Arrays.hashCode(annotations);
 		return result;
 	}
 
@@ -92,7 +88,6 @@ public class FieldAccessor {
 		sb.append(", fieldName='").append(fieldName).append('\'');
 		sb.append(", returnType=").append(returnType);
 		sb.append(", parameters=").append(parameters);
-		sb.append(", parametrizedTypes=").append(Arrays.toString(annotations));
 		sb.append('}');
 		return sb.toString();
 	}

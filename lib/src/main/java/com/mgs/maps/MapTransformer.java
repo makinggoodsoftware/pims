@@ -55,7 +55,6 @@ public class MapTransformer {
             );
         }
 
-        //TODO FIXME!!!!
         if (Map.class.isAssignableFrom(value.getClass())) {
             //noinspection unchecked
             Map<String, Object> castedMap = (Map<String, Object>) value;

@@ -2,10 +2,7 @@ package com.mgs.maps;
 
 import com.mgs.reflections.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Stream.of;
@@ -34,21 +31,27 @@ public class MapWalker {
             if (accessors.size() != 1) throw new IllegalStateException("There seems to be more than one accessor for: " + accessorByMethodNameEntry.getKey());
 
             FieldAccessor accessor = accessors.iterator().next();
-			return of(accessor.getAnnotations()).
+			boolean notObjectMethod = ! accessor.getMethod().getDeclaringClass().equals(Object.class);
+			boolean notVirtualField = of(accessor.getMethod().getAnnotations()).
 					filter(annotation -> annotation.annotationType().equals(VirtualField.class)
 					).count() == 0;
+			return notObjectMethod && notVirtualField && !accessor.getMethod().isSynthetic();
         }).
 		forEach((accessorByMethodNameEntry) -> {
             Collection<FieldAccessor> accessors = accessorByMethodNameEntry.getValue();
 
             FieldAccessor accessor = accessors.iterator().next();
             String fieldName = extractFieldName(accessor);
-            callback.apply(accessor, map.get(fieldName));
+			Object mapValue = map.get(fieldName);
+			if (mapValue == null) {
+				throw new NullPointerException("Can't find field: " + fieldName + " in: " + map);
+			}
+			callback.apply(accessor, mapValue);
         });
 	}
 
 	private String extractFieldName(FieldAccessor accessor) {
-		Optional<Mapping> fieldNameOptional = reflections.annotation(accessor.getAnnotations(), Mapping.class);
+		Optional<Mapping> fieldNameOptional = reflections.annotation(accessor.getMethod().getAnnotations(), Mapping.class);
 		if (fieldNameOptional.isPresent()) return fieldNameOptional.get().mapFieldName();
 		return beanNamingExpert.getFieldName(accessor.getMethodName(), "get");
 	}

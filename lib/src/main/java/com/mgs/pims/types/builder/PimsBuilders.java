@@ -70,7 +70,7 @@ public class PimsBuilders {
         if (fieldAccessor == null) {
             throw new IllegalStateException();
         }
-        Annotation[] annotations = fieldAccessor.getAnnotations();
+        Annotation[] annotations = fieldAccessor.getMethod().getAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation.annotationType() == Mapping.class) {
                 Mapping mapping = (Mapping) annotation;
