@@ -2,6 +2,7 @@ package com.mgs.spring.glue.pims;
 
 import com.mgs.pims.context.PimsContext;
 import com.mgs.pims.context.PimsContextFactory;
+import com.mgs.pims.context.PimsEntityRelationshipDescriptor;
 import com.mgs.pims.core.Pims;
 import com.mgs.pims.core.linker.PimsLinker;
 import com.mgs.pims.core.linker.method.PimsMethodCaller;
@@ -11,8 +12,11 @@ import com.mgs.pims.core.linker.parameters.PimsParameters;
 import com.mgs.pims.core.metaData.MetaDataFactory;
 import com.mgs.pims.core.metaData.MetaMetaDataFactory;
 import com.mgs.pims.types.ProxyFactory;
+import com.mgs.pims.types.builder.PimsBuilder;
 import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.pims.types.metaData.PimsEntityMetaDataBuilder;
+import com.mgs.pims.types.provider.PimsProvider;
+import com.mgs.pims.types.retriever.PimsRetriever;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 import com.mgs.spring.glue.maps.MapsConfig;
@@ -24,6 +28,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @Import({
@@ -51,7 +56,7 @@ public class PimsConfig {
 
     @Bean
     public PimsContext pimsContext() {
-        return pimsContextFactory().create(new ArrayList<>());
+        return pimsContextFactory().context(new ArrayList<>(), new ArrayList<>());
     }
 
     @Bean

@@ -19,13 +19,18 @@ class PimsContextFactorySpecification extends Specification {
     ParsedType simpleTypeMock = Mock(ParsedType)
     PimsEntityMetaData simpleTypeMetaDataMock = Mock(PimsEntityMetaData)
     PimsLink simpleTypeLinkMock = Mock(PimsLink)
+    PimsEntityRelationshipDescriptor builderRelationshipMock = Mock (PimsEntityRelationshipDescriptor)
 
     ParsedType simpleTypeBuilderMock = Mock(ParsedType)
     PimsEntityMetaData simpleTypeBuilderMetaDataMock = Mock(PimsEntityMetaData)
     PimsLink simpleTypeBuilderLinkMock = Mock(PimsLink)
 
     def "setup" (){
-        testObj = new PimsContextFactory(typeParserMock, metaDataFactoryMock, pimsLinkerMock)
+        testObj = new PimsContextFactory(
+                typeParserMock,
+                metaDataFactoryMock,
+                pimsLinkerMock
+        )
 
         typeParserMock.parse(SimpleEntity) >> simpleTypeMock
         metaDataFactoryMock.metadata(simpleTypeMock) >> simpleTypeMetaDataMock
@@ -38,18 +43,18 @@ class PimsContextFactorySpecification extends Specification {
 
     def "should create context" (){
         when:
-        PimsContext context = testObj.create([SimpleEntity, SimpleEntityBuilder])
+        PimsContext context = testObj.context([builderRelationshipMock], [SimpleEntity, SimpleEntityBuilder])
 
         then:
-        context.get("SimpleEntity").type == simpleTypeMock
-        context.get("SimpleEntity").metaData == simpleTypeMetaDataMock
-        context.get("SimpleEntity").links == simpleTypeLinkMock
+        context.get("SimpleEntity").staticDescriptor.type == simpleTypeMock
+        context.get("SimpleEntity").staticDescriptor.metaData == simpleTypeMetaDataMock
+        context.get("SimpleEntity").staticDescriptor.links == simpleTypeLinkMock
 
-        context.get("SimpleEntityBuilder").type == simpleTypeBuilderMock
-        context.get("SimpleEntityBuilder").metaData == simpleTypeBuilderMetaDataMock
-        context.get("SimpleEntityBuilder").links == simpleTypeBuilderLinkMock
+        context.get("SimpleEntityBuilder").staticDescriptor.type == simpleTypeBuilderMock
+        context.get("SimpleEntityBuilder").staticDescriptor.metaData == simpleTypeBuilderMetaDataMock
+        context.get("SimpleEntityBuilder").staticDescriptor.links == simpleTypeBuilderLinkMock
 
-        context.get("SimpleEntity").builder.get() == context.get("SimpleEntityBuilder")
+//        context.get("SimpleEntity").builder.get() == context.get("SimpleEntityBuilder")
 //        context.get("SimpleEntity").provider == Optional.empty()
 //        context.get("SimpleEntity").retriever == Optional.empty()
     }

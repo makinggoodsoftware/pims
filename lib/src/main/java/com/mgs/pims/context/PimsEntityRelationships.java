@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public class PimsEntityRelationships {
-    private final Map<Class, Optional<PimsEntityStaticDescriptor>> relationships;
+    private final Map<PimsEntityRelationshipDescriptor, Optional<PimsEntityStaticDescriptor>> relationships;
 
-    public PimsEntityRelationships(Map<Class, Optional<PimsEntityStaticDescriptor>> relationships) {
+    public PimsEntityRelationships(Map<PimsEntityRelationshipDescriptor, Optional<PimsEntityStaticDescriptor>> relationships) {
         this.relationships = relationships;
     }
 

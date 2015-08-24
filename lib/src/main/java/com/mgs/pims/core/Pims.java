@@ -35,32 +35,32 @@ public class Pims {
     newEntity(Class<M> type, Map<String, Object> valueMap) {
         PimsEntityDescriptor pimsEntityDescriptor = pimsContext.get(type);
         return proxyFactory.immutable(
-                pimsEntityDescriptor.getType(),
+                pimsEntityDescriptor.getStaticDescriptor().getType(),
                 valueMap,
-                pimsEntityDescriptor.getMetaData()
+                pimsEntityDescriptor.getStaticDescriptor().getMetaData()
         );
     }
 
     public <M extends PimsMapEntity, B extends PimsBuilder<M>> B
     newBuilder(Class<B> type){
         PimsEntityDescriptor pimsEntityDescriptor = pimsContext.get(type);
-        ParsedType builderType = pimsEntityDescriptor.getType();
+        ParsedType builderType = pimsEntityDescriptor.getStaticDescriptor().getType();
         ParsedType getterType = getterType(builderType);
         return proxyFactory.mutable(
                 getterType,
                 builderType,
                 new HashMap<>(),
                 new HashMap<>(),
-                pimsEntityDescriptor.getMetaData()
+                pimsEntityDescriptor.getStaticDescriptor().getMetaData()
         );
     }
 
     public <T extends PimsBaseEntity> T stateless(Class<T> statelessType) {
         PimsEntityDescriptor pimsEntityDescriptor = pimsContext.get(statelessType);
         return proxyFactory.immutable(
-                pimsEntityDescriptor.getType(),
+                pimsEntityDescriptor.getStaticDescriptor().getType(),
                 new HashMap<>(),
-                pimsEntityDescriptor.getMetaData()
+                pimsEntityDescriptor.getStaticDescriptor().getMetaData()
         );
     }
 
@@ -102,7 +102,7 @@ public class Pims {
                 type,
                 new HashMap<>(),
                 domainMapCopy,
-                pimsEntityDescriptor.getMetaData()
+                pimsEntityDescriptor.getStaticDescriptor().getMetaData()
         );
     }
 

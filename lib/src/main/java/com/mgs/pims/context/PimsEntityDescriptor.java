@@ -9,7 +9,7 @@ public class PimsEntityDescriptor {
         this.pimsEntityRelationships = pimsEntityRelationships;
     }
 
-    public PimsEntityStaticDescriptor getPimsEntityStaticDescriptor() {
+    public PimsEntityStaticDescriptor getStaticDescriptor() {
         return pimsEntityStaticDescriptor;
     }
 
