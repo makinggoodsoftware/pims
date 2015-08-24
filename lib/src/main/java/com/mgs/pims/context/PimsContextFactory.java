@@ -6,11 +6,11 @@ import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Optional.empty;
+import java.util.stream.Collectors;
 
 public class PimsContextFactory {
     private final TypeParser typeParser;
@@ -28,25 +28,39 @@ public class PimsContextFactory {
     public PimsContext create(
             List<Class<? extends PimsMapEntity>> entities
     ) {
-        Map<String, PimsEntityDescriptor> descriptors = new HashMap<>();
+        List<PimsEntityStaticDescriptor> builders = new ArrayList<>();
+        Map<String, PimsEntityStaticDescriptor> staticDescriptors = new HashMap<>();
         for (Class<? extends PimsMapEntity> entity : entities) {
-            descriptors.put(
+            PimsEntityStaticDescriptor entityDescriptor = processEntity(entity);
+            if (isBuilder(entityDescriptor)) {
+                builders.add(entityDescriptor);
+            }
+            staticDescriptors.put(
                     entity.getSimpleName(),
-                    processEntity(entity)
+                    entityDescriptor
             );
+        }
+
+        Map<Class, List<PimsEntityStaticDescriptor>> collect = builders.stream().collect(Collectors.groupingBy(builder -> builder.getType().getActualType().get()));
+        PimsEntityDescriptorFactory pimsEntityDescriptorFactory =
+
+        Map<String, PimsEntityDescriptor> descriptors = new HashMap<>();
+        for (Map.Entry<String, PimsEntityStaticDescriptor> staticDescriptor : staticDescriptors.entrySet()) {
+            descriptors.put(staticDescriptor.getKey(), descriptor(staticDescriptor.getValue(), builders));
         }
         return new PimsContext(descriptors);
     }
 
-    private PimsEntityDescriptor processEntity(Class<? extends PimsMapEntity> entityClass) {
+    private boolean isBuilder(PimsEntityStaticDescriptor entityDescriptor) {
+        return false;
+    }
+
+    private PimsEntityStaticDescriptor processEntity(Class<? extends PimsMapEntity> entityClass) {
         ParsedType entityType = typeParser.parse(entityClass);
-        return new PimsEntityDescriptor(
+        return new PimsEntityStaticDescriptor(
                 entityType,
                 metaDataFactory.metadata(entityType),
-                pimsLinker.link(entityClass),
-                empty(),
-                empty(),
-                empty()
+                pimsLinker.link(entityClass)
         );
     }
 
