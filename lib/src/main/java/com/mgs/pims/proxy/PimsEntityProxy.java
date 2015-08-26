@@ -50,6 +50,9 @@ public class PimsEntityProxy implements InvocationHandler {
             String errMsg2 = "The available delegators are: " + methodDelegators;
             throw new IllegalStateException(errMsg1 + ". " + errMsg2);
         }
+        if (pimsEntityMetaData == null) {
+            throw new NullPointerException();
+        }
         return pimsMethodCaller.delegate(
                 pimsMethodDelegator,
                 pimsParameters.from(

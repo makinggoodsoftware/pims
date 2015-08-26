@@ -2,8 +2,15 @@ package com.mgs.pims.core
 
 import com.mgs.maps.Mapping
 import com.mgs.pims.annotations.PimsEntity
+import com.mgs.pims.context.Pims
+import com.mgs.pims.context.PimsEntityRelationshipDescriptor
 import com.mgs.pims.types.builder.PimsBuilder
 import com.mgs.pims.types.map.PimsMapEntity
+import com.mgs.pims.types.provider.PimsProvider
+import com.mgs.pims.types.retriever.PimsRetriever
+import com.mgs.spring.glue.pims.PimsCustomConfig
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 import spring.TestContext
@@ -12,7 +19,7 @@ import spring.testMixers.WithEventsManager
 import javax.annotation.Resource
 import java.util.function.UnaryOperator
 
-@ContextConfiguration(classes = [TestContext.class])
+@ContextConfiguration(classes = [TestContext.class, CustomConfig.class])
 class PimsBehaviour extends Specification{
     @Resource Pims pims
 
@@ -140,6 +147,35 @@ class PimsBehaviour extends Specification{
 
         !result.valueMap.containsKey("named")
         result.valueMap.containsKey("differentName")
+    }
+
+    @Configuration
+    public static class CustomConfig implements PimsCustomConfig {
+
+        @Override
+        @Bean
+        public List<PimsEntityRelationshipDescriptor> relationshipDescriptors() {
+            List<PimsEntityRelationshipDescriptor> relationshipDescriptors = new ArrayList<>();
+            relationshipDescriptors.add(new PimsEntityRelationshipDescriptor(PimsBuilder.class, "T"));
+            relationshipDescriptors.add(new PimsEntityRelationshipDescriptor(PimsRetriever.class, "Z"));
+            relationshipDescriptors.add(new PimsEntityRelationshipDescriptor(PimsProvider.class, "T"));
+            return relationshipDescriptors;
+        }
+
+        @Override
+        @Bean
+        public List<Class<? extends PimsMapEntity>> entitites() {
+            return [
+                    PimsEntityWithNamedField,
+                    PimsEntityWithNamedFieldBuilder,
+                    MyPimsEntity,
+                    ComplexPimsEntity,
+                    WithParameter,
+                    WithEvents,
+                    MyInterface,
+                    MyInterfaceBuilder
+            ]
+        }
     }
 
     @PimsEntity

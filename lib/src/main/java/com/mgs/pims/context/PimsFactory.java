@@ -1,29 +1,35 @@
 package com.mgs.pims.context;
 
+import com.mgs.maps.MapUtils;
 import com.mgs.pims.core.linker.PimsLinker;
 import com.mgs.pims.core.metaData.MetaDataFactory;
+import com.mgs.pims.types.ProxyFactory;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.reflections.ParsedType;
 import com.mgs.reflections.TypeParser;
 
 import java.util.*;
 
-public class PimsContextFactory {
+public class PimsFactory {
     private final TypeParser typeParser;
     private final MetaDataFactory metaDataFactory;
     private final PimsLinker pimsLinker;
+    private final ProxyFactory proxyFactory;
+    private final MapUtils mapUtils;
 
-    public PimsContextFactory(
+    public PimsFactory(
             TypeParser typeParser,
             MetaDataFactory metaDataFactory,
-            PimsLinker pimsLinker
-    ) {
+            PimsLinker pimsLinker,
+            ProxyFactory proxyFactory, MapUtils mapUtils) {
         this.typeParser = typeParser;
         this.metaDataFactory = metaDataFactory;
         this.pimsLinker = pimsLinker;
+        this.proxyFactory = proxyFactory;
+        this.mapUtils = mapUtils;
     }
 
-    public PimsContext context(
+    public Pims context(
             List<PimsEntityRelationshipDescriptor> relationshipDescriptors,
             List<Class<? extends PimsMapEntity>> entities
     ) {
@@ -47,7 +53,7 @@ public class PimsContextFactory {
                     )
             );
         }
-        return new PimsContext(descriptors);
+        return new Pims(descriptors, proxyFactory, typeParser, mapUtils);
     }
 
     private PimsEntityStaticDescriptor processEntity(Class<? extends PimsMapEntity> entityClass) {

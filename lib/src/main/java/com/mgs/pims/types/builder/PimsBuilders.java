@@ -4,8 +4,10 @@ import com.mgs.maps.Mapping;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
+import com.mgs.pims.context.Pims;
 import com.mgs.pims.types.ProxyFactory;
 import com.mgs.pims.types.map.PimsMapEntity;
+import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.pims.types.serializable.PimsSerializable;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.FieldAccessor;
@@ -22,10 +24,12 @@ import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.*;
 public class PimsBuilders {
     private final ProxyFactory proxyFactory;
     private final TypeParser typeParser;
+    private final Pims pims;
 
-    public PimsBuilders(ProxyFactory proxyFactory, TypeParser typeParser) {
+    public PimsBuilders(ProxyFactory proxyFactory, TypeParser typeParser, Pims pims) {
         this.proxyFactory = proxyFactory;
         this.typeParser = typeParser;
+        this.pims = pims;
     }
 
     @PimsMethod(pattern = "update{fieldName}")
@@ -80,18 +84,18 @@ public class PimsBuilders {
         Declaration pimsBuilderDeclaration = sourceType.getSuperDeclarations().get(PimsBuilder.class).getOwnDeclaration();
         Declaration toBuildType = pimsBuilderDeclaration.getParameters().get("T");
         boolean isSerializable = PimsSerializable.class.isAssignableFrom(toBuildType.getActualType().get());
-
+        PimsEntityMetaData metaData = pims.get(toBuildType.getActualType().get()).getStaticDescriptor().getMetaData();
         if (isSerializable){
             return proxyFactory.immutable(
                     typeParser.parse(toBuildType),
                     valueMap,
-                    null
+                    metaData
             );
         }else{
             return proxyFactory.domainEntity(
                     typeParser.parse(toBuildType),
                     domainMap,
-                    null
+                    metaData
             );
         }
     }

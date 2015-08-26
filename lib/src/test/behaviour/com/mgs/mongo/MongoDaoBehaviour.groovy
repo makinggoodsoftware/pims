@@ -1,12 +1,12 @@
 package com.mgs.mongo
 
-import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+import spring.TestContext
 
 import javax.annotation.Resource
 
-@ContextConfiguration(classes = [AppConfig.class])
+@ContextConfiguration(classes = [TestContext.class])
 class MongoDaoBehaviour extends Specification {
     @Resource
     MongoDaoFactory mongoDaoFactory

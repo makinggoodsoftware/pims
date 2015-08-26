@@ -1,7 +1,7 @@
 package com.mgs.pims.web.config;
 
 import com.google.common.collect.ImmutableMap;
-import com.mgs.pims.core.Pims;
+import com.mgs.pims.context.Pims;
 import com.mgs.pims.types.provider.PimsProvider;
 import com.mgs.pims.types.retriever.PimsRetriever;
 import com.mgs.pims.web.PimsContext;

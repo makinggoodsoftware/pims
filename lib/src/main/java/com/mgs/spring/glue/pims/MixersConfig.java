@@ -1,5 +1,7 @@
 package com.mgs.spring.glue.pims;
 
+import com.mgs.pims.context.Pims;
+import com.mgs.pims.core.PimsRawDataProvider;
 import com.mgs.pims.core.linker.mixer.NullMixer;
 import com.mgs.pims.types.base.PimsBaseEntities;
 import com.mgs.pims.types.builder.PimsBuilders;
@@ -29,15 +31,15 @@ public class MixersConfig {
     MongoConfig mongoConfig;
 
     @Bean
-    public PimsBuilders pimsBuilders (){
+    public PimsBuilders pimsBuilders(Pims pims) {
         return new PimsBuilders(
-                pimsConfig.pimsFactory(),
-                reflectionsConfig.typeParser()
-        );
+                pimsConfig.proxyFactory(),
+                reflectionsConfig.typeParser(),
+                pims);
     }
 
     @Bean
-    public PimsPersistables pimsResources (MongoDbDef mongoDbDef){
+    public PimsPersistables pimsResources(MongoDbDef mongoDbDef, PimsRawDataProvider pimsRawDataProvider) {
         return new PimsPersistables(
                 pimsConfig.pims(),
                 mongoConfig.mongoDaoFactory().mongoDao(
@@ -54,7 +56,7 @@ public class MixersConfig {
     }
 
     @Bean
-    public PimsRetrievers pimsRetrievers(MongoDbDef mongoDbDef) {
+    public PimsRetrievers pimsRetrievers(MongoDbDef mongoDbDef, PimsRawDataProvider pimsRawDataProvider) {
         return new PimsRetrievers(
                 mongoConfig.mongoDaoFactory().mongoDao(
                         mongoDbDef.getHost(),

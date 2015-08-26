@@ -11,7 +11,7 @@ import com.mgs.reflections.TypeParser
 import spock.lang.Specification
 
 class PimsContextFactorySpecification extends Specification {
-    PimsContextFactory testObj
+    PimsFactory testObj
     TypeParser typeParserMock = Mock(TypeParser)
     PimsLinker pimsLinkerMock = Mock(PimsLinker)
     MetaDataFactory metaDataFactoryMock = Mock(MetaDataFactory)
@@ -26,10 +26,10 @@ class PimsContextFactorySpecification extends Specification {
     PimsLink simpleTypeBuilderLinkMock = Mock(PimsLink)
 
     def "setup" (){
-        testObj = new PimsContextFactory(
+        testObj = new PimsFactory(
                 typeParserMock,
                 metaDataFactoryMock,
-                pimsLinkerMock
+                pimsLinkerMock, proxyFactory, mapUtils
         )
 
         typeParserMock.parse(SimpleEntity) >> simpleTypeMock
@@ -43,7 +43,7 @@ class PimsContextFactorySpecification extends Specification {
 
     def "should create context" (){
         when:
-        PimsContext context = testObj.context([builderRelationshipMock], [SimpleEntity, SimpleEntityBuilder])
+        Pims context = testObj.context([builderRelationshipMock], [SimpleEntity, SimpleEntityBuilder])
 
         then:
         context.get("SimpleEntity").staticDescriptor.type == simpleTypeMock

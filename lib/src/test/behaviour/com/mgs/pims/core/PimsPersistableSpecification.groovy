@@ -1,6 +1,7 @@
 package com.mgs.pims.core
 
 import com.mgs.pims.annotations.PimsEntity
+import com.mgs.pims.context.Pims
 import com.mgs.pims.types.builder.PimsBuilder
 import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.pims.types.persistable.PimsPersistable
