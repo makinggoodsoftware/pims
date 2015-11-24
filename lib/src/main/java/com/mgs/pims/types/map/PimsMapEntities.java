@@ -3,7 +3,7 @@ package com.mgs.pims.types.map;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.proxy.PimsEntityProxy;
+import com.mgs.pims.core.PimsEntityProxy;
 import com.mgs.reflections.ParsedType;
 
 import java.util.Map;

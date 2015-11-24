@@ -2,7 +2,7 @@ package com.mgs.pims.web.retrievers;
 
 import com.mgs.pims.annotations.PimsEntity;
 import com.mgs.pims.annotations.PimsMixer;
-import com.mgs.pims.context.Pims;
+import com.mgs.pims.core.Pims;
 import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.pims.types.provider.PimsProvider;
 

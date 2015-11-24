@@ -1,8 +1,7 @@
 package com.mgs.spring.glue.pims;
 
-import com.mgs.pims.context.Pims;
-import com.mgs.pims.context.PimsFactory;
-import com.mgs.pims.core.PimsRawDataProvider;
+import com.mgs.pims.core.Pims;
+import com.mgs.pims.context.PimsContextFactory;
 import com.mgs.pims.core.linker.PimsLinker;
 import com.mgs.pims.core.linker.method.PimsMethodCaller;
 import com.mgs.pims.core.linker.method.PimsMethodDelegatorFactory;
@@ -36,37 +35,23 @@ public class PimsConfig {
     private MapsConfig mapsConfig;
     @Autowired
     private ReflectionsConfig reflectionsConfig;
-    @Autowired
-    private PimsCustomConfig pimsCustomConfig;
 
-
-    @Bean
-    public PimsFactory pimsFactory() {
-        return new PimsFactory(
-                reflectionsConfig.typeParser(),
-                metaDataFactory(),
-                pimsLinker(),
-                proxyFactory(),
-                mapsConfig.mapUtils()
-        );
-    }
 
     @Bean
     public Pims pims() {
-        return pimsFactory().context(
-                pimsCustomConfig.relationshipDescriptors(),
-                pimsCustomConfig.entitites()
+        return new Pims(
+                proxyFactory(),
+                reflectionsConfig.typeParser(),
+                mapsConfig.mapUtils()
         );
     }
 
     @Bean
-    public PimsFactory pimsContextFactory() {
-        return new PimsFactory(
+    public PimsContextFactory pimsContextFactory() {
+        return new PimsContextFactory(
                 reflectionsConfig.typeParser(),
                 metaDataFactory(),
-                pimsLinker(),
-                proxyFactory(),
-                mapsConfig.mapUtils()
+                pimsLinker()
         );
     }
 

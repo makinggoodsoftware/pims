@@ -5,7 +5,7 @@ import com.mgs.pims.annotations.PimsEvent;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.context.Pims;
+import com.mgs.pims.core.Pims;
 import com.mgs.pims.types.serializable.PimsSerializable;
 import com.mgs.reflections.Declaration;
 import com.mgs.reflections.ParsedType;
@@ -18,7 +18,7 @@ import java.util.function.UnaryOperator;
 
 import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.SOURCE_OBJECT;
 import static com.mgs.pims.core.linker.parameters.PimsMethodParameterType.SOURCE_TYPE;
-import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
+import static com.mgs.pims.core.PimsEventType.INPUT_TRANSLATION;
 
 @PimsMixer
 public class PimsPersistables {
@@ -58,7 +58,7 @@ public class PimsPersistables {
         return withUpdatedVersion;
     }
 
-    private PimsPersistableBuilder builder(@PimsParameter(type = SOURCE_TYPE) ParsedType persistableType, @PimsParameter(type = SOURCE_OBJECT) PimsPersistable source) {
+    private PimsPersistableBuilder builder(ParsedType persistableType, PimsPersistable source) {
         ParsedType pimsPersistableType = persistableType.getSuperDeclarations().get(PimsPersistable.class);
         Declaration dataType = pimsPersistableType.getOwnDeclaration().getParameters().get("T");
         Map<String, Declaration> parameterTypes = new HashMap<>();

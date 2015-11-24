@@ -1,4 +1,4 @@
-package com.mgs.pims.proxy;
+package com.mgs.pims.core;
 
 import com.mgs.pims.core.linker.method.PimsMethodCaller;
 import com.mgs.pims.core.linker.method.PimsMethodDelegator;

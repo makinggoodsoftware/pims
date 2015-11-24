@@ -5,13 +5,11 @@ import com.mgs.pims.core.linker.PimsLinker
 import com.mgs.pims.core.linker.method.PimsMethodCaller
 import com.mgs.pims.core.linker.method.PimsMethodDelegator
 import com.mgs.pims.core.linker.parameters.PimsParameters
-import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.pims.types.serializable.PimsSerializable
 import com.mgs.reflections.FieldAccessor
 import com.mgs.reflections.ParsedType
 import com.mgs.reflections.TypelessMethod
-import com.mgs.spring.AppConfig
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 import spring.TestContext

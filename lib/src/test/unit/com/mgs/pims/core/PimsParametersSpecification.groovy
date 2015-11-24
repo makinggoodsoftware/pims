@@ -6,7 +6,6 @@ import com.mgs.pims.annotations.PimsMixer
 import com.mgs.pims.core.linker.method.LinkedMethod
 import com.mgs.pims.core.linker.parameters.PimsMethodParameterType
 import com.mgs.pims.core.linker.parameters.PimsParameters
-import com.mgs.pims.proxy.PimsEntityProxy
 import com.mgs.pims.types.map.PimsMapEntities
 import com.mgs.pims.types.map.PimsMapEntity
 import com.mgs.reflections.FieldAccessor

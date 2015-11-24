@@ -5,7 +5,7 @@ import com.mgs.pims.annotations.PimsMixer;
 
 import java.util.Map;
 
-import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
+import static com.mgs.pims.core.PimsEventType.INPUT_TRANSLATION;
 
 @PimsMixer
 public class WithEventsManager {

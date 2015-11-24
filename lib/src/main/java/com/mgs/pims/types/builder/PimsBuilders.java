@@ -4,7 +4,7 @@ import com.mgs.maps.Mapping;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.context.Pims;
+import com.mgs.pims.core.Pims;
 import com.mgs.pims.types.ProxyFactory;
 import com.mgs.pims.types.map.PimsMapEntity;
 import com.mgs.pims.types.metaData.PimsEntityMetaData;

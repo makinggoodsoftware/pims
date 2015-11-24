@@ -5,7 +5,7 @@ import com.mgs.mongo.MongoDao;
 import com.mgs.pims.annotations.PimsMethod;
 import com.mgs.pims.annotations.PimsMixer;
 import com.mgs.pims.annotations.PimsParameter;
-import com.mgs.pims.context.Pims;
+import com.mgs.pims.core.Pims;
 import com.mgs.pims.types.persistable.PimsPersistable;
 import com.mgs.pims.types.serializable.PimsSerializable;
 import com.mgs.reflections.Declaration;

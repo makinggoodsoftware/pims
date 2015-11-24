@@ -2,7 +2,7 @@ package com.mgs.pims.core.linker.parameters;
 
 import com.mgs.pims.annotations.PimsParameter;
 import com.mgs.pims.core.linker.method.LinkedMethod;
-import com.mgs.pims.proxy.PimsEntityProxy;
+import com.mgs.pims.core.PimsEntityProxy;
 import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.reflections.FieldAccessor;
 import com.mgs.reflections.ParsedType;

@@ -1,5 +1,6 @@
 package com.mgs.pims.context
 import com.mgs.pims.annotations.PimsEntity
+import com.mgs.pims.core.Pims
 import com.mgs.pims.core.linker.PimsLink
 import com.mgs.pims.core.linker.PimsLinker
 import com.mgs.pims.core.metaData.MetaDataFactory
@@ -11,7 +12,7 @@ import com.mgs.reflections.TypeParser
 import spock.lang.Specification
 
 class PimsContextFactorySpecification extends Specification {
-    PimsFactory testObj
+    PimsContextFactory testObj
     TypeParser typeParserMock = Mock(TypeParser)
     PimsLinker pimsLinkerMock = Mock(PimsLinker)
     MetaDataFactory metaDataFactoryMock = Mock(MetaDataFactory)
@@ -26,10 +27,10 @@ class PimsContextFactorySpecification extends Specification {
     PimsLink simpleTypeBuilderLinkMock = Mock(PimsLink)
 
     def "setup" (){
-        testObj = new PimsFactory(
+        testObj = new PimsContextFactory(
                 typeParserMock,
                 metaDataFactoryMock,
-                pimsLinkerMock, proxyFactory, mapUtils
+                pimsLinkerMock
         )
 
         typeParserMock.parse(SimpleEntity) >> simpleTypeMock

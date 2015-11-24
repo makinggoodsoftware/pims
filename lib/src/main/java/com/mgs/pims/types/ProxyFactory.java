@@ -6,7 +6,7 @@ import com.mgs.pims.core.linker.PimsLinker;
 import com.mgs.pims.core.linker.method.PimsMethodCaller;
 import com.mgs.pims.core.linker.method.PimsMethodDelegator;
 import com.mgs.pims.core.linker.parameters.PimsParameters;
-import com.mgs.pims.proxy.PimsEntityProxy;
+import com.mgs.pims.core.PimsEntityProxy;
 import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.pims.types.metaData.PimsEntityMetaData;
 import com.mgs.reflections.FieldAccessorParser;
@@ -14,7 +14,7 @@ import com.mgs.reflections.ParsedType;
 
 import java.util.Map;
 
-import static com.mgs.pims.event.PimsEventType.INPUT_TRANSLATION;
+import static com.mgs.pims.core.PimsEventType.INPUT_TRANSLATION;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 public class ProxyFactory {

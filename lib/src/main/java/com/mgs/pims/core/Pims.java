@@ -1,6 +1,7 @@
-package com.mgs.pims.context;
+package com.mgs.pims.core;
 
 import com.mgs.maps.MapUtils;
+import com.mgs.pims.context.PimsEntityDescriptor;
 import com.mgs.pims.types.ProxyFactory;
 import com.mgs.pims.types.base.PimsBaseEntity;
 import com.mgs.pims.types.builder.PimsBuilder;
@@ -18,33 +19,18 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class Pims {
-    private final Map<String, PimsEntityDescriptor> descriptors;
     private final ProxyFactory proxyFactory;
     private final MapUtils mapUtils;
     private final TypeParser typeParser;
 
-    public Pims(Map<String, PimsEntityDescriptor> descriptors, ProxyFactory proxyFactory, TypeParser typeParser, MapUtils mapUtils) {
-        this.descriptors = descriptors;
+    public Pims(ProxyFactory proxyFactory, TypeParser typeParser, MapUtils mapUtils) {
         this.proxyFactory = proxyFactory;
         this.typeParser = typeParser;
         this.mapUtils = mapUtils;
     }
 
-    public PimsEntityDescriptor get(String name) {
-        return descriptors.get(name);
-    }
-
-    public PimsEntityDescriptor get(Class<? extends PimsBaseEntity> type) {
-        return get(type.getSimpleName());
-    }
-
-    public PimsEntityDescriptor get(ParsedType type) {
-        return get(type.getActualType().get());
-    }
-
     public <M extends PimsSerializable> M
-    newEntity(Class<M> type, Map<String, Object> valueMap) {
-        PimsEntityDescriptor pimsEntityDescriptor = get(type);
+    newEntity(PimsEntityDescriptor pimsEntityDescriptor, Map<String, Object> valueMap) {
         return proxyFactory.immutable(
                 pimsEntityDescriptor.getStaticDescriptor().getType(),
                 valueMap,
@@ -53,10 +39,9 @@ public class Pims {
     }
 
     public <M extends PimsMapEntity, B extends PimsBuilder<M>> B
-    newBuilder(Class<B> type){
-        PimsEntityDescriptor pimsEntityDescriptor = get(type);
+    newBuilder(PimsEntityDescriptor pimsEntityDescriptor) {
         ParsedType builderType = pimsEntityDescriptor.getStaticDescriptor().getType();
-        ParsedType getterType = getterType(builderType);
+        ParsedType getterType = getterType(pimsEntityDescriptor);
         PimsEntityMetaData metaData = pimsEntityDescriptor.getStaticDescriptor().getMetaData();
         if (metaData == null) throw new NullPointerException();
         return proxyFactory.mutable(
@@ -68,8 +53,7 @@ public class Pims {
         );
     }
 
-    public <T extends PimsBaseEntity> T stateless(Class<T> statelessType) {
-        PimsEntityDescriptor pimsEntityDescriptor = get(statelessType);
+    public <T extends PimsBaseEntity> T stateless(PimsEntityDescriptor pimsEntityDescriptor) {
         return proxyFactory.immutable(
                 pimsEntityDescriptor.getStaticDescriptor().getType(),
                 new HashMap<>(),
@@ -83,7 +67,7 @@ public class Pims {
             P extends PimsPersistable<M>,
             PB extends PimsPersistableBuilder<M, P>
             >
-    PB newPersistedEntityBuilder(Class<PB> persistableBuilderType, Class<B> dataBuilderType, Function<B, B> builderFn) {
+    PB newPersistedEntityBuilder(PimsEntityDescriptor persistableBuilderType, PimsEntityDescriptor dataBuilderType, Function<B, B> builderFn) {
         B dataBuilder = newBuilder(dataBuilderType);
         M data = builderFn.apply(dataBuilder).build();
         PB persistableBuilder = newBuilder(persistableBuilderType);
@@ -95,31 +79,20 @@ public class Pims {
             M extends PimsMapEntity,
             B extends PimsBuilder<M>
             >
-    B update(Class<B> builder, M source) {
-        return update(
-                typeParser.parse(builder),
-                source
-        );
-    }
-
-    public <
-            M extends PimsMapEntity,
-            B extends PimsBuilder<M>
-            >
-    B update(ParsedType type, M source) {
-        PimsEntityDescriptor pimsEntityDescriptor = get(type);
+    B update(PimsEntityDescriptor pimsEntityDescriptor, M source) {
         Map domainMapCopy = mapUtils.copy(source.getDomainMap());
         //noinspection unchecked
         return (B) proxyFactory.mutable(
-                getterType(type),
-                type,
+                getterType(pimsEntityDescriptor),
+                pimsEntityDescriptor.getStaticDescriptor().getType(),
                 new HashMap<>(),
                 domainMapCopy,
                 pimsEntityDescriptor.getStaticDescriptor().getMetaData()
         );
     }
 
-    private ParsedType getterType(ParsedType baseBuilderType) {
+    private ParsedType getterType(PimsEntityDescriptor descriptor) {
+        ParsedType baseBuilderType = descriptor.getStaticDescriptor().getType();
         ParsedType builderType = baseBuilderType.getSuperDeclarations().get(PimsBuilder.class);
         Declaration getterDeclaration = builderType.getOwnDeclaration().getParameters().get("T");
         return typeParser.parse(getterDeclaration);

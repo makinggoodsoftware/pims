@@ -1,6 +1,6 @@
 package com.mgs.pims.annotations;
 
-import com.mgs.pims.event.PimsEventType;
+import com.mgs.pims.core.PimsEventType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
